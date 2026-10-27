@@ -16,6 +16,10 @@ FAQPage on the homepage and each service page; Service + BreadcrumbList on servi
 - Generated with Higgsfield (flagged "Illustrative image" on the site): gen-1 sprinklers (retic hero), gen-2 solenoid repair, gen-3 Wi-Fi controller, gen-5 mini loader levelling, gen-6 vertimower, gen-8 fertiliser spreading.
 - `npm run images` populates `public/images/`. The build sandbox could not download binaries, so the photos are not in this commit.
 
+## Hero video
+- Homepage hero is a 6-second Higgsfield Kling 4.0 clip (reference-to-video) built from Josh's About photo (identity) and the real block-slashing job photo (scene): `hero-video.mp4` 1.1 MB / `hero-video.webm` 2.2 MB, 1280×720, muted loop. The poster frame (`hero-video-poster.webp`) is the LCP image; the clip only loads after `window.load` and is skipped under prefers-reduced-motion, Data Saver or 2G.
+- This is AI-generated footage of the owner: Josh should approve it before launch.
+
 ## QA (Playwright, stand-in images of identical dimensions/bytes)
 - Desktop 1440px and mobile 375px: header, Services dropdown (hover + tap), animated service-area map (mower moves, labels light up, reduced-motion fallback), GBP iframe present, quote form submits and redirects to /thank-you.
 - Mobile LCP (Slow-4G-style throttle, 4x CPU): homepage 780 ms (LCP element is the hero paragraph; hero image is below the text on mobile), /lawn-mowing 400 ms.

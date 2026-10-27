@@ -222,7 +222,7 @@ function homePage() {
     <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote">Get a Free Quote</a></div>
     <ul class="trust">${h.trust.map(t => `<li>${iconSolid('check', '#8dc81b')}${esc(t)}</li>`).join('')}</ul>
   </div>
-  <div class="hero-media">${img(h.hero.img, h.hero.alt, { eager: true, sizes: '(min-width: 900px) 540px, 100vw' })}<div class="hero-badge">${iconSolid('pin', '#8dc81b')}Byford-based, servicing Perth's South-East &amp; Peel</div></div>
+  <div class="hero-media${h.video ? ' has-video' : ''}"${h.video ? ` data-hero-video data-poster="/images/${h.video.poster}.webp" data-sources="/images/${h.video.webm},/images/${h.video.mp4}"` : ''}>${img(h.video ? h.video.poster : h.hero.img, h.video ? h.video.alt : h.hero.alt, { eager: true, sizes: '(min-width: 900px) 540px, 100vw' })}<div class="hero-badge">${iconSolid('pin', '#8dc81b')}Byford-based, servicing Perth's South-East &amp; Peel</div></div>
 </div></section>
 
 <section class="section" id="services"><div class="container">

@@ -69,6 +69,8 @@ export const home = {
   lead: "In The Mow Lawncare is a locally owned crew based in Byford WA, delivering the lawn mowing Byford homes and businesses rely on, plus acreage slashing, reticulation, turf installation, lawn health and garden maintenance across Perth's South-East corridor and the Peel region, from Canning Vale to Mandurah.",
   servicesLead: 'From the regular lawn mowing Byford families book fortnightly to full reticulation installs in Mandurah, one crew handles the whole property. Pick a service to see what is included, where we work and what it costs.',
   hero: { img: 'regular-lawn-mowing', alt: 'Freshly mowed and striped front lawn after a regular lawn mowing visit in Byford WA' },
+  // Hero video (Higgsfield, generated from Josh's photo + a real job-site photo). Poster is the LCP image; the clip loads after page load.
+  video: { poster: 'hero-video-poster', mp4: 'hero-video.mp4', webm: 'hero-video.webm', alt: 'Joshua Patriarca from In The Mow Lawncare on a zero-turn mower slashing a rural block near Byford WA' },
   trust: ['Locally owned and operated by Joshua Patriarca', 'One crew for the whole property', 'Commercial-grade ride-on and zero-turn equipment'],
   about: {
     img: 'acreage-large-scale', alt: 'Joshua Patriarca from In The Mow Lawncare with the zero-turn mower and trailer on a rural block near Byford WA',

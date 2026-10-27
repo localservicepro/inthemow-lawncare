@@ -30,6 +30,24 @@
     }
   });
 
+  /* ---------- Hero video: poster first (LCP), video after load, skipped on reduced motion / data saver ---------- */
+  var hv = document.querySelector('[data-hero-video]');
+  if (hv && !reduce) {
+    var conn = navigator.connection || {};
+    var slow = conn.saveData || /(^|[^0-9])2g/.test(conn.effectiveType || '');
+    if (!slow) {
+      var loadVideo = function () {
+        var v = document.createElement('video');
+        v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true; v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true');
+        v.preload = 'auto'; v.poster = hv.getAttribute('data-poster') || '';
+        (hv.getAttribute('data-sources') || '').split(',').forEach(function (src) { if (!src) return; var s = document.createElement('source'); s.src = src.trim(); s.type = /\.webm/.test(src) ? 'video/webm' : 'video/mp4'; v.appendChild(s); });
+        v.addEventListener('canplay', function () { v.classList.add('ready'); var p = v.play(); if (p && p.catch) p.catch(function () {}); });
+        hv.appendChild(v);
+      };
+      if (document.readyState === 'complete') setTimeout(loadVideo, 300); else window.addEventListener('load', function () { setTimeout(loadVideo, 300); });
+    }
+  }
+
   /* ---------- Reveal on scroll ---------- */
   var reveals = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window && !reduce) {

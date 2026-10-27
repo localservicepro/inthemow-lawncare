@@ -45,5 +45,6 @@ if (!fromDrive) {
     }
     execSync(`rm -f "${tmp}"`);
   }
+  for (const [slug, v] of Object.entries(manifest.videos || {})) { console.log('fetch video', slug); await download(v.url, path.join(out, `${slug}.mp4`)); console.log('Note: re-encode with ffmpeg (crf 30 mp4 + vp9 webm) — the bundle path already contains the encoded files.'); }
   console.log('Done →', out);
 }
