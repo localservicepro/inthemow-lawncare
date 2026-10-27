@@ -23,3 +23,26 @@ FAQPage on the homepage and each service page; Service + BreadcrumbList on servi
 ## QA (Playwright, stand-in images of identical dimensions/bytes)
 - Desktop 1440px and mobile 375px: header, Services dropdown (hover + tap), animated service-area map (mower moves, labels light up, reduced-motion fallback), GBP iframe present, quote form submits and redirects to /thank-you.
 - Mobile LCP (Slow-4G-style throttle, 4x CPU): homepage 780 ms (LCP element is the hero paragraph; hero image is below the text on mobile), /lawn-mowing 400 ms.
+
+## Images on Vercel / Netlify (CDN fallback)
+
+The photo bundle is not committed to the repo. `src/cdn.json` maps every referenced file (WebP + 600px
+variants, logos, hero poster, hero MP4) to a public CDN copy. `scripts/build.mjs` uses the local
+`/images/<file>` path when the file exists in `public/images`, otherwise the CDN URL, so a plain
+`npm run build` deploys with working images. To self-host instead, run `npm run images` then
+`npm run build`; the build prints how many references still come from the CDN (0 = fully self-hosted).
+The WebM hero source is only emitted when it exists locally (the CDN copy is MP4 only).
+
+## Standalone pages
+
+- `/about` — owner story, values, equipment, process, gallery, 3 reviews, FAQ (AboutPage + BreadcrumbList + FAQPage schema).
+- `/service-areas` — animated map, region-by-region blurbs with linked services, full suburb list, FAQ.
+- `/contact` — quote form, contact details, hours, GBP embed, tips, FAQ (ContactPage schema).
+Header nav is now Home · Services ▾ · About · Service Areas · Contact. Pages without an on-page form link
+their quote CTAs to `/contact`.
+
+## Homepage hero (v2)
+
+Full-bleed hero: the video poster (then the muted MP4 after `load`) sits behind a charcoal gradient,
+H1/lead/CTAs on the left and a compact "Quick Quote" form card at ≥1024px (hidden on mobile, where the
+main form at `#quote` is used). A six-service icon strip sits directly beneath.

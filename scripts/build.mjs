@@ -1,8 +1,8 @@
 // Static site generator: src/content.mjs + src/styles.css + src/main.js -> public/*.html
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { site, services, regions, allSuburbs, route, reviews, homeFaqs, beforeAfter, home, formServices } from '../src/content.mjs';
+import { site, services, regions, allSuburbs, route, reviews, homeFaqs, beforeAfter, home, formServices, about, areasPage, contactPage } from '../src/content.mjs';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, 'public');
@@ -11,6 +11,16 @@ const css = readFileSync(path.join(root, 'src/styles.css'), 'utf8');
 const js = readFileSync(path.join(root, 'src/main.js'), 'utf8');
 const lqip = JSON.parse(readFileSync(path.join(root, 'src/lqip.json'), 'utf8'));
 const manifest = JSON.parse(readFileSync(path.join(root, 'src/images.json'), 'utf8')).images;
+// Public CDN copies of every asset (src/cdn.json). Used whenever the file is not present in public/images,
+// so the site renders on Vercel/Netlify even when the photo bundle has not been downloaded into the repo.
+// Run `npm run images` to self-host; the build then switches back to /images/... automatically.
+const cdn = JSON.parse(readFileSync(path.join(root, 'src/cdn.json'), 'utf8'));
+let cdnUsed = 0;
+function asset(file, absolute = false) {
+  if (existsSync(path.join(out, 'images', file))) return (absolute ? site.url : '') + '/images/' + file;
+  const c = cdn[file]; if (!c) throw new Error('asset missing locally and not in cdn.json: ' + file);
+  cdnUsed++; return c.url;
+}
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const attr = esc;
@@ -41,10 +51,11 @@ const star = `<svg viewBox="0 0 48 48" fill="currentColor" aria-hidden="true"><p
 function img(slug, alt, opts = {}) {
   const m = manifest[slug]; if (!m) throw new Error('unknown image ' + slug);
   const sizes = opts.sizes || '(min-width: 1000px) 400px, (min-width: 640px) 50vw, 100vw';
-  const srcset = m.w > 600 ? `/images/${slug}-600.webp 600w, /images/${slug}.webp ${m.w}w` : `/images/${slug}.webp ${m.w}w`;
+  const full = asset(`${slug}.webp`);
+  const srcset = m.w > 600 ? `${asset(`${slug}-600.webp`)} 600w, ${full} ${m.w}w` : `${full} ${m.w}w`;
   const eager = opts.eager ? 'loading="eager" fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"';
   const bg = lqip[slug] ? ` style="background:url(data:image/webp;base64,${lqip[slug]}) center/cover no-repeat"` : '';
-  return `<img src="/images/${slug}.webp" srcset="${srcset}" sizes="${sizes}" width="${m.w}" height="${m.h}" alt="${attr(alt)}" ${eager}${bg}${opts.cls ? ` class="${opts.cls}"` : ''}>`;
+  return `<img src="${full}" srcset="${srcset}" sizes="${sizes}" width="${m.w}" height="${m.h}" alt="${attr(alt)}" ${eager}${bg}${opts.cls ? ` class="${opts.cls}"` : ''}>`;
 }
 const genNote = '<p class="gen-note">Illustrative image.</p>';
 
@@ -101,25 +112,28 @@ ${regionLabels}${labels}
 const phoneLink = (cls = 'btn btn-call', label = site.phone) => `<a class="${cls}" href="tel:${site.phoneTel}">${iconSolid('phone', 'currentColor')}<span>${label}</span></a>`;
 const servicesNav = () => services.map(s => `<a href="/${s.slug}">${icon(s.icon)}${esc(s.nav)}</a>`).join('');
 
+// Pages that carry their own quote form link to it in-page; everything else goes to /contact.
+const HAS_FORM = new Set(['/', '/contact', ...services.map(s => '/' + s.slug)]);
+const quoteHref = current => (HAS_FORM.has(current) ? '#quote' : '/contact');
 function header(current) {
   const cur = p => (current === p ? ' aria-current="page"' : '');
   return `<a class="skip" href="#main">Skip to content</a>
 <header class="header"><div class="container">
-  <a class="brand" href="/" aria-label="In The Mow Lawncare home"><img src="/images/logo-128.png" width="60" height="60" alt="In The Mow Lawncare logo"></a>
+  <a class="brand" href="/" aria-label="In The Mow Lawncare home"><img src="${asset('logo-128.png')}" width="60" height="60" alt="In The Mow Lawncare logo"></a>
   <nav class="nav" aria-label="Main">
     <a href="/"${cur('/')}>Home</a>
     <div class="has-sub"><button type="button" aria-expanded="false" aria-haspopup="true">Services ${iconSolid('arrow', 'currentColor').replace('viewBox="0 0 48 48"', 'viewBox="0 0 48 48" style="transform:rotate(90deg)"')}</button><div class="sub">${servicesNav()}</div></div>
-    <a href="/#areas">Service Areas</a><a href="/#reviews">Reviews</a><a href="/blog"${cur('/blog')}>Blog</a><a href="/#quote">Contact</a>
+    <a href="/about"${cur('/about')}>About</a><a href="/service-areas"${cur('/service-areas')}>Service Areas</a><a href="/contact"${cur('/contact')}>Contact</a>
   </nav>
-  <div class="header-cta"><a class="header-call" href="tel:${site.phoneTel}">${iconSolid('phone', 'currentColor')}${site.phone}</a><a class="btn btn-primary" href="${current === '/' ? '#quote' : '/#quote'}">Get a Free Quote</a></div>
+  <div class="header-cta"><a class="header-call" href="tel:${site.phoneTel}">${iconSolid('phone', 'currentColor')}${site.phone}</a><a class="btn btn-primary" href="${quoteHref(current)}">Get a Free Quote</a></div>
   <a class="call-icon" href="tel:${site.phoneTel}" aria-label="Call ${site.phone}">${iconSolid('phone', 'currentColor')}</a>
   <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </div>
 <div class="mobile-menu" id="mobile-menu">
   <a href="/">Home</a>
   <details><summary>Services <span aria-hidden="true">+</span></summary>${services.map(s => `<a href="/${s.slug}">${esc(s.nav)}</a>`).join('')}</details>
-  <a href="/#areas">Service Areas</a><a href="/#reviews">Reviews</a><a href="/blog">Blog</a><a href="/#quote">Contact</a>
-  <div class="mm-cta"><a class="btn btn-primary" href="tel:${site.phoneTel}">Call ${site.phone}</a><a class="btn btn-outline" href="${current === '/' ? '#quote' : '/#quote'}">Get a Quote</a></div>
+  <a href="/about">About</a><a href="/service-areas">Service Areas</a><a href="/contact">Contact</a>
+  <div class="mm-cta"><a class="btn btn-primary" href="tel:${site.phoneTel}">Call ${site.phone}</a><a class="btn btn-outline" href="${quoteHref(current)}">Get a Quote</a></div>
 </div></header>`;
 }
 
@@ -129,13 +143,13 @@ function footer(withMap) {
   return `<footer class="footer"><div class="container">
 <div class="footer-grid">
   <div class="brand-block">
-    <img src="/images/logo-128.png" width="88" height="88" alt="In The Mow Lawncare logo" loading="lazy">
+    <img src="${asset('logo-128.png')}" width="88" height="88" alt="In The Mow Lawncare logo" loading="lazy">
     <p class="brand-name">${site.name}</p><p class="tagline">${site.tagline}</p>
     <p>Locally owned and operated lawn mowing, reticulation, turf and garden maintenance for Perth's South-East corridor and the Peel region. Based in Byford WA 6122.</p>
     <div class="social"><a href="${site.facebook}" target="_blank" rel="noopener" aria-label="In The Mow Lawncare on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8z"/></svg></a><a href="${site.gbp}" target="_blank" rel="noopener" aria-label="In The Mow Lawncare on Google Maps">${iconSolid('pin', 'currentColor')}</a></div>
   </div>
   <div><h3>Services</h3><ul>${services.map(s => `<li><a href="/${s.slug}">${esc(s.nav)}</a></li>`).join('')}</ul></div>
-  <div><h3>Quick links</h3><ul><li><a href="/">Home</a></li><li><a href="/#areas">Service areas</a></li><li><a href="/#reviews">Reviews</a></li><li><a href="/blog">Blog</a></li><li><a href="/#quote">Get a free quote</a></li><li><a href="/#faq">FAQ</a></li></ul>
+  <div><h3>Quick links</h3><ul><li><a href="/">Home</a></li><li><a href="/about">About</a></li><li><a href="/service-areas">Service areas</a></li><li><a href="/#reviews">Reviews</a></li><li><a href="/blog">Blog</a></li><li><a href="/contact">Contact &amp; free quote</a></li><li><a href="/#faq">FAQ</a></li></ul>
     <h3 style="margin-top:22px">Contact</h3><ul><li><a href="tel:${site.phoneTel}">${site.phone}</a></li><li><a href="mailto:${site.email}">${site.email}</a></li><li>Byford WA 6122</li><li>${site.hoursText}</li></ul></div>
   <div><h3>Where we work</h3><p class="areas-line">${regions.map(r => `<strong>${esc(r.name)}:</strong> ${r.suburbs.map(s => s[0]).join(', ')}`).join('<br>')}</p>${withMap ? `<div class="gmap" style="margin-top:14px">${site.gbpEmbed}</div>` : ''}</div>
 </div>
@@ -172,11 +186,11 @@ function head({ title, description, canonical, robots, ogImage, preload, schema 
 <link rel="canonical" href="${canonical}">
 ${robots ? `<meta name="robots" content="${robots}">` : ''}
 <meta name="theme-color" content="#212832">
-<meta property="og:type" content="website"><meta property="og:site_name" content="${site.name}"><meta property="og:title" content="${attr(title)}"><meta property="og:description" content="${attr(description)}"><meta property="og:url" content="${canonical}"><meta property="og:image" content="${site.url}/images/${ogImage}.webp"><meta property="og:locale" content="en_AU">
+<meta property="og:type" content="website"><meta property="og:site_name" content="${site.name}"><meta property="og:title" content="${attr(title)}"><meta property="og:description" content="${attr(description)}"><meta property="og:url" content="${canonical}"><meta property="og:image" content="${asset(ogImage + '.webp', true)}"><meta property="og:locale" content="en_AU">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" href="/images/logo-128.png" type="image/png"><link rel="apple-touch-icon" href="/images/logo-512.png">
+<link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" href="${asset('logo-128.png')}" type="image/png"><link rel="apple-touch-icon" href="${asset('logo-512.png')}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-${preload ? `<link rel="preload" as="image" href="/images/${preload}.webp" fetchpriority="high">` : ''}
+${preload ? `<link rel="preload" as="image" href="${asset(preload + '.webp')}" fetchpriority="high">` : ''}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;600;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;600;700&display=swap"></noscript>
 <style>${css}</style>
 <script
@@ -192,7 +206,7 @@ const BIZ_ID = site.url + '/#business';
 const localBusiness = () => ({
   '@context': 'https://schema.org', '@type': 'LocalBusiness', '@id': BIZ_ID,
   name: site.name, alternateName: 'In The Mow', url: site.url + '/', telephone: site.phoneTel, email: site.email,
-  image: site.url + '/images/logo-512.png', logo: site.url + '/images/logo-512.png',
+  image: asset('logo-512.png', true), logo: asset('logo-512.png', true),
   description: "Lawn mowing, acreage slashing, reticulation repairs and installation, turf installation, lawn health and garden maintenance across Perth's South-East corridor and the Peel region, from Canning Vale to Mandurah.",
   founder: { '@type': 'Person', name: site.owner }, slogan: site.tagline,
   address: { '@type': 'PostalAddress', addressLocality: site.locality, addressRegion: site.region, postalCode: site.postcode, addressCountry: site.country },
@@ -205,7 +219,7 @@ const localBusiness = () => ({
 });
 const faqSchema = faqs => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) });
 const breadcrumb = items => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it[0], item: it[1] })) });
-const serviceSchema = s => ({ '@context': 'https://schema.org', '@type': 'Service', '@id': `${site.url}/${s.slug}#service`, name: s.nav, serviceType: s.schemaType, url: `${site.url}/${s.slug}`, description: s.description, image: `${site.url}/images/${s.hero.img}.webp`, provider: { '@id': BIZ_ID }, areaServed: s.suburbs.map(n => ({ '@type': 'City', name: n })), availableChannel: { '@type': 'ServiceChannel', servicePhone: { '@type': 'ContactPoint', telephone: site.phoneTel, contactType: 'customer service', areaServed: 'AU', availableLanguage: 'en' } } });
+const serviceSchema = s => ({ '@context': 'https://schema.org', '@type': 'Service', '@id': `${site.url}/${s.slug}#service`, name: s.nav, serviceType: s.schemaType, url: `${site.url}/${s.slug}`, description: s.description, image: asset(`${s.hero.img}.webp`, true), provider: { '@id': BIZ_ID }, areaServed: s.suburbs.map(n => ({ '@type': 'City', name: n })), availableChannel: { '@type': 'ServiceChannel', servicePhone: { '@type': 'ContactPoint', telephone: site.phoneTel, contactType: 'customer service', areaServed: 'AU', availableLanguage: 'en' } } });
 
 /* ---------- pages ---------- */
 const faqHtml = (faqs, cls = '') => `<div class="faq ${cls}">${faqs.map((f, i) => `<details${i === 0 ? ' open' : ''}><summary><h3 style="display:inline;font:inherit">${esc(f.q)}</h3></summary><div class="a"><p>${esc(f.a)}</p></div></details>`).join('')}</div>`;
@@ -214,16 +228,21 @@ function homePage() {
   const h = home;
   const body = `${header('/')}
 <main id="main">
-<section class="hero"><div class="container">
-  <div>
-    <p class="eyebrow">Byford WA · Canning Vale to Mandurah</p>
-    <h1>${esc(h.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
-    <p class="lead">${esc(h.lead)}</p>
-    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote">Get a Free Quote</a></div>
-    <ul class="trust">${h.trust.map(t => `<li>${iconSolid('check', '#8dc81b')}${esc(t)}</li>`).join('')}</ul>
+<section class="hero hero-home">
+  <div class="hero-bg"${h.video ? ` data-hero-video data-poster="${asset(h.video.poster + '.webp')}" data-sources="${[h.video.webm, h.video.mp4].filter(f => existsSync(path.join(out, 'images', f)) || cdn[f]).map(f => asset(f)).join(',')}"` : ''}>${img(h.video ? h.video.poster : h.hero.img, h.video ? h.video.alt : h.hero.alt, { eager: true, sizes: '100vw' })}</div>
+  <div class="container">
+    <div>
+      <p class="hero-pill">${iconSolid('pin', 'currentColor')}Byford WA · Canning Vale to Mandurah</p>
+      <h1>${esc(h.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
+      <p class="lead">${esc(h.lead)}</p>
+      <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote">Get a Free Quote</a></div>
+      <ul class="trust">${h.trust.map(t => `<li>${iconSolid('check', '#8dc81b')}${esc(t)}</li>`).join('')}</ul>
+    </div>
+    <aside class="hero-card" aria-label="Quick quote">${quoteForm('hero-form', true).replace('<h2 id="hero-form-title">Get a Free Quote</h2>', '<h2 id="hero-form-title">Quick Quote</h2><p class="sub-line">Josh replies personally, usually the same business day.</p>').replace(/<p class="phone-line">[\s\S]*?<\/p>/, '')}</aside>
   </div>
-  <div class="hero-media${h.video ? ' has-video' : ''}"${h.video ? ` data-hero-video data-poster="/images/${h.video.poster}.webp" data-sources="/images/${h.video.webm},/images/${h.video.mp4}"` : ''}>${img(h.video ? h.video.poster : h.hero.img, h.video ? h.video.alt : h.hero.alt, { eager: true, sizes: '(min-width: 900px) 540px, 100vw' })}<div class="hero-badge">${iconSolid('pin', '#8dc81b')}Byford-based, servicing Perth's South-East &amp; Peel</div></div>
-</div></section>
+  <div class="hero-scroll" aria-hidden="true">Scroll<i></i></div>
+</section>
+<nav class="svc-strip" aria-label="Services"><div class="container">${services.map(s => `<a href="/${s.slug}">${icon(s.icon)}${esc(s.nav)}</a>`).join('')}</div></nav>
 
 <section class="section" id="services"><div class="container">
   <div class="section-head center reveal"><p class="eyebrow">Our services</p><h2>Lawn, Retic, Turf &amp; Garden Services</h2><span class="rule center"></span><p class="lead">${esc(h.servicesLead)}</p></div>
@@ -234,12 +253,12 @@ function homePage() {
   <div class="media reveal">${img(h.about.img, h.about.alt, { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
   <div class="reveal"><p class="eyebrow">About In The Mow Lawncare</p><h2>Locally Owned, Not a Franchise</h2><span class="rule"></span>${h.about.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('')}
     <ul class="checks">${h.about.points.map(([t, d]) => `<li>${icon('check')}<div><strong>${esc(t)}</strong><span>${esc(d)}</span></div></li>`).join('')}</ul>
-    <div class="hero-cta">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline" href="#quote">Request a Quote</a></div>
+    <div class="hero-cta">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline" href="/about">More About Us</a></div>
   </div>
 </div></section>
 
 <section class="section section-grey" id="results"><div class="container">
-  <div class="section-head reveal"><p class="eyebrow">Before &amp; after</p><h2>Real Jobs, Real Results</h2><span class="rule"></span><p class="lead">Drag the slider. Every pair below is a property we actually worked on in Perth's South-East.</p></div>
+  <div class="section-head reveal"><p class="eyebrow">Before &amp; after</p><h2>Real Jobs, Real Results</h2><span class="rule"></span><p class="lead">Drag the slider. Every pair below is a real job, from lawn mowing Byford verges to full garden makeovers across Perth's South-East.</p></div>
   <div class="grid grid-3">${beforeAfter.map((b, i) => `<div class="reveal" style="transition-delay:${i * 60}ms"><div class="ba">${img(b.before, b.altB, { cls: 'before', sizes: '(min-width: 1000px) 370px, (min-width: 640px) 50vw, 100vw' })}${img(b.after, b.altA, { cls: 'after', sizes: '(min-width: 1000px) 370px, (min-width: 640px) 50vw, 100vw' })}<span class="lbl lbl-b">Before</span><span class="lbl lbl-a">After</span><div class="handle"></div><input type="range" min="0" max="100" value="50" aria-label="Compare before and after: ${attr(b.cap)}"></div><p class="ba-cap">${esc(b.cap)}</p></div>`).join('')}</div>
 </div></section>
 
@@ -253,7 +272,7 @@ function homePage() {
   <div class="section-head reveal"><p class="eyebrow">Service areas</p><h2>Service Areas Across Perth's South-East &amp; Peel</h2><span class="rule"></span><p class="lead">${esc(h.areasIntro)}</p></div>
   <div class="areas-grid">
     <div class="map-wrap reveal">${mapSvg()}<div class="map-legend"><span><i></i>Coastline &amp; scarp</span><span><i class="road"></i>Freeway &amp; highway</span><span><i style="background:#8dc81b;width:8px;height:8px;border-radius:50%"></i>Suburb serviced</span></div></div>
-    <div class="reveal"><p class="lead">${esc(h.areasPara)}</p><div class="suburbs">${regions.map(r => `<div><h3>${esc(r.name)}</h3><p>${r.suburbs.map(s => esc(s[0])).join(', ')}</p></div>`).join('')}</div></div>
+    <div class="reveal"><p class="lead">${esc(h.areasPara)}</p><div class="suburbs">${regions.map(r => `<div><h3>${esc(r.name)}</h3><p>${r.suburbs.map(s => esc(s[0])).join(', ')}</p></div>`).join('')}</div><p style="margin-top:20px"><a class="btn btn-outline" href="/service-areas">Full service areas guide ${iconSolid('arrow', 'currentColor')}</a></p></div>
   </div>
 </div></section>
 
@@ -333,25 +352,185 @@ ${GRAD}
   return head({ title: s.title, description: s.description, canonical: `${site.url}/${s.slug}`, ogImage: s.hero.img, preload: s.hero.img, schema: [localBusiness(), serviceSchema(s), breadcrumb([['Home', site.url + '/'], [s.nav, `${site.url}/${s.slug}`]]), faqSchema(s.faqs)] }) + '\n<body>\n' + body;
 }
 
+
+/* ---------- About ---------- */
+function aboutPage() {
+  const a = about; const cur = '/about';
+  const body = `${header(cur)}
+<main id="main">
+<section class="hero hero-inner page-hero"><div class="container">
+  <div>
+    <ol class="crumbs"><li><a href="/">Home</a></li><li aria-current="page">About</li></ol>
+    <p class="eyebrow">Locally owned · Byford WA 6122</p>
+    <h1>${esc(a.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
+    <p class="lead">${esc(a.lead)}</p>
+    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="/contact">Get a Free Quote</a></div>
+  </div>
+  <div class="hero-media">${img(a.hero.img, a.hero.alt, { eager: true, sizes: '(min-width: 900px) 520px, 100vw' })}<div class="hero-badge">${iconSolid('pin', '#8dc81b')}Owner-operated by Joshua Patriarca</div></div>
+</div></section>
+
+<section class="section"><div class="container feature">
+  <div class="reveal"><p class="eyebrow">Our story</p><h2>${esc(a.story.h2)}</h2><span class="rule"></span>${a.story.paras.map(p => `<p>${esc(p)}</p>`).join('')}
+    <div class="owner-card"><span class="av" aria-hidden="true">JP</span><div><strong>${esc(site.owner)}</strong><span>Owner &amp; operator, In The Mow Lawncare, Byford WA</span></div></div>
+  </div>
+  <div class="media reveal">${img(a.story.img, a.story.alt, { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
+</div></section>
+
+<section class="section section-grey"><div class="container">
+  <div class="section-head center reveal"><p class="eyebrow">Why people stick with us</p><h2>What You Can Expect</h2><span class="rule center"></span></div>
+  <div class="values">${a.values.map(([t, d], i) => `<div class="value reveal" style="transition-delay:${i * 50}ms">${icon(['pin', 'mower', 'rideon', 'clock', 'check', 'phone'][i])}<h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}</div>
+</div></section>
+
+<section class="section"><div class="container feature flip">
+  <div class="reveal"><p class="eyebrow">The gear</p><h2>${esc(a.equipment.h2)}</h2><span class="rule"></span>${a.equipment.paras.map(p => `<p>${esc(p)}</p>`).join('')}
+    <div class="hero-cta">${services.slice(0, 3).map(s => `<a class="btn btn-outline-dark" href="/${s.slug}">${esc(s.nav)}</a>`).join('')}</div>
+  </div>
+  <div class="media reveal">${img(a.equipment.img, a.equipment.alt, { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
+</div></section>
+
+<section class="section section-dark on-dark"><div class="container">
+  <div class="section-head reveal"><p class="eyebrow">Simple process</p><h2>${esc(a.process.h2)}</h2><span class="rule"></span></div>
+  <div class="steps">${a.process.steps.map(([t, d], i) => `<div class="step reveal" style="transition-delay:${i * 60}ms"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}</div>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head reveal"><p class="eyebrow">Our work</p><h2>Real Jobs Across Perth's South-East</h2><span class="rule"></span></div>
+  <div class="gallery reveal">${a.gallery.map(g => `<figure>${img(g.img, g.alt)}<figcaption>${esc(g.alt)}</figcaption></figure>`).join('')}</div>
+</div></section>
+
+<section class="section section-grey" id="reviews"><div class="container">
+  <div class="section-head center reveal"><p class="eyebrow">Google reviews</p><h2>What Customers Say</h2><span class="rule center"></span></div>
+  <div class="grid grid-3">${reviews.slice(0, 3).map((r, i) => `<article class="review reveal" style="transition-delay:${i * 50}ms"><div class="stars" aria-label="5 out of 5 stars">${star}${star}${star}${star}${star}</div><p>“${esc(r.text)}”</p><footer><span class="av" aria-hidden="true">${r.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</span><span><strong>${esc(r.name)}</strong><br><time datetime="${r.date}">${r.dateText}</time> · Google</span></footer></article>`).join('')}</div>
+  <div style="text-align:center"><a class="g-link" href="${site.gbp}" target="_blank" rel="noopener">Read more reviews on Google ${iconSolid('arrow', 'currentColor').replace('<svg', '<svg style="width:18px;height:18px"')}</a></div>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head center reveal"><p class="eyebrow">FAQ</p><h2>About In The Mow Lawncare</h2><span class="rule center"></span></div>
+  ${faqHtml(a.faqs, 'reveal')}
+</div></section>
+
+<section class="cta-band"><div class="container"><div><h2>Want the owner on the job?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact">Get a Free Quote</a></div></div></section>
+</main>
+${footer(false)}
+${stickyBar('/contact')}
+${GRAD}
+<script>${js}</script>
+</body></html>`;
+  return head({ title: a.title, description: a.description, canonical: `${site.url}/${a.slug}`, ogImage: a.hero.img, preload: a.hero.img, schema: [localBusiness(), breadcrumb([['Home', site.url + '/'], ['About', `${site.url}/${a.slug}`]]), { '@context': 'https://schema.org', '@type': 'AboutPage', url: `${site.url}/${a.slug}`, name: a.title, about: { '@id': BIZ_ID } }, faqSchema(a.faqs)] }) + '\n<body>\n' + body;
+}
+
+/* ---------- Service Areas ---------- */
+function serviceAreasPage() {
+  const p = areasPage; const cur = '/service-areas';
+  const body = `${header(cur)}
+<main id="main">
+<section class="hero hero-inner page-hero"><div class="container" style="grid-template-columns:1fr">
+  <div>
+    <ol class="crumbs"><li><a href="/">Home</a></li><li aria-current="page">Service Areas</li></ol>
+    <p class="eyebrow">6 regions · ${allSuburbs.length} suburbs</p>
+    <h1>${esc(p.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
+    <p class="lead">${esc(p.lead)}</p>
+    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="/contact">Get a Free Quote</a></div>
+  </div>
+</div></section>
+
+<section class="section section-dark on-dark" id="map"><div class="container">
+  <div class="section-head reveal"><p class="eyebrow">Interactive map</p><h2>Where the Mower Goes</h2><span class="rule"></span><p class="lead">${esc(p.mapIntro)}</p></div>
+  <div class="areas-grid">
+    <div class="map-wrap reveal">${mapSvg()}<div class="map-legend"><span><i></i>Coastline &amp; scarp</span><span><i class="road"></i>Freeway &amp; highway</span><span><i style="background:#8dc81b;width:8px;height:8px;border-radius:50%"></i>Suburb serviced</span></div></div>
+    <div class="reveal"><p class="lead">${esc(home.areasPara)}</p><div class="suburbs">${regions.map(r => `<div><h3><a href="#${slugify(r.name)}" style="color:#fff">${esc(r.name)}</a></h3><p>${r.suburbs.map(s => esc(s[0])).join(', ')}</p></div>`).join('')}</div></div>
+  </div>
+</div></section>
+
+<section class="section section-grey"><div class="container">
+  <div class="section-head reveal"><p class="eyebrow">Region by region</p><h2>What We Do in Each Area</h2><span class="rule"></span></div>
+  <div class="region-grid">${regions.map((r, i) => { const d = p.regions[r.name]; return `<article class="region reveal" id="${slugify(r.name)}" style="transition-delay:${i * 50}ms"><h3>${esc(r.name)}</h3><span class="rule"></span><p>${esc(d.blurb)}</p><p class="subs"><strong>Suburbs:</strong> ${r.suburbs.map(s => esc(s[0])).join(', ')}</p><div class="tags">${d.services.map(sl => { const sv = services.find(x => x.slug === sl); return `<a href="/${sv.slug}">${esc(sv.nav)}</a>`; }).join('')}</div></article>`; }).join('')}</div>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head center reveal"><p class="eyebrow">FAQ</p><h2>Service Area Questions</h2><span class="rule center"></span></div>
+  ${faqHtml(p.faqs, 'reveal')}
+</div></section>
+
+<section class="cta-band"><div class="container"><div><h2>In one of these suburbs?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact">Get a Free Quote</a></div></div></section>
+</main>
+${footer(true)}
+${stickyBar('/contact')}
+${GRAD}
+<script>${js}</script>
+</body></html>`;
+  return head({ title: p.title, description: p.description, canonical: `${site.url}/${p.slug}`, ogImage: home.about.img, schema: [localBusiness(), breadcrumb([['Home', site.url + '/'], ['Service Areas', `${site.url}/${p.slug}`]]), faqSchema(p.faqs)] }) + '\n<body>\n' + body;
+}
+
+/* ---------- Contact ---------- */
+function contactPageHtml() {
+  const c = contactPage; const cur = '/contact';
+  const body = `${header(cur)}
+<main id="main">
+<section class="hero hero-inner page-hero"><div class="container" style="grid-template-columns:1fr">
+  <div>
+    <ol class="crumbs"><li><a href="/">Home</a></li><li aria-current="page">Contact</li></ol>
+    <p class="eyebrow">Free quotes · ${site.hoursText}</p>
+    <h1>${esc(c.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
+    <p class="lead">${esc(c.lead)}</p>
+    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="mailto:${site.email}">${iconSolid('mail', 'currentColor')}Email Us</a></div>
+  </div>
+</div></section>
+
+<section class="section section-dark on-dark contact-page" id="quote"><div class="container">
+  <div class="contact-grid">
+    <div class="reveal">${quoteForm('quote-form')}</div>
+    <div class="reveal">
+      <div class="contact-info">
+        <div class="row">${icon('phone')}<div><a href="tel:${site.phoneTel}">${site.phone}</a><span>Click to call. Fastest for urgent jobs.</span></div></div>
+        <div class="row">${icon('mail')}<div><a href="mailto:${site.email}">${site.email}</a><span>Send photos of the job for a faster quote</span></div></div>
+        <div class="row">${icon('pin')}<div><a href="${site.gbp}" target="_blank" rel="noopener">Byford WA 6122</a><span>Service-area business covering Perth's South-East corridor and Peel. Find us on Google.</span></div></div>
+        <div class="row">${icon('clock')}<div><dl class="hours"><dt>Mon – Fri</dt><dd>9:00am – 5:00pm</dd><dt>Sat – Sun</dt><dd>Closed (messages answered next business day)</dd></dl></div></div>
+        <div class="row"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color:#8dc81b"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8z"/></svg><div><a href="${site.facebook}" target="_blank" rel="noopener">In The Mow Lawncare on Facebook</a><span>Recent jobs and seasonal updates</span></div></div>
+      </div>
+      <div class="gmap" style="margin-top:24px">${site.gbpEmbed}</div>
+    </div>
+  </div>
+</div></section>
+
+<section class="section"><div class="container contact-page">
+  <div class="two-col" style="display:grid;gap:32px">
+    <div class="reveal"><p class="eyebrow">Before you send</p><h2>${esc(c.tips.h2)}</h2><span class="rule"></span><ul style="margin:0;padding:0;list-style:none;display:grid;gap:12px">${c.tips.items.map(t => `<li style="display:flex;gap:10px;align-items:flex-start">${icon('check').replace('<svg', '<svg style="width:22px;height:22px;flex:none;margin-top:2px"')}<span>${esc(t)}</span></li>`).join('')}</ul></div>
+    <div class="reveal"><p class="eyebrow">FAQ</p><h2>Contact Questions</h2><span class="rule"></span>${faqHtml(c.faqs)}</div>
+  </div>
+</div></section>
+</main>
+${footer(false)}
+${stickyBar('#quote')}
+${GRAD}
+<script>${js}</script>
+</body></html>`;
+  return head({ title: c.title, description: c.description, canonical: `${site.url}/${c.slug}`, ogImage: home.about.img, schema: [localBusiness(), breadcrumb([['Home', site.url + '/'], ['Contact', `${site.url}/${c.slug}`]]), { '@context': 'https://schema.org', '@type': 'ContactPage', url: `${site.url}/${c.slug}`, name: c.title, about: { '@id': BIZ_ID } }, faqSchema(c.faqs)] }) + '\n<body>\n' + body;
+}
+const slugify = t => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
 function simplePage({ slug, title, description, h1, html, robots }) {
-  const body = `${header('/' + slug)}<main id="main"><section class="section"><div class="container center-page">${html.replace('{{H1}}', `<h1>${esc(h1)}</h1>`)}</div></section></main>${footer(false)}${stickyBar('/#quote')}${GRAD}<script>${js}</script></body></html>`;
+  const body = `${header('/' + slug)}<main id="main"><section class="section"><div class="container center-page">${html.replace('{{H1}}', `<h1>${esc(h1)}</h1>`)}</div></section></main>${footer(false)}${stickyBar('/contact')}${GRAD}<script>${js}</script></body></html>`;
   return head({ title, description, canonical: `${site.url}/${slug}`, ogImage: home.hero.img, robots, schema: [localBusiness(), breadcrumb([['Home', site.url + '/'], [h1, `${site.url}/${slug}`]])] }) + '\n<body>\n' + body;
 }
 
 /* ---------- write ---------- */
 writeFileSync(path.join(out, 'index.html'), homePage());
 services.forEach(s => writeFileSync(path.join(out, `${s.slug}.html`), servicePage(s)));
+writeFileSync(path.join(out, 'about.html'), aboutPage());
+writeFileSync(path.join(out, 'service-areas.html'), serviceAreasPage());
+writeFileSync(path.join(out, 'contact.html'), contactPageHtml());
 writeFileSync(path.join(out, 'thank-you.html'), simplePage({ slug: 'thank-you', title: 'Thanks – We Have Your Quote Request | In The Mow', description: 'Your quote request has been sent to In The Mow Lawncare. Josh will be in touch shortly.', h1: 'Thanks, Your Quote Request Is In', robots: 'noindex, nofollow',
   html: `<div class="big-tick">${icon('check')}</div>{{H1}}<p class="lead" id="ty-name">Thanks!</p><p class="lead">Josh will look at the details and come back to you, usually the same business day. If the job is urgent, like a retic fault or a block that needs slashing before fire season, call now.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline-dark btn-lg" href="/">Back to home</a></div>` }));
 writeFileSync(path.join(out, '404.html'), simplePage({ slug: '404', title: 'Page Not Found | In The Mow', description: 'That page does not exist. Head back to In The Mow Lawncare.', h1: 'Page Not Found', robots: 'noindex, nofollow',
   html: `{{H1}}<p class="lead">That page has moved or never existed. Try one of our services or head back home.</p><div class="hero-cta" style="justify-content:center">${services.map(s => `<a class="btn btn-outline-dark" href="/${s.slug}">${esc(s.nav)}</a>`).join('')}</div>` }));
 writeFileSync(path.join(out, 'blog.html'), simplePage({ slug: 'blog', title: 'Lawn Care Tips for Perth | In The Mow Blog', description: "Seasonal lawn mowing, reticulation and lawn care advice for Perth's South-East from In The Mow Lawncare.", h1: 'Lawn Care Tips for Perth', robots: 'noindex, follow',
-  html: `{{H1}}<p class="lead">Practical, WA-specific advice from the crew is on its way. First up: what lawn mowing costs in Perth, how often to mow through the year, what it costs to fix reticulation, and what your retic controller should be set to for your watering days.</p><p>In the meantime, the <a href="/#faq">FAQ on the home page</a> answers the questions we get asked most.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/#quote">Get a Free Quote</a></div>` }));
+  html: `{{H1}}<p class="lead">Practical, WA-specific advice from the crew is on its way. First up: what lawn mowing costs in Perth, how often to mow through the year, what it costs to fix reticulation, and what your retic controller should be set to for your watering days.</p><p>In the meantime, the <a href="/#faq">FAQ on the home page</a> answers the questions we get asked most.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact">Get a Free Quote</a></div>` }));
 writeFileSync(path.join(out, 'privacy.html'), simplePage({ slug: 'privacy', title: 'Privacy Policy | In The Mow', description: 'How In The Mow Lawncare handles enquiry details.', h1: 'Privacy Policy', robots: 'noindex, follow',
   html: `{{H1}}<div style="text-align:left"><p>In The Mow Lawncare collects the details you enter in the quote form (name, phone, email, property address, property size, service needed and job notes) and standard website analytics in order to respond to your enquiry and run the business. Details are stored in our customer management system and are not sold or shared with third parties except the service providers that host that system. You can ask us to update or delete your details at any time by emailing <a href="mailto:${site.email}">${site.email}</a>.</p></div>` }));
 
 // sitemap + robots
-const urls = ['/', ...services.map(s => '/' + s.slug)];
+const urls = ['/', ...services.map(s => '/' + s.slug), '/about', '/service-areas', '/contact'];
 writeFileSync(path.join(out, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${site.url}${u}</loc><changefreq>${u === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${u === '/' ? '1.0' : '0.8'}</priority></url>`).join('\n')}\n</urlset>\n`);
 writeFileSync(path.join(out, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /thank-you\n\nSitemap: ${site.url}/sitemap.xml\n`);
-console.log('built', urls.length + 5, 'pages');
+console.log('built', urls.length + 5, 'pages;', cdnUsed ? `${cdnUsed} asset references served from CDN (run npm run images to self-host)` : 'all assets self-hosted');

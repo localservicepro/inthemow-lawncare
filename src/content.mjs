@@ -289,3 +289,120 @@ export const services = [
     suburbs: ['Canning Vale', 'Southern River', 'Armadale', 'Byford', 'Jandakot', 'Baldivis', 'Secret Harbour', 'Mandurah', 'Halls Head', 'Lakelands']
   }
 ];
+
+/* ---------- Standalone pages: About, Service Areas, Contact ---------- */
+export const about = {
+  slug: 'about',
+  title: 'About In The Mow Lawncare | Byford Lawn & Garden Crew',
+  description: "Meet Joshua Patriarca, owner of In The Mow Lawncare. A locally owned Byford crew for mowing, acreage slashing, retic, turf and gardens across Perth's South-East.",
+  h1: "About In The Mow Lawncare — Byford's Locally Owned Lawn & Garden Crew",
+  lead: "In The Mow Lawncare is owned and run by Joshua Patriarca from Byford WA. Not a franchise, not a call centre: the person who quotes your lawn mowing, retic or turf job is the same person who turns up to do it.",
+  hero: { img: 'acreage-large-scale', alt: 'Joshua Patriarca, owner of In The Mow Lawncare, with the zero-turn mower and trailer on a rural block near Byford WA' },
+  story: {
+    h2: 'Who We Are',
+    paras: [
+      "Josh started In The Mow Lawncare in Byford to do one thing well: look after lawns and gardens properly, on a schedule people could actually rely on. Byford, Mundijong, Serpentine and Jarrahdale are still home turf, and from there the crew now covers the whole South-East corridor and the Peel region, from Canning Vale and Armadale through Cockburn and Kwinana to Rockingham and Mandurah.",
+      "Most mowing contractors do one or two things. We look after the whole property. Regular lawn mowing for homes, rentals, strata and commercial sites, acreage mowing and fire-break slashing, reticulation repairs and new installs, turf supply and laying, lawn health and renovation programs, hedging and garden maintenance. Because one crew does all of it, your retic and your mowing are set up to work together and nothing gets lost between contractors."
+    ],
+    img: 'about', alt: 'In The Mow Lawncare crew maintaining a residential lawn and garden beds in Byford WA'
+  },
+  values: [
+    ['Locally owned, not a franchise', 'Josh owns the business, quotes every job and works on the tools. You deal with the owner from first call to finished job.'],
+    ['One crew for the whole property', 'Mowing, retic, turf, lawn health, hedging and gardens from the same people, with a mini loader and bobcat for site prep and tight-access earthworks.'],
+    ['Commercial-grade gear', 'Ride-on and zero-turn mowers built for acreage and rural blocks, plus the right kit for small backyards and strata sites.'],
+    ['Reliable scheduling', 'We turn up when we say we will, fortnightly, monthly or seasonally, and we tell you if anything changes.'],
+    ['Finished properly, every visit', 'Edged, whipper snipped and blown down. No clippings on the driveway and no half-finished corners.'],
+    ['Honest quotes', 'A clear price before any work starts. If a job is not worth doing, or can wait, we will say so.']
+  ],
+  equipment: {
+    h2: 'Equipment Built for Perth\'s South-East',
+    paras: [
+      "Lawns around Byford range from compact new-build blocks to multi-acre lifestyle properties on the Serpentine and Jarrahdale side of the hills. The crew carries commercial ride-on and zero-turn mowers for open paddocks and fire-break slashing, walk-behind mowers and edgers for suburban lawns, hedge trimmers and blowers for garden maintenance, and a mini loader and bobcat for turf preparation, levelling, soil and mulch spreading and tight-access earthworks.",
+      "That combination is why we can take on a full front-yard makeover, strip out the old lawn, level, lay new turf and set up the reticulation, without bringing in three different contractors."
+    ],
+    img: 'rural-commercial-land', alt: 'Commercial zero-turn mower slashing a large rural block near Serpentine WA'
+  },
+  process: {
+    h2: 'How It Works',
+    steps: [
+      ['Call or send the form', 'Tell us the suburb, the size of the property and what you need. Photos help us quote faster.'],
+      ['Clear quote, no obligation', 'Josh comes back with a price for a one-off job or a regular program, usually the same business day.'],
+      ['We turn up and do it properly', 'On the agreed day, with the right gear, and we leave the place clean and blown down.'],
+      ['Scheduled, so you can forget about it', 'Regular customers get a set schedule that we adjust as the seasons change.']
+    ]
+  },
+  gallery: [
+    { img: 'why-choose-us', alt: 'Freshly mowed and edged residential lawn by In The Mow Lawncare in Byford WA' },
+    { img: 'residential-garden-maintenance', alt: 'Tidy garden beds and trimmed hedges after a garden maintenance visit in Perth\'s South-East' },
+    { img: 'landscape-installation', alt: 'New turf being laid on a prepared front yard in the Byford growth corridor' },
+    { img: 'large-property-mowing', alt: 'Large rural property mowed by In The Mow Lawncare near Jarrahdale WA' }
+  ],
+  faqs: [
+    { q: 'Is In The Mow Lawncare a franchise?', a: 'No. In The Mow Lawncare is independently owned and operated by Joshua Patriarca and based in Byford WA 6122. There is no head office, no subcontractor roulette and no call centre. Josh quotes the job and his crew does the work.' },
+    { q: 'Where is In The Mow Lawncare based and how far do you travel?', a: "We are based in Byford and work across Perth's South-East corridor and the Peel region: Canning Vale, Armadale and Gosnells to the north, Serpentine and Jarrahdale in the hills, Cockburn, Kwinana and Rockingham to the west, and the coast down to Mandurah. See the full list on our service areas page." },
+    { q: 'Do you do one-off jobs or only regular maintenance?', a: 'Both. One-off tidy-ups, pre-sale clean-ups, fire-season slashing and turf installs are all welcome, and regular fortnightly or monthly programs work out cheaper per visit if you want the lawn kept on top of year-round.' }
+  ]
+};
+
+export const areasPage = {
+  slug: 'service-areas',
+  title: "Service Areas | Perth's South-East & Peel | In The Mow",
+  description: "Lawn mowing, slashing, retic, turf & garden care across Perth's South-East & Peel: Byford, Armadale, Canning Vale, Cockburn, Rockingham & Mandurah.",
+  h1: "Lawn Mowing & Garden Service Areas — Perth's South-East & Peel Region",
+  lead: "Based in Byford WA 6122, In The Mow Lawncare covers six regions and more than fifty suburbs, from Canning Vale and Armadale in the north, through the Serpentine and Jarrahdale hills, west across Cockburn and Kwinana, and down the coast through Rockingham to Mandurah.",
+  mapIntro: 'Watch the mower do the rounds. Highlighted suburbs are the main hubs in each region; every suburb we service is listed below the map.',
+  regions: {
+    'South-East Perth': {
+      blurb: 'The established suburbs along Albany Highway and Tonkin Highway: family homes on older, larger blocks, rental properties and strata complexes. Regular lawn mowing, hedging, garden maintenance and reticulation repairs are the bread and butter here, with commercial and strata programs in Canning Vale, Thornlie and Armadale.',
+      services: ['lawn-mowing', 'garden-maintenance', 'reticulation']
+    },
+    'Byford growth corridor': {
+      blurb: 'Home turf. New estates in Byford, Hilbert, Haynes, Wandi and Treeby mean a lot of new turf installs, retic set-ups and first-year lawn establishment, while Oakford, Cardup and Mundijong bring larger blocks that need ride-on mowing and seasonal slashing.',
+      services: ['turf-installation', 'reticulation', 'acreage-mowing']
+    },
+    'Serpentine / Hills': {
+      blurb: 'Lifestyle blocks, hobby farms and bush properties on the scarp. Acreage mowing, paddock slashing and fire-break preparation ahead of the restricted burning period are the big jobs, along with keeping house lawns and gardens tidy around the homestead.',
+      services: ['acreage-mowing', 'lawn-mowing', 'garden-maintenance']
+    },
+    'Cockburn / Kwinana': {
+      blurb: 'A mix of newer estates in Success, Atwell, Aubin Grove, Hammond Park and Wellard and older homes in Medina, Orelia and Parmelia. Regular residential mowing, reticulation repairs on sandy soils and lawn renovation for tired couch and kikuyu lawns.',
+      services: ['lawn-mowing', 'reticulation', 'lawn-renovation']
+    },
+    'Rockingham / Coastal': {
+      blurb: 'Coastal sand and salt air are hard on lawns. We run regular mowing programs in Baldivis, Waikiki, Warnbro, Port Kennedy, Secret Harbour and Golden Bay, repair and re-time reticulation for the coastal soil, and install new turf for new builds in Baldivis.',
+      services: ['lawn-mowing', 'turf-installation', 'reticulation']
+    },
+    'Mandurah region': {
+      blurb: 'The southern end of the run. Residential mowing and garden maintenance in Lakelands, Meadow Springs, Halls Head, Erskine and Falcon, reticulation repairs and controller programming for Water Corporation watering days, and lawn health programs for sandy, water-repellent soils.',
+      services: ['lawn-mowing', 'reticulation', 'lawn-renovation']
+    }
+  },
+  faqs: [
+    { q: 'My suburb is not on the list. Can you still help?', a: 'Probably. The list covers the suburbs we visit most, but if you are close to one of them, call 0424 058 261 and we will tell you straight away whether we can fit you in.' },
+    { q: 'Is there a travel charge for Mandurah or the hills?', a: 'Regular customers in every region are quoted as a flat per-visit price with no separate travel charge. One-off jobs a long way from Byford may be grouped with other work in the area so the price stays fair, and we will tell you if timing is affected.' },
+    { q: 'Do you service commercial and strata sites across the whole area?', a: 'Yes. Scheduled commercial and strata lawn maintenance is available in every region we cover, including Canning Vale, Armadale, Cockburn Central, Rockingham and Mandurah.' }
+  ]
+};
+
+export const contactPage = {
+  slug: 'contact',
+  title: "Contact In The Mow | Free Quote Byford & Perth South-East",
+  description: "Call 0424 058 261 or send the form for a free lawn mowing, retic, turf or garden quote. Byford-based, servicing Perth's South-East and Peel. Mon–Fri 9am–5pm.",
+  h1: 'Contact In The Mow Lawncare — Free Lawn Mowing & Garden Quotes',
+  lead: "Call Josh directly or send the form with a few details about the property. Quotes are free and there is no obligation. If it is urgent, like a retic fault or a block that needs slashing before fire season, phone is fastest.",
+  tips: {
+    h2: 'What to Include for a Faster Quote',
+    items: [
+      'Your suburb and, if you have it, the street address',
+      'Rough lawn or block size (square metres or acres is fine)',
+      'What you need: regular mowing, a one-off tidy-up, retic repair, new turf, slashing or garden maintenance',
+      'Access notes: side gates, slopes, pets, parking',
+      'A couple of photos emailed to enquiries@inthemowlawncare.com.au'
+    ]
+  },
+  faqs: [
+    { q: 'How quickly will I hear back?', a: 'Phone calls during business hours are answered straight away where possible. Form and email enquiries are usually answered the same business day, and by the next business day at the latest.' },
+    { q: 'Do I need to be home for the quote?', a: 'Not usually. For most residential mowing and garden jobs we can quote from your details and photos, or look at the property from the front. For turf installs, retic installs and acreage work we will arrange a time to walk the site with you.' },
+    { q: 'Do you have a shopfront I can visit?', a: 'No. In The Mow Lawncare is a service-area business based in Byford WA 6122. We come to you across Perth\'s South-East corridor and the Peel region.' }
+  ]
+};
