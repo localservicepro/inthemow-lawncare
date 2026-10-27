@@ -1,0 +1,14 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "outputDirectory": "public",
+  "redirects": [
+    { "source": "/home", "destination": "/", "permanent": true },
+    { "source": "/landscape-design", "destination": "/turf-installation", "permanent": true },
+    { "source": "/index.html", "destination": "/", "permanent": true }
+  ],
+  "headers": [
+    { "source": "/images/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/(.*)\\.(css|js|svg|png|ico|webmanifest)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] }
+  ]
+}

@@ -1,0 +1,404 @@
+{
+ "_comment": "Image manifest. source=drive: original lives in the client's Google Drive Photos folder (fileId). source=higgsfield: AI-generated gap image (flagged on the site summary). Sizes are the optimised WebP outputs (max 1200px, q70; 600px, q68).",
+ "zip": "https://d2ol7oe51mr4n9.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/c8af6c29-ee84-4f93-86af-883a35606b57.zip",
+ "images": {
+  "regular-lawn-mowing": {
+   "source": "drive",
+   "fileId": "1Kc0iRps8S7BRgrodbskvovySx653rj9P",
+   "w": 800,
+   "h": 500,
+   "bytes": 70060,
+   "bytes600": 34576
+  },
+  "residential-lawn-mowing": {
+   "source": "drive",
+   "fileId": "1C4yHCWXFqNlqdV4BY89L6qN_xqgoz4hl",
+   "w": 1200,
+   "h": 800,
+   "bytes": 198454,
+   "bytes600": 46028
+  },
+  "residential-mowing-2": {
+   "source": "drive",
+   "fileId": "1z-xvPbRgXsibC12aLR4KZUg4h_vcu9Qm",
+   "w": 1200,
+   "h": 900,
+   "bytes": 172530,
+   "bytes600": 38748
+  },
+  "commercial-strata-mowing": {
+   "source": "drive",
+   "fileId": "1Nff4JSo9RXPEjSJJqnrvoGfmfUAjxwWJ",
+   "w": 1200,
+   "h": 800,
+   "bytes": 169472,
+   "bytes600": 44720
+  },
+  "near-me": {
+   "source": "drive",
+   "fileId": "1lGg7YgOZOh8qJlCCjsW6eX8MQAbdWX-N",
+   "w": 1200,
+   "h": 900,
+   "bytes": 167726,
+   "bytes600": 49348
+  },
+  "img-1": {
+   "source": "drive",
+   "fileId": "18BmtDkIfeBy476wHxe_uvMn1dlro1G5F",
+   "w": 1200,
+   "h": 900,
+   "bytes": 259658,
+   "bytes600": 60130
+  },
+  "img-3": {
+   "source": "drive",
+   "fileId": "1Dqnc49PuAVLRAx0gYHAtMz5UByqVmau2",
+   "w": 1200,
+   "h": 900,
+   "bytes": 120708,
+   "bytes600": 26854
+  },
+  "img-4": {
+   "source": "drive",
+   "fileId": "1d88nX6yDFIN5RmXrnvY3tJZ8ok3lL1DC",
+   "w": 1200,
+   "h": 900,
+   "bytes": 213822,
+   "bytes600": 55530
+  },
+  "img-5": {
+   "source": "drive",
+   "fileId": "1oc752w78d1fN-nKgR6LZ17vjjKylonQZ",
+   "w": 1200,
+   "h": 900,
+   "bytes": 161282,
+   "bytes600": 46542
+  },
+  "img-6": {
+   "source": "drive",
+   "fileId": "14-266dLy7LmBkZp35bKz8IzSspHr60Vc",
+   "w": 1200,
+   "h": 900,
+   "bytes": 140874,
+   "bytes600": 35146
+  },
+  "about": {
+   "source": "drive",
+   "fileId": "1BBzMv-j60f2QpxO4yNLOtfITDialgsIV",
+   "w": 1200,
+   "h": 900,
+   "bytes": 174146,
+   "bytes600": 55382
+  },
+  "about-1": {
+   "source": "drive",
+   "fileId": "1lc2pBsB6IacggBJh7KV5vfo1P3zfiRdq",
+   "w": 1024,
+   "h": 1024,
+   "bytes": 257066,
+   "bytes600": 79500
+  },
+  "acreage-large-scale": {
+   "source": "drive",
+   "fileId": "1GgURKTWWx6NsR_w0UJ-HAHrZpaXE7097",
+   "w": 800,
+   "h": 500,
+   "bytes": 71998,
+   "bytes600": 39172
+  },
+  "acreage-mowing": {
+   "source": "drive",
+   "fileId": "1X1qq_T-59bakcKZgq2xhlaxCyeo5lPdc",
+   "w": 1200,
+   "h": 900,
+   "bytes": 228222,
+   "bytes600": 52320
+  },
+  "acreage-large-property-1": {
+   "source": "drive",
+   "fileId": "12OWBApqUqp8f_glqQs91McTYFc7Ix0tk",
+   "w": 1200,
+   "h": 800,
+   "bytes": 241772,
+   "bytes600": 54188
+  },
+  "acreage-problems": {
+   "source": "drive",
+   "fileId": "1SApgC4-bnS01MP4iwia_tab0_FYGpegY",
+   "w": 1200,
+   "h": 800,
+   "bytes": 185146,
+   "bytes600": 41224
+  },
+  "rural-commercial-land": {
+   "source": "drive",
+   "fileId": "1kCS0HTVOhT8oUzMleH9OW5ZrgLzWQdD4",
+   "w": 1200,
+   "h": 800,
+   "bytes": 241268,
+   "bytes600": 55868
+  },
+  "block-slashing-fire-prep": {
+   "source": "drive",
+   "fileId": "1ck36wGsdBA9tUNYP4qCNmD7ShZEmOlwD",
+   "w": 800,
+   "h": 500,
+   "bytes": 62174,
+   "bytes600": 28568
+  },
+  "large-property-mowing": {
+   "source": "drive",
+   "fileId": "1OqmcDpvrahEJ1qHrViL2eCapfyVUN-De",
+   "w": 1200,
+   "h": 900,
+   "bytes": 205340,
+   "bytes600": 50408
+  },
+  "pro-mowing-residential-acreage": {
+   "source": "drive",
+   "fileId": "1NjKb5mWgVzfcJc1ABScvgRsvuNK4aAHc",
+   "w": 640,
+   "h": 480,
+   "bytes": 84912,
+   "bytes600": 56662
+  },
+  "pro-mowing-backyard": {
+   "source": "drive",
+   "fileId": "1hNaOiGN6kjf5zZQSgrZG6VUVoKst8bT6",
+   "w": 1200,
+   "h": 800,
+   "bytes": 318062,
+   "bytes600": 67648
+  },
+  "why-choose-us": {
+   "source": "drive",
+   "fileId": "1s5-_ccd033RjxhRDebkjLiiuoKQz3Une",
+   "w": 1200,
+   "h": 900,
+   "bytes": 324050,
+   "bytes600": 77658
+  },
+  "garden-maintenance": {
+   "source": "drive",
+   "fileId": "1_-S6D3pvTeEhzVz6PsFt2xh0G5Gc_Aeq",
+   "w": 800,
+   "h": 500,
+   "bytes": 22554,
+   "bytes600": 13422
+  },
+  "fb-469364409": {
+   "source": "drive",
+   "fileId": "1nj4b1mSF1M083GaHmRT3SGHN5D9kof_m",
+   "w": 1200,
+   "h": 800,
+   "bytes": 220324,
+   "bytes600": 55818
+  },
+  "fb-615554927": {
+   "source": "drive",
+   "fileId": "1VKhrn1va1mNS6TWBGIPa3GH3fvwBBoJN",
+   "w": 1200,
+   "h": 800,
+   "bytes": 212296,
+   "bytes600": 46776
+  },
+  "fb-677078641": {
+   "source": "drive",
+   "fileId": "14EKAQi_fjsHeNd-gkrae0bJA4VqMJ1HC",
+   "w": 1200,
+   "h": 800,
+   "bytes": 151928,
+   "bytes600": 37978
+  },
+  "landscaping-installation-wa": {
+   "source": "drive",
+   "fileId": "1avHe8wx5zrgXgELQ8WFvGqdu9KKUHY7W",
+   "w": 1200,
+   "h": 900,
+   "bytes": 233306,
+   "bytes600": 55674
+  },
+  "landscape-installation": {
+   "source": "drive",
+   "fileId": "1U0itXVm_xjkm7pGCowKyyzmnr0UdKKsm",
+   "w": 1200,
+   "h": 800,
+   "bytes": 243830,
+   "bytes600": 52690
+  },
+  "landscape-design": {
+   "source": "drive",
+   "fileId": "1F0_okdaioQjFrBSQUZXZNH2MPeG90wwY",
+   "w": 1200,
+   "h": 900,
+   "bytes": 212940,
+   "bytes600": 49134
+  },
+  "residential-garden-maintenance": {
+   "source": "drive",
+   "fileId": "1705rsIb2PV1uK2dELjC4NtKyYiPExQyi",
+   "w": 1200,
+   "h": 900,
+   "bytes": 212100,
+   "bytes600": 49314
+  },
+  "lawn-aeration-vertimowing": {
+   "source": "drive",
+   "fileId": "1vY9ySPNdqIKTiI115nLb1jXVPr5Lsui7",
+   "w": 800,
+   "h": 500,
+   "bytes": 77756,
+   "bytes600": 42092
+  },
+  "lawn-mowing-byford": {
+   "source": "drive",
+   "fileId": "1Ym1MP_Zo5XTZYhE1mK_DIIfbY8zWHHlA",
+   "w": 1200,
+   "h": 900,
+   "bytes": 136700,
+   "bytes600": 33404
+  },
+  "before-1": {
+   "source": "drive",
+   "fileId": "1_7uwyOSRJSuro7Hn4bq_dkjmd0QerIAS",
+   "w": 1080,
+   "h": 1080,
+   "bytes": 360144,
+   "bytes600": 96404
+  },
+  "after-1": {
+   "source": "drive",
+   "fileId": "1luyj1N6TNZvM4KzH-31wjsKEYygPG5A8",
+   "w": 1080,
+   "h": 1080,
+   "bytes": 271078,
+   "bytes600": 73224
+  },
+  "before-1b": {
+   "source": "drive",
+   "fileId": "1lIM2CROFl7CyrsOy5fLdly9sjBGopIC8",
+   "w": 1080,
+   "h": 1080,
+   "bytes": 252170,
+   "bytes600": 69322
+  },
+  "after-1b": {
+   "source": "drive",
+   "fileId": "1h3nXNabXACTAWqSNuxrCdlBZK1wz-0Xv",
+   "w": 1080,
+   "h": 1080,
+   "bytes": 247704,
+   "bytes600": 66474
+  },
+  "before-2": {
+   "source": "drive",
+   "fileId": "1nKR7SS0WE9csbE1eu3y7tmV8hbcvIG5W",
+   "w": 1080,
+   "h": 1080,
+   "bytes": 232012,
+   "bytes600": 59314
+  },
+  "after-2": {
+   "source": "drive",
+   "fileId": "1vhoeufXr8s42WBP91cp-3DHkVeH14bCJ",
+   "w": 1080,
+   "h": 1080,
+   "bytes": 229566,
+   "bytes600": 58752
+  },
+  "gen-1": {
+   "source": "higgsfield",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/hf_20261027_132938_f8986af0-3a4a-47d2-852a-138cfca801f4.png",
+   "w": 1024,
+   "h": 688,
+   "bytes": 142514,
+   "bytes600": 53308
+  },
+  "gen-2": {
+   "source": "higgsfield",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/hf_20261027_132939_19e79bbd-31d7-41f5-b996-5ec70e9c8a74.png",
+   "w": 1024,
+   "h": 688,
+   "bytes": 132042,
+   "bytes600": 51654
+  },
+  "gen-3": {
+   "source": "higgsfield",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/hf_20261027_132941_51aa775e-f423-4194-a043-e2049be5cea0.png",
+   "w": 1024,
+   "h": 688,
+   "bytes": 43396,
+   "bytes600": 13008
+  },
+  "gen-5": {
+   "source": "higgsfield",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/hf_20261027_132940_4a8b645d-6fc3-49a3-a993-6b1af164bd01.png",
+   "w": 1024,
+   "h": 688,
+   "bytes": 110770,
+   "bytes600": 36366
+  },
+  "gen-6": {
+   "source": "higgsfield",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/hf_20261027_132940_25cf9b1e-9b5d-4de9-a83a-19c15ecaa1b9.png",
+   "w": 1024,
+   "h": 688,
+   "bytes": 186382,
+   "bytes600": 67302
+  },
+  "gen-8": {
+   "source": "higgsfield",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/hf_20261027_132942_0502a555-ab2c-4886-ab55-6e7b7c2e8c85.png",
+   "w": 1024,
+   "h": 688,
+   "bytes": 157678,
+   "bytes600": 57100
+  },
+  "logo-512": {
+   "source": "drive",
+   "fileId": "1U76urfQxL7hhQ69y_ATSlcjBezrsxv94",
+   "w": 512,
+   "h": 512,
+   "png": true
+  },
+  "logo-128": {
+   "source": "drive",
+   "fileId": "1U76urfQxL7hhQ69y_ATSlcjBezrsxv94",
+   "w": 128,
+   "h": 128,
+   "png": true
+  },
+  "hero-video-poster": {
+   "source": "higgsfield",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/hf_20261027_141835_9b497e21-3d3c-4160-911c-4737f45b31cc.mp4",
+   "note": "First frame of the generated hero clip",
+   "w": 1200,
+   "h": 675,
+   "bytes": 99756,
+   "bytes600": 38466
+  }
+ },
+ "videos": {
+  "hero-video": {
+   "source": "higgsfield",
+   "model": "kling4_0 reference-to-video",
+   "references": [
+    "acreage-large-scale (owner identity)",
+    "rural-commercial-land (scene)"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/hf_20261027_141835_9b497e21-3d3c-4160-911c-4737f45b31cc.mp4",
+   "mp4": {
+    "w": 1280,
+    "h": 720,
+    "seconds": 6,
+    "bytes": 1122188
+   },
+   "webm": {
+    "w": 1280,
+    "h": 720,
+    "seconds": 6,
+    "bytes": 2189345
+   }
+  }
+ }
+}

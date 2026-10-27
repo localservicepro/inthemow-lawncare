@@ -1,0 +1,14 @@
+{
+  "name": "inthemow-lawncare",
+  "version": "1.0.0",
+  "private": true,
+  "description": "In The Mow Lawncare - static website (lawn mowing, reticulation, turf & garden maintenance, Byford WA)",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "images": "node scripts/fetch-images.mjs",
+    "serve": "node scripts/serve.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "license": "UNLICENSED"
+}
