@@ -49,7 +49,12 @@
   }
 
   /* ---------- Reveal on scroll ---------- */
-  var reveals = document.querySelectorAll('.reveal');
+  // Staggered text columns: each child (and each checklist item) reveals on its own as it scrolls in
+  document.querySelectorAll('.stagger').forEach(function (col) {
+    var kids = []; Array.prototype.forEach.call(col.children, function (k) { if (k.classList.contains('checks')) Array.prototype.push.apply(kids, k.children); else kids.push(k); });
+    kids.forEach(function (k, i) { k.classList.add('reveal-item'); k.style.transitionDelay = (Math.min(i, 8) * 70) + 'ms'; });
+  });
+  var reveals = document.querySelectorAll('.reveal, .reveal-item');
   if ('IntersectionObserver' in window && !reduce) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });

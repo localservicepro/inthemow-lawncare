@@ -249,9 +249,9 @@ function homePage() {
   <div class="grid grid-3">${services.map((s, i) => `<article class="card reveal" style="transition-delay:${i * 60}ms"><div class="ph">${img(s.hero.img, s.hero.alt)}</div><div class="ic">${icon(s.icon)}</div><div class="body"><h3><a href="/${s.slug}">${esc(s.nav)}</a></h3><p>${esc(s.short)}</p><span class="more">Learn more ${iconSolid('arrow', 'currentColor')}</span></div></article>`).join('')}</div>
 </div></section>
 
-<section class="section section-dark on-dark" id="about"><div class="container feature">
+<section class="section section-dark on-dark" id="about"><div class="container feature feature-sticky">
   <div class="media reveal">${img(h.about.img, h.about.alt, { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
-  <div class="reveal"><p class="eyebrow">About In The Mow Lawncare</p><h2>Locally Owned, Not a Franchise</h2><span class="rule"></span>${h.about.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('')}
+  <div class="stagger"><p class="eyebrow">About In The Mow Lawncare</p><h2>Locally Owned, Not a Franchise</h2><span class="rule"></span>${h.about.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('')}
     <ul class="checks">${h.about.points.map(([t, d]) => `<li>${icon('check')}<div><strong>${esc(t)}</strong><span>${esc(d)}</span></div></li>`).join('')}</ul>
     <div class="hero-cta">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline" href="/about">More About Us</a></div>
   </div>
@@ -369,8 +369,8 @@ function aboutPage() {
   <div class="hero-media">${img(a.hero.img, a.hero.alt, { eager: true, sizes: '(min-width: 900px) 520px, 100vw' })}<div class="hero-badge">${iconSolid('pin', '#8dc81b')}Owner-operated by Joshua Patriarca</div></div>
 </div></section>
 
-<section class="section"><div class="container feature">
-  <div class="reveal"><p class="eyebrow">Our story</p><h2>${esc(a.story.h2)}</h2><span class="rule"></span>${a.story.paras.map(p => `<p>${esc(p)}</p>`).join('')}
+<section class="section"><div class="container feature feature-sticky">
+  <div class="stagger"><p class="eyebrow">Our story</p><h2>${esc(a.story.h2)}</h2><span class="rule"></span>${a.story.paras.map(p => `<p>${esc(p)}</p>`).join('')}
     <div class="owner-card"><span class="av" aria-hidden="true">JP</span><div><strong>${esc(site.owner)}</strong><span>Owner &amp; operator, In The Mow Lawncare, Byford WA</span></div></div>
   </div>
   <div class="media reveal">${img(a.story.img, a.story.alt, { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
@@ -381,8 +381,8 @@ function aboutPage() {
   <div class="values">${a.values.map(([t, d], i) => `<div class="value reveal" style="transition-delay:${i * 50}ms">${icon(['pin', 'mower', 'rideon', 'clock', 'check', 'phone'][i])}<h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}</div>
 </div></section>
 
-<section class="section"><div class="container feature flip">
-  <div class="reveal"><p class="eyebrow">The gear</p><h2>${esc(a.equipment.h2)}</h2><span class="rule"></span>${a.equipment.paras.map(p => `<p>${esc(p)}</p>`).join('')}
+<section class="section"><div class="container feature flip feature-sticky">
+  <div class="stagger"><p class="eyebrow">The gear</p><h2>${esc(a.equipment.h2)}</h2><span class="rule"></span>${a.equipment.paras.map(p => `<p>${esc(p)}</p>`).join('')}
     <div class="hero-cta">${services.slice(0, 3).map(s => `<a class="btn btn-outline-dark" href="/${s.slug}">${esc(s.nav)}</a>`).join('')}</div>
   </div>
   <div class="media reveal">${img(a.equipment.img, a.equipment.alt, { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
