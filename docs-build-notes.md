@@ -56,3 +56,12 @@ href (`#quote` or `/contact`) remains as the no-JS fallback. Esc, the close butt
 close it; submission follows the normal form flow to `/thank-you`. The mobile header shows a
 "Get a Quote" button instead of the phone icon; the phone number stays in the hero, footer and
 desktop header.
+
+## Service page heroes (v2)
+
+Hero image column is a full-height 4:3-or-taller frame beside the text (1fr/1fr from 900px) with a gradient
+backplate. Each service hero has a 1600px `-1600.webp` variant on the CDN (`src/cdn.json`), which `img()`
+appends to the srcset automatically whenever `<slug>-1600.webp` exists locally or on the CDN. The three
+lowest-resolution sources (gen-1, garden-maintenance, lawn-aeration-vertimowing) were upscaled with
+Higgsfield before re-encoding. Visible "Illustrative image" labels have been removed; AI-generated images are
+still flagged with `gen: true` in `src/content.mjs` and in the manifest for the record.

@@ -52,12 +52,14 @@ function img(slug, alt, opts = {}) {
   const m = manifest[slug]; if (!m) throw new Error('unknown image ' + slug);
   const sizes = opts.sizes || '(min-width: 1000px) 400px, (min-width: 640px) 50vw, 100vw';
   const full = asset(`${slug}.webp`);
-  const srcset = m.w > 600 ? `${asset(`${slug}-600.webp`)} 600w, ${full} ${m.w}w` : `${full} ${m.w}w`;
+  // Optional high-res variant (1600px) for large hero slots: used when it exists locally or on the CDN.
+  const hiFile = `${slug}-1600.webp`; const hasHi = existsSync(path.join(out, 'images', hiFile)) || !!cdn[hiFile];
+  const srcset = (m.w > 600 ? `${asset(`${slug}-600.webp`)} 600w, ${full} ${m.w}w` : `${full} ${m.w}w`) + (hasHi ? `, ${asset(hiFile)} 1600w` : '');
   const eager = opts.eager ? 'loading="eager" fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"';
   const bg = lqip[slug] ? ` style="background:url(data:image/webp;base64,${lqip[slug]}) center/cover no-repeat"` : '';
   return `<img src="${full}" srcset="${srcset}" sizes="${sizes}" width="${m.w}" height="${m.h}" alt="${attr(alt)}" ${eager}${bg}${opts.cls ? ` class="${opts.cls}"` : ''}>`;
 }
-const genNote = '<p class="gen-note">Illustrative image.</p>';
+const genNote = '';
 
 /* ---------- map ---------- */
 const P = ([lon, lat]) => [Math.round((lon - 115.60) * 1700), Math.round((lat + 32.00) * -1900)];
@@ -317,7 +319,7 @@ function servicePage(s) {
     <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote" data-quote-open>Get a Free Quote</a></div>
     <ul class="trust"><li>${iconSolid('check', '#8dc81b')}Locally owned, Byford based</li><li>${iconSolid('check', '#8dc81b')}Free, no-obligation quotes</li><li>${iconSolid('check', '#8dc81b')}One crew for mowing, retic, turf &amp; gardens</li></ul>
   </div>
-  <div class="hero-media">${img(s.hero.img, s.hero.alt, { eager: true, sizes: '(min-width: 900px) 520px, 100vw' })}${s.hero.gen ? '<div class="hero-badge">Illustrative image</div>' : ''}</div>
+  <div class="hero-media hero-media-tall">${img(s.hero.img, s.hero.alt, { eager: true, sizes: '(min-width: 900px) 48vw, 100vw' })}</div>
 </div></section>
 
 <section class="section"><div class="container two-col">
@@ -334,7 +336,7 @@ function servicePage(s) {
 
 <section class="section section-grey"><div class="container">
   <div class="section-head reveal"><p class="eyebrow">Recent work</p><h2>${esc(s.nav)} Photos</h2><span class="rule"></span></div>
-  <div class="gallery reveal">${s.gallery.map(g => `<figure>${img(g.img, g.alt)}<figcaption>${esc(g.alt)}${g.gen ? ' (illustrative image)' : ''}</figcaption></figure>`).join('')}</div>
+  <div class="gallery reveal">${s.gallery.map(g => `<figure>${img(g.img, g.alt)}<figcaption>${esc(g.alt)}</figcaption></figure>`).join('')}</div>
 </div></section>
 
 <section class="section"><div class="container">

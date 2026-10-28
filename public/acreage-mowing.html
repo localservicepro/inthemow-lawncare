@@ -136,7 +136,14 @@ ul{padding-left:1.2em}
 .trust svg{width:18px;height:18px;color:var(--lime);flex:none}
 @media(min-width:900px){.hero .container{grid-template-columns:1.05fr .95fr;align-items:center;padding-top:64px;padding-bottom:64px}}
 .hero.hero-inner .container{grid-template-columns:1fr;padding-top:40px;padding-bottom:40px}
-@media(min-width:900px){.hero.hero-inner .container{grid-template-columns:1.1fr .9fr;padding-top:56px;padding-bottom:56px}}
+@media(min-width:900px){.hero.hero-inner .container{grid-template-columns:1fr 1fr;gap:48px;align-items:stretch;padding-top:56px;padding-bottom:56px}}
+.hero-inner h1{font-size:clamp(1.9rem,3.5vw,2.8rem)}
+.hero-media-tall{position:relative}
+.hero-media-tall img{aspect-ratio:4/3;width:100%;object-fit:cover;border-radius:var(--radius)}
+@media(min-width:900px){.hero-media-tall{display:flex}.hero-media-tall img{aspect-ratio:auto;height:100%;min-height:480px}
+.hero-media-tall::before{content:"";position:absolute;inset:-10px -10px 10px 10px;border-radius:calc(var(--radius) + 4px);background:var(--grad);opacity:.18;z-index:0}
+.hero-media-tall::after{content:"";position:absolute;left:24px;bottom:-14px;width:120px;height:4px;border-radius:4px;background:var(--grad)}
+.hero-media-tall img{position:relative;z-index:1}}
 .crumbs{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 14px;padding:0;font-size:.85rem;color:var(--muted-dark)}
 .crumbs a{color:var(--muted-dark)}
 .crumbs li+li::before{content:"/";margin-right:6px;opacity:.5}
@@ -490,7 +497,7 @@ body.modal-open{overflow:hidden}
     <div class="hero-cta"><a class="btn btn-primary btn-lg" href="tel:+61424058261"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg><span>Call 0424 058 261</span></a><a class="btn btn-outline btn-lg" href="#quote" data-quote-open>Get a Free Quote</a></div>
     <ul class="trust"><li><svg viewBox="0 0 48 48" fill="none" stroke="#8dc81b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 25l9 9 19-20"/></svg>Locally owned, Byford based</li><li><svg viewBox="0 0 48 48" fill="none" stroke="#8dc81b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 25l9 9 19-20"/></svg>Free, no-obligation quotes</li><li><svg viewBox="0 0 48 48" fill="none" stroke="#8dc81b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 25l9 9 19-20"/></svg>One crew for mowing, retic, turf &amp; gardens</li></ul>
   </div>
-  <div class="hero-media"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/483516d6-271e-4448-9044-babfba2e4d4b.webp" srcset="https://d2ol7oe51mr4n9.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/8f9f58cc-90c6-48f2-9e45-10caaea88f74.webp 600w, https://d2ol7oe51mr4n9.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/483516d6-271e-4448-9044-babfba2e4d4b.webp 1200w" sizes="(min-width: 900px) 520px, 100vw" width="1200" height="900" alt="View from the ride-on mower across a large rural block being mowed in Serpentine WA" loading="eager" fetchpriority="high" decoding="async" style="background:url(data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAAAQBQCdASoYABIAPxF0slGsJqSiqA1RgCIJZgC1IUFUr5AAB2cJ/RJe53aWk/CLpnAAAP6Hccd4T4xrLkv93k99xffu8rzbqXkhIXIConf450Fb4p7/QBqz6a7Jh4Optdpvx2qAMDjc/2eVyAQ9qym10OQEutol7QoM24F/PiNDYpVYwpCvRfedvfUQJZ3UuPv0AA==) center/cover no-repeat"></div>
+  <div class="hero-media hero-media-tall"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/483516d6-271e-4448-9044-babfba2e4d4b.webp" srcset="https://d2ol7oe51mr4n9.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/8f9f58cc-90c6-48f2-9e45-10caaea88f74.webp 600w, https://d2ol7oe51mr4n9.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/483516d6-271e-4448-9044-babfba2e4d4b.webp 1200w, https://d2ol7oe51mr4n9.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/909fc5ae-2659-4bd3-8318-2ae20541dc17.webp 1600w" sizes="(min-width: 900px) 48vw, 100vw" width="1200" height="900" alt="View from the ride-on mower across a large rural block being mowed in Serpentine WA" loading="eager" fetchpriority="high" decoding="async" style="background:url(data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAAAQBQCdASoYABIAPxF0slGsJqSiqA1RgCIJZgC1IUFUr5AAB2cJ/RJe53aWk/CLpnAAAP6Hccd4T4xrLkv93k99xffu8rzbqXkhIXIConf450Fb4p7/QBqz6a7Jh4Optdpvx2qAMDjc/2eVyAQ9qym10OQEutol7QoM24F/PiNDYpVYwpCvRfedvfUQJZ3UuPv0AA==) center/cover no-repeat"></div>
 </div></section>
 
 <section class="section"><div class="container two-col">
