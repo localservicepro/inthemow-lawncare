@@ -92,6 +92,10 @@ ul{padding-left:1.2em}
 .call-icon{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;background:var(--primary);color:var(--base)}
 .call-icon svg{width:22px;height:22px}
 .call-icon + .burger{margin-left:0}
+.head-quote{margin-left:auto;padding:11px 14px;font-size:.88rem}
+.head-quote + .burger{margin-left:0}
+@media(min-width:1024px){.head-quote{display:none}}
+.btn-sm{padding:11px 16px;font-size:.9rem}
 @media(min-width:1024px){.nav,.header-cta{display:flex}.burger,.call-icon{display:none}}
 .mobile-menu{display:none;background:var(--base-2);color:#fff;border-top:1px solid rgba(255,255,255,.08)}
 .mobile-menu[data-open]{display:block}
@@ -107,8 +111,6 @@ ul{padding-left:1.2em}
 .sticky-bar{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(33,40,50,.96);backdrop-filter:blur(8px)}
 .sticky-bar .btn{flex:1;padding:14px 10px}
 @media(min-width:1024px){.sticky-bar{display:none}}
-body{padding-bottom:84px}
-@media(min-width:1024px){body{padding-bottom:0}}
 
 /* hero */
 .hero{position:relative;background:var(--base);color:#fff;overflow:hidden}
@@ -118,6 +120,8 @@ body{padding-bottom:84px}
 .hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero .lead{max-width:560px;font-size:1.1rem}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 18px}
+.hero-home .hero-cta{flex-wrap:nowrap;gap:10px}
+.hero-home .hero-cta .btn{flex:1;min-width:0;padding-left:12px;padding-right:12px}
 .hero-media{position:relative}
 .hero-media img{border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,.4);aspect-ratio:3/2;object-fit:cover;width:100%}
 .hero-media.has-video{border-radius:var(--radius);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
@@ -324,7 +328,9 @@ body{padding-bottom:84px}
 .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(33,40,50,.55) 0%,rgba(33,40,50,.78) 55%,rgba(33,40,50,.96) 100%)}
 @media(min-width:900px){.hero-bg::after{background:linear-gradient(90deg,rgba(33,40,50,.96) 0%,rgba(33,40,50,.86) 38%,rgba(33,40,50,.45) 68%,rgba(33,40,50,.25) 100%),linear-gradient(180deg,rgba(33,40,50,0) 70%,rgba(33,40,50,.9) 100%)}}
 .hero-home .container{position:relative;z-index:1;display:grid;gap:32px;padding-top:56px;padding-bottom:56px}
-@media(min-width:1024px){.hero-home .container{grid-template-columns:1.15fr .85fr;align-items:center;padding-top:72px;padding-bottom:72px}}
+@media(min-width:1024px){.hero-home .container{grid-template-columns:1fr;align-items:center;padding-top:88px;padding-bottom:88px}.hero-home .container>div{max-width:640px}}
+@media(max-width:1023px){.hero-home{display:block;min-height:0}.hero-bg{position:relative;height:min(46vw,176px);overflow:hidden}.hero-bg::after{background:linear-gradient(180deg,rgba(33,40,50,0) 55%,var(--base) 100%)}.hero-home .container{padding-top:8px;padding-bottom:32px;gap:0}.hero-home h1{font-size:clamp(1.85rem,7vw,2.5rem);margin-bottom:.4em}.hero-home .lead{font-size:.9rem;line-height:1.5;margin-bottom:.7em}.hero-pill{margin-bottom:10px;font-size:.66rem}.hero-home .hero-cta{margin:4px 0 14px}.hero-home .hero-cta .btn{padding-top:14px;padding-bottom:14px;font-size:.92rem}.hero-home .trust{font-size:.82rem;gap:6px}.hero-home .trust li{padding:6px 11px}}
+@media(max-width:480px){.hero-home .hero-cta .btn svg{width:16px;height:16px}}
 .hero-home h1{font-size:clamp(2.2rem,5.4vw,4rem);max-width:720px;text-wrap:balance}
 .hero-home .lead{color:#dbe2ea;max-width:600px}
 .hero-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(141,200,27,.14);border:1px solid rgba(141,200,27,.45);color:var(--lime);border-radius:999px;padding:7px 14px;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin:0 0 18px}
@@ -399,6 +405,28 @@ body{padding-bottom:84px}
 .hours dt{font-weight:700;color:#fff}.hours dd{margin:0;color:var(--muted-dark)}
 .page-hero .lead{max-width:680px}
 
+/* quote modal */
+.modal{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.modal[hidden]{display:none}
+@media(min-width:640px){.modal{align-items:center;padding:24px}}
+.modal-backdrop{position:absolute;inset:0;background:rgba(33,40,50,.72);backdrop-filter:blur(3px)}
+.modal-card{position:relative;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;animation:sheet .3s var(--ease)}
+@media(min-width:640px){.modal-card{border-radius:var(--radius);animation:pop .25s var(--ease)}}
+.modal-card .form-card{box-shadow:none;border-radius:inherit;padding:22px 18px 18px}
+@media(min-width:640px){.modal-card .form-card{padding:30px}}
+.modal-card .form-card h2{font-size:1.5rem;padding-right:40px}
+.modal-card .phone-line{margin:-4px 0 14px}
+.modal-card .form-grid{gap:10px}
+@media(min-width:360px){.modal-card .form-grid{grid-template-columns:1fr 1fr}.modal-card .form-grid .full{grid-column:1/-1}}
+.modal-card .field input,.modal-card .field select,.modal-card .field textarea{padding:10px 12px}
+.modal-card textarea{min-height:72px}
+.modal-close{position:absolute;top:12px;right:12px;z-index:1;width:38px;height:38px;border-radius:50%;border:0;background:var(--grey);color:var(--base);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.modal-close svg{width:18px;height:18px}
+.modal-close:hover{background:var(--base);color:#fff}
+body.modal-open{overflow:hidden}
+@keyframes sheet{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+
 /* thank-you / 404 */
 .center-page{text-align:center;max-width:640px;margin:0 auto;padding:72px 0}
 .center-page .big-tick{width:88px;height:88px;border-radius:50%;background:var(--base);display:inline-flex;align-items:center;justify-content:center;margin-bottom:24px}
@@ -430,15 +458,15 @@ body{padding-bottom:84px}
     <div class="has-sub"><button type="button" aria-expanded="false" aria-haspopup="true">Services <svg viewBox="0 0 48 48" style="transform:rotate(90deg)" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 24h30 M26 12l12 12-12 12"/></svg></button><div class="sub"><a href="/lawn-mowing"><svg class="" viewBox="0 0 48 48" fill="none" stroke="url(#g)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M7 34h19l5-9H15z M11 34.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0 M24 36.5a3 3 0 1 0 6 0a3 3 0 1 0-6 0 M26 25l12-14h5 M17 25v-4h6"/></svg>Lawn Mowing</a><a href="/reticulation"><svg class="" viewBox="0 0 48 48" fill="none" stroke="url(#g)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M24 41V24 M17 41h14 M24 24h-4v-5h8v5z M24 15c0-5-3-8-3-8 M24 15c0-5 3-8 3-8 M22 17c-5-1-8-6-8-6 M26 17c5-1 8-6 8-6 M24 12V5"/></svg>Reticulation Repairs &amp; Installation</a><a href="/acreage-mowing"><svg class="" viewBox="0 0 48 48" fill="none" stroke="url(#g)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M9 34a4 4 0 1 0 8 0a4 4 0 1 0-8 0 M29 33a5.5 5.5 0 1 0 11 0a5.5 5.5 0 1 0-11 0 M13 30h7l3-10h9l4 10 M23 20v-6h8 M21 30v-5h7 M26 14l3-5h4"/></svg>Acreage Mowing &amp; Slashing</a><a href="/garden-maintenance"><svg class="" viewBox="0 0 48 48" fill="none" stroke="url(#g)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M15 37L30 11 M33 37L18 11 M10 42l5-5 M38 42l-5-5 M24 21l3-4 M20 26l4 5"/></svg>Garden Maintenance &amp; Hedging</a><a href="/turf-installation"><svg class="" viewBox="0 0 48 48" fill="none" stroke="url(#g)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M8 40h32 M12 34h16 M28 34a6 6 0 1 0 0-12a6 6 0 0 0 0 12 M28 28h.1 M12 34l7-5h9 M8 18h8 M20 18h6 M30 18h4 M8 12h5 M17 12h4"/></svg>Turf &amp; Lawn Installation</a><a href="/lawn-renovation"><svg class="" viewBox="0 0 48 48" fill="none" stroke="url(#g)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M8 38h32 M12 38l-2-8h21l4-10h9 M15 30v8 M21 30v8 M27 30v8 M33 36a3 3 0 1 0 6 0a3 3 0 1 0-6 0"/></svg>Lawn Health &amp; Renovation</a></div></div>
     <a href="/about">About</a><a href="/service-areas" aria-current="page">Service Areas</a><a href="/contact">Contact</a>
   </nav>
-  <div class="header-cta"><a class="header-call" href="tel:+61424058261"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg>0424 058 261</a><a class="btn btn-primary" href="/contact">Get a Free Quote</a></div>
-  <a class="call-icon" href="tel:+61424058261" aria-label="Call 0424 058 261"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg></a>
+  <div class="header-cta"><a class="header-call" href="tel:+61424058261"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg>0424 058 261</a><a class="btn btn-primary" href="/contact" data-quote-open>Get a Free Quote</a></div>
+  <a class="btn btn-primary btn-sm head-quote" href="/contact" data-quote-open>Get a Quote</a>
   <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </div>
 <div class="mobile-menu" id="mobile-menu">
   <a href="/">Home</a>
   <details><summary>Services <span aria-hidden="true">+</span></summary><a href="/lawn-mowing">Lawn Mowing</a><a href="/reticulation">Reticulation Repairs &amp; Installation</a><a href="/acreage-mowing">Acreage Mowing &amp; Slashing</a><a href="/garden-maintenance">Garden Maintenance &amp; Hedging</a><a href="/turf-installation">Turf &amp; Lawn Installation</a><a href="/lawn-renovation">Lawn Health &amp; Renovation</a></details>
   <a href="/about">About</a><a href="/service-areas">Service Areas</a><a href="/contact">Contact</a>
-  <div class="mm-cta"><a class="btn btn-primary" href="tel:+61424058261">Call 0424 058 261</a><a class="btn btn-outline" href="/contact">Get a Quote</a></div>
+  <div class="mm-cta"><a class="btn btn-primary" href="tel:+61424058261">Call 0424 058 261</a><a class="btn btn-outline" href="/contact" data-quote-open>Get a Quote</a></div>
 </div></header>
 <main id="main">
 <section class="hero hero-inner page-hero"><div class="container" style="grid-template-columns:1fr">
@@ -447,7 +475,7 @@ body{padding-bottom:84px}
     <p class="eyebrow">6 regions · 57 suburbs</p>
     <h1>Lawn Mowing &amp; Garden Service Areas — <em>Perth's South-East &amp; Peel Region</em></h1>
     <p class="lead">Based in Byford WA 6122, In The Mow Lawncare covers six regions and more than fifty suburbs, from Canning Vale and Armadale in the north, through the Serpentine and Jarrahdale hills, west across Cockburn and Kwinana, and down the coast through Rockingham to Mandurah.</p>
-    <div class="hero-cta"><a class="btn btn-primary btn-lg" href="tel:+61424058261"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg><span>Call 0424 058 261</span></a><a class="btn btn-outline btn-lg" href="/contact">Get a Free Quote</a></div>
+    <div class="hero-cta"><a class="btn btn-primary btn-lg" href="tel:+61424058261"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg><span>Call 0424 058 261</span></a><a class="btn btn-outline btn-lg" href="/contact" data-quote-open>Get a Free Quote</a></div>
   </div>
 </div></section>
 
@@ -485,7 +513,7 @@ body{padding-bottom:84px}
   <div class="faq reveal"><details open><summary><h3 style="display:inline;font:inherit">My suburb is not on the list. Can you still help?</h3></summary><div class="a"><p>Probably. The list covers the suburbs we visit most, but if you are close to one of them, call 0424 058 261 and we will tell you straight away whether we can fit you in.</p></div></details><details><summary><h3 style="display:inline;font:inherit">Is there a travel charge for Mandurah or the hills?</h3></summary><div class="a"><p>Regular customers in every region are quoted as a flat per-visit price with no separate travel charge. One-off jobs a long way from Byford may be grouped with other work in the area so the price stays fair, and we will tell you if timing is affected.</p></div></details><details><summary><h3 style="display:inline;font:inherit">Do you service commercial and strata sites across the whole area?</h3></summary><div class="a"><p>Yes. Scheduled commercial and strata lawn maintenance is available in every region we cover, including Canning Vale, Armadale, Cockburn Central, Rockingham and Mandurah.</p></div></details></div>
 </div></section>
 
-<section class="cta-band"><div class="container"><div><h2>In one of these suburbs?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0"><a class="btn btn-primary" href="tel:+61424058261"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg><span>Call 0424 058 261</span></a><a class="btn btn-outline-dark" href="/contact">Get a Free Quote</a></div></div></section>
+<section class="cta-band"><div class="container"><div><h2>In one of these suburbs?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0"><a class="btn btn-primary" href="tel:+61424058261"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg><span>Call 0424 058 261</span></a><a class="btn btn-outline-dark" href="/contact" data-quote-open>Get a Free Quote</a></div></div></section>
 </main>
 <footer class="footer"><div class="container">
 <div class="footer-grid">
@@ -502,7 +530,22 @@ body{padding-bottom:84px}
 </div>
 <div class="footer-bottom"><span>© 2026 In The Mow Lawncare. All rights reserved. ABN available on request.</span><span><a href="/privacy">Privacy</a> · Website by <a href="https://www.localservicepro.com.au/" rel="noopener" target="_blank">Local Service Pro</a></span></div>
 </div></footer>
-<div class="sticky-bar" aria-label="Quick actions"><a class="btn btn-primary" href="tel:+61424058261"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg>Call 0424 058 261</a><a class="btn btn-outline" href="/contact">Get a Quote</a></div>
+<div class="modal" id="quote-modal" hidden><div class="modal-backdrop" data-quote-close></div><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-form-title"><button class="modal-close" type="button" aria-label="Close" data-quote-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><form id="modal-form" class="form-card" data-quote-form data-redirect="/thank-you" novalidate="" autocomplete="on">
+  <h2 id="modal-form-title">Get a Free Quote</h2>
+  <p class="phone-line"><svg viewBox="0 0 48 48" fill="none" stroke="#1a8235" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9a10 10 0 0 0 9 9l3-3a1.5 1.5 0 0 1 1.6-.4l5.2 2.1A1.5 1.5 0 0 1 41 26v5.2A3.8 3.8 0 0 1 37.2 35 30.4 30.4 0 0 1 11 10.8 3.8 3.8 0 0 1 14.8 7H20a1.5 1.5 0 0 1 1.4 1l2.1 5.2a1.5 1.5 0 0 1-.4 1.6z"/></svg><span>Prefer to talk? </span><a href="tel:+61424058261">0424 058 261</a></p>
+  <div class="form-grid compact">
+    <div class="field"><label for="modal-form-name">Name</label><input id="modal-form-name" name="full_name" type="text" required autocomplete="name" data-ghl="{{contact.full_name}}"></div>
+    <div class="field"><label for="modal-form-phone">Phone</label><input id="modal-form-phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" data-ghl="{{contact.phone}}"></div>
+    <div class="field full"><label for="modal-form-email">Email</label><input id="modal-form-email" name="email" type="email" required autocomplete="email" data-ghl="{{contact.email}}"></div>
+    <div class="field full"><label for="modal-form-address">Property Address</label><input id="modal-form-address" name="property_address" type="text" autocomplete="street-address" placeholder="Suburb is fine to start" data-ghl="{{contact.property_address}}"></div>
+    <div class="field"><label for="modal-form-size">Property Size</label><input id="modal-form-size" name="property_size" type="text" placeholder="e.g. 600m², 2 acres" data-ghl="{{contact.property_size}}"></div>
+    <div class="field"><label for="modal-form-service">Service Needed</label><select id="modal-form-service" name="service_needed" required data-ghl="{{contact.service_needed}}"><option value="" selected disabled>Select a service</option><option value="Lawn Mowing">Lawn Mowing</option><option value="Reticulation Repairs &amp; Installation">Reticulation Repairs &amp; Installation</option><option value="Acreage Mowing &amp; Slashing">Acreage Mowing &amp; Slashing</option><option value="Garden Maintenance &amp; Hedging">Garden Maintenance &amp; Hedging</option><option value="Turf &amp; Lawn Installation">Turf &amp; Lawn Installation</option><option value="Lawn Health &amp; Renovation">Lawn Health &amp; Renovation</option><option value="Other">Other</option></select></div>
+    <div class="field full"><label for="modal-form-notes">Job Notes</label><textarea id="modal-form-notes" name="job_notes" placeholder="Tell us about the job, access, timing…" data-ghl="{{contact.job_notes}}"></textarea></div>
+    <div class="field full"><button class="btn btn-primary btn-lg" type="submit" style="width:100%">Send My Quote Request</button></div>
+  </div>
+  <p class="form-note">No obligation. Josh replies personally, usually the same business day.</p>
+</form></div></div>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#04713b"/><stop offset=".5" stop-color="#4b9c2c"/><stop offset="1" stop-color="#8dc81b"/></linearGradient></defs></svg>
 <script>/* In The Mow Lawncare — progressive enhancement. No dependencies. */
 (function () {
@@ -633,6 +676,23 @@ body{padding-bottom:84px}
       else start();
     }
   }
+})();
+
+/* ---------- Quote modal: any [data-quote-open] opens the compact form; href stays as the no-JS fallback ---------- */
+(function () {
+  var modal = document.getElementById('quote-modal'); if (!modal) return;
+  var lastFocus = null;
+  var open = function (e) {
+    e.preventDefault(); lastFocus = document.activeElement;
+    modal.hidden = false; document.body.classList.add('modal-open');
+    document.querySelectorAll('.mobile-menu[data-open]').forEach(function (m) { m.removeAttribute('data-open'); });
+    var first = modal.querySelector('input'); if (first) setTimeout(function () { first.focus(); }, 50);
+    if (window.dataLayer) window.dataLayer.push({ event: 'quote_modal_open' });
+  };
+  var close = function () { modal.hidden = true; document.body.classList.remove('modal-open'); if (lastFocus && lastFocus.focus) lastFocus.focus(); };
+  document.querySelectorAll('[data-quote-open]').forEach(function (a) { a.addEventListener('click', open); });
+  modal.querySelectorAll('[data-quote-close]').forEach(function (b) { b.addEventListener('click', close); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
 })();
 </script>
 </body></html>

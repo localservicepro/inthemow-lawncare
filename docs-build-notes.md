@@ -43,6 +43,16 @@ their quote CTAs to `/contact`.
 
 ## Homepage hero (v2)
 
-Full-bleed hero: the video poster (then the muted MP4 after `load`) sits behind a charcoal gradient,
-H1/lead/CTAs on the left and a compact "Quick Quote" form card at ≥1024px (hidden on mobile, where the
-main form at `#quote` is used). A six-service icon strip sits directly beneath.
+Desktop (≥1024px): the video poster (then the muted MP4 after `load`) sits behind a charcoal gradient
+with H1/lead/CTAs on the left. Below 1024px the video becomes a short in-flow strip above the H1 so the
+H1, lead and both buttons fit in the first screen at 375×740. Call and quote buttons sit side by side.
+A six-service icon strip sits directly beneath the hero. There is no fixed bottom bar.
+
+## Quote popup
+
+Every "Get a (Free) Quote" button carries `data-quote-open` and opens `#quote-modal` (the same quote form,
+rendered once per page in `footer()`), a bottom sheet on phones and a centred dialog from 640px. The
+href (`#quote` or `/contact`) remains as the no-JS fallback. Esc, the close button and the backdrop
+close it; submission follows the normal form flow to `/thank-you`. The mobile header shows a
+"Get a Quote" button instead of the phone icon; the phone number stays in the hero, footer and
+desktop header.

@@ -125,19 +125,20 @@ function header(current) {
     <div class="has-sub"><button type="button" aria-expanded="false" aria-haspopup="true">Services ${iconSolid('arrow', 'currentColor').replace('viewBox="0 0 48 48"', 'viewBox="0 0 48 48" style="transform:rotate(90deg)"')}</button><div class="sub">${servicesNav()}</div></div>
     <a href="/about"${cur('/about')}>About</a><a href="/service-areas"${cur('/service-areas')}>Service Areas</a><a href="/contact"${cur('/contact')}>Contact</a>
   </nav>
-  <div class="header-cta"><a class="header-call" href="tel:${site.phoneTel}">${iconSolid('phone', 'currentColor')}${site.phone}</a><a class="btn btn-primary" href="${quoteHref(current)}">Get a Free Quote</a></div>
-  <a class="call-icon" href="tel:${site.phoneTel}" aria-label="Call ${site.phone}">${iconSolid('phone', 'currentColor')}</a>
+  <div class="header-cta"><a class="header-call" href="tel:${site.phoneTel}">${iconSolid('phone', 'currentColor')}${site.phone}</a><a class="btn btn-primary" href="${quoteHref(current)}" data-quote-open>Get a Free Quote</a></div>
+  <a class="btn btn-primary btn-sm head-quote" href="${quoteHref(current)}" data-quote-open>Get a Quote</a>
   <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </div>
 <div class="mobile-menu" id="mobile-menu">
   <a href="/">Home</a>
   <details><summary>Services <span aria-hidden="true">+</span></summary>${services.map(s => `<a href="/${s.slug}">${esc(s.nav)}</a>`).join('')}</details>
   <a href="/about">About</a><a href="/service-areas">Service Areas</a><a href="/contact">Contact</a>
-  <div class="mm-cta"><a class="btn btn-primary" href="tel:${site.phoneTel}">Call ${site.phone}</a><a class="btn btn-outline" href="${quoteHref(current)}">Get a Quote</a></div>
+  <div class="mm-cta"><a class="btn btn-primary" href="tel:${site.phoneTel}">Call ${site.phone}</a><a class="btn btn-outline" href="${quoteHref(current)}" data-quote-open>Get a Quote</a></div>
 </div></header>`;
 }
 
-const stickyBar = (quoteHref) => `<div class="sticky-bar" aria-label="Quick actions"><a class="btn btn-primary" href="tel:${site.phoneTel}">${iconSolid('phone', 'currentColor')}Call ${site.phone}</a><a class="btn btn-outline" href="${quoteHref}">Get a Quote</a></div>`;
+const stickyBar = () => ''; // removed: no fixed bottom bar
+const _oldStickyBar = (quoteHref) => `<div class="sticky-bar" aria-label="Quick actions"><a class="btn btn-primary" href="tel:${site.phoneTel}">${iconSolid('phone', 'currentColor')}Call ${site.phone}</a><a class="btn btn-outline" href="${quoteHref}">Get a Quote</a></div>`;
 
 function footer(withMap) {
   return `<footer class="footer"><div class="container">
@@ -154,7 +155,8 @@ function footer(withMap) {
   <div><h3>Where we work</h3><p class="areas-line">${regions.map(r => `<strong>${esc(r.name)}:</strong> ${r.suburbs.map(s => s[0]).join(', ')}`).join('<br>')}</p>${withMap ? `<div class="gmap" style="margin-top:14px">${site.gbpEmbed}</div>` : ''}</div>
 </div>
 <div class="footer-bottom"><span>© ${new Date().getFullYear()} ${site.name}. All rights reserved. ABN available on request.</span><span><a href="/privacy">Privacy</a> · Website by <a href="https://www.localservicepro.com.au/" rel="noopener" target="_blank">Local Service Pro</a></span></div>
-</div></footer>`;
+</div></footer>
+<div class="modal" id="quote-modal" hidden><div class="modal-backdrop" data-quote-close></div><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-form-title"><button class="modal-close" type="button" aria-label="Close" data-quote-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>${quoteForm('modal-form', true)}</div></div>`;
 }
 
 function quoteForm(id, compact = false) {
@@ -235,12 +237,10 @@ function homePage() {
       <p class="hero-pill">${iconSolid('pin', 'currentColor')}Byford WA · Canning Vale to Mandurah</p>
       <h1>${esc(h.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
       <p class="lead">${esc(h.lead)}</p>
-      <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote">Get a Free Quote</a></div>
+      <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote" data-quote-open>Get a Free Quote</a></div>
       <ul class="trust">${h.trust.map(t => `<li>${iconSolid('check', '#8dc81b')}${esc(t)}</li>`).join('')}</ul>
     </div>
-    <aside class="hero-card" aria-label="Quick quote">${quoteForm('hero-form', true).replace('<h2 id="hero-form-title">Get a Free Quote</h2>', '<h2 id="hero-form-title">Quick Quote</h2><p class="sub-line">Josh replies personally, usually the same business day.</p>').replace(/<p class="phone-line">[\s\S]*?<\/p>/, '')}</aside>
   </div>
-  <div class="hero-scroll" aria-hidden="true">Scroll<i></i></div>
 </section>
 <nav class="svc-strip" aria-label="Services"><div class="container">${services.map(s => `<a href="/${s.slug}">${icon(s.icon)}${esc(s.nav)}</a>`).join('')}</div></nav>
 
@@ -314,7 +314,7 @@ function servicePage(s) {
     <ol class="crumbs" aria-label="Breadcrumb"><li><a href="/">Home</a></li><li><a href="/#services">Services</a></li><li aria-current="page">${esc(s.nav)}</li></ol>
     <h1>${esc(s.h1)}</h1>
     <p class="lead">${esc(s.lead)}</p>
-    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote">Get a Free Quote</a></div>
+    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote" data-quote-open>Get a Free Quote</a></div>
     <ul class="trust"><li>${iconSolid('check', '#8dc81b')}Locally owned, Byford based</li><li>${iconSolid('check', '#8dc81b')}Free, no-obligation quotes</li><li>${iconSolid('check', '#8dc81b')}One crew for mowing, retic, turf &amp; gardens</li></ul>
   </div>
   <div class="hero-media">${img(s.hero.img, s.hero.alt, { eager: true, sizes: '(min-width: 900px) 520px, 100vw' })}${s.hero.gen ? '<div class="hero-badge">Illustrative image</div>' : ''}</div>
@@ -342,7 +342,7 @@ function servicePage(s) {
   ${faqHtml(s.faqs, 'reveal')}
 </div></section>
 
-<section class="cta-band"><div class="container"><div><h2>Need ${esc(s.nav.toLowerCase())} sorted?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="#quote">Get a Free Quote</a></div></div></section>
+<section class="cta-band"><div class="container"><div><h2>Need ${esc(s.nav.toLowerCase())} sorted?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="#quote" data-quote-open>Get a Free Quote</a></div></div></section>
 </main>
 ${footer(true)}
 ${stickyBar('#quote')}
@@ -364,7 +364,7 @@ function aboutPage() {
     <p class="eyebrow">Locally owned · Byford WA 6122</p>
     <h1>${esc(a.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
     <p class="lead">${esc(a.lead)}</p>
-    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="/contact">Get a Free Quote</a></div>
+    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="/contact" data-quote-open>Get a Free Quote</a></div>
   </div>
   <div class="hero-media">${img(a.hero.img, a.hero.alt, { eager: true, sizes: '(min-width: 900px) 520px, 100vw' })}<div class="hero-badge">${iconSolid('pin', '#8dc81b')}Owner-operated by Joshua Patriarca</div></div>
 </div></section>
@@ -409,7 +409,7 @@ function aboutPage() {
   ${faqHtml(a.faqs, 'reveal')}
 </div></section>
 
-<section class="cta-band"><div class="container"><div><h2>Want the owner on the job?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact">Get a Free Quote</a></div></div></section>
+<section class="cta-band"><div class="container"><div><h2>Want the owner on the job?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact" data-quote-open>Get a Free Quote</a></div></div></section>
 </main>
 ${footer(false)}
 ${stickyBar('/contact')}
@@ -430,7 +430,7 @@ function serviceAreasPage() {
     <p class="eyebrow">6 regions · ${allSuburbs.length} suburbs</p>
     <h1>${esc(p.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
     <p class="lead">${esc(p.lead)}</p>
-    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="/contact">Get a Free Quote</a></div>
+    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="/contact" data-quote-open>Get a Free Quote</a></div>
   </div>
 </div></section>
 
@@ -452,7 +452,7 @@ function serviceAreasPage() {
   ${faqHtml(p.faqs, 'reveal')}
 </div></section>
 
-<section class="cta-band"><div class="container"><div><h2>In one of these suburbs?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact">Get a Free Quote</a></div></div></section>
+<section class="cta-band"><div class="container"><div><h2>In one of these suburbs?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact" data-quote-open>Get a Free Quote</a></div></div></section>
 </main>
 ${footer(true)}
 ${stickyBar('/contact')}
@@ -525,7 +525,7 @@ writeFileSync(path.join(out, 'thank-you.html'), simplePage({ slug: 'thank-you', 
 writeFileSync(path.join(out, '404.html'), simplePage({ slug: '404', title: 'Page Not Found | In The Mow', description: 'That page does not exist. Head back to In The Mow Lawncare.', h1: 'Page Not Found', robots: 'noindex, nofollow',
   html: `{{H1}}<p class="lead">That page has moved or never existed. Try one of our services or head back home.</p><div class="hero-cta" style="justify-content:center">${services.map(s => `<a class="btn btn-outline-dark" href="/${s.slug}">${esc(s.nav)}</a>`).join('')}</div>` }));
 writeFileSync(path.join(out, 'blog.html'), simplePage({ slug: 'blog', title: 'Lawn Care Tips for Perth | In The Mow Blog', description: "Seasonal lawn mowing, reticulation and lawn care advice for Perth's South-East from In The Mow Lawncare.", h1: 'Lawn Care Tips for Perth', robots: 'noindex, follow',
-  html: `{{H1}}<p class="lead">Practical, WA-specific advice from the crew is on its way. First up: what lawn mowing costs in Perth, how often to mow through the year, what it costs to fix reticulation, and what your retic controller should be set to for your watering days.</p><p>In the meantime, the <a href="/#faq">FAQ on the home page</a> answers the questions we get asked most.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact">Get a Free Quote</a></div>` }));
+  html: `{{H1}}<p class="lead">Practical, WA-specific advice from the crew is on its way. First up: what lawn mowing costs in Perth, how often to mow through the year, what it costs to fix reticulation, and what your retic controller should be set to for your watering days.</p><p>In the meantime, the <a href="/#faq">FAQ on the home page</a> answers the questions we get asked most.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact" data-quote-open>Get a Free Quote</a></div>` }));
 writeFileSync(path.join(out, 'privacy.html'), simplePage({ slug: 'privacy', title: 'Privacy Policy | In The Mow', description: 'How In The Mow Lawncare handles enquiry details.', h1: 'Privacy Policy', robots: 'noindex, follow',
   html: `{{H1}}<div style="text-align:left"><p>In The Mow Lawncare collects the details you enter in the quote form (name, phone, email, property address, property size, service needed and job notes) and standard website analytics in order to respond to your enquiry and run the business. Details are stored in our customer management system and are not sold or shared with third parties except the service providers that host that system. You can ask us to update or delete your details at any time by emailing <a href="mailto:${site.email}">${site.email}</a>.</p></div>` }));
 

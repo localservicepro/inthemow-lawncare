@@ -128,3 +128,20 @@
     }
   }
 })();
+
+/* ---------- Quote modal: any [data-quote-open] opens the compact form; href stays as the no-JS fallback ---------- */
+(function () {
+  var modal = document.getElementById('quote-modal'); if (!modal) return;
+  var lastFocus = null;
+  var open = function (e) {
+    e.preventDefault(); lastFocus = document.activeElement;
+    modal.hidden = false; document.body.classList.add('modal-open');
+    document.querySelectorAll('.mobile-menu[data-open]').forEach(function (m) { m.removeAttribute('data-open'); });
+    var first = modal.querySelector('input'); if (first) setTimeout(function () { first.focus(); }, 50);
+    if (window.dataLayer) window.dataLayer.push({ event: 'quote_modal_open' });
+  };
+  var close = function () { modal.hidden = true; document.body.classList.remove('modal-open'); if (lastFocus && lastFocus.focus) lastFocus.focus(); };
+  document.querySelectorAll('[data-quote-open]').forEach(function (a) { a.addEventListener('click', open); });
+  modal.querySelectorAll('[data-quote-close]').forEach(function (b) { b.addEventListener('click', close); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
+})();
