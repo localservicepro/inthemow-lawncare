@@ -238,15 +238,15 @@ function homePage() {
       <h1>${esc(h.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
       <p class="lead">${esc(h.lead)}</p>
       <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote" data-quote-open>Get a Free Quote</a></div>
-      <ul class="trust">${h.trust.map(t => `<li>${iconSolid('check', '#8dc81b')}${esc(t)}</li>`).join('')}</ul>
     </div>
+    <ul class="trust hero-trust">${h.trust.map(t => `<li>${iconSolid('check', '#8dc81b')}${esc(t)}</li>`).join('')}</ul>
   </div>
 </section>
 <nav class="svc-strip" aria-label="Services"><div class="container">${services.map(s => `<a href="/${s.slug}">${icon(s.icon)}${esc(s.nav)}</a>`).join('')}</div></nav>
 
 <section class="section" id="services"><div class="container">
   <div class="section-head center reveal"><p class="eyebrow">Our services</p><h2>Lawn, Retic, Turf &amp; Garden Services</h2><span class="rule center"></span><p class="lead">${esc(h.servicesLead)}</p></div>
-  <div class="grid grid-3">${services.map((s, i) => `<article class="card reveal" style="transition-delay:${i * 60}ms"><div class="ph">${img(s.hero.img, s.hero.alt)}<div class="ic">${icon(s.icon)}</div></div><div class="body"><h3><a href="/${s.slug}">${esc(s.nav)}</a></h3><p>${esc(s.short)}</p><span class="more">Learn more ${iconSolid('arrow', 'currentColor')}</span></div></article>`).join('')}</div>
+  <div class="grid grid-3">${services.map((s, i) => `<article class="card reveal" style="transition-delay:${i * 60}ms"><div class="ph">${img(s.hero.img, s.hero.alt)}</div><div class="ic">${icon(s.icon)}</div><div class="body"><h3><a href="/${s.slug}">${esc(s.nav)}</a></h3><p>${esc(s.short)}</p><span class="more">Learn more ${iconSolid('arrow', 'currentColor')}</span></div></article>`).join('')}</div>
 </div></section>
 
 <section class="section section-dark on-dark" id="about"><div class="container feature">
