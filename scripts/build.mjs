@@ -237,7 +237,7 @@ function homePage() {
   <div class="container">
     <div>
       <p class="hero-pill">${iconSolid('pin', 'currentColor')}Byford WA · Canning Vale to Mandurah</p>
-      <h1>${esc(h.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
+      <h1>${esc(h.h1).replace(': ', ': <em>').replace(/$/, '</em>')}</h1>
       <p class="lead">${esc(h.lead)}</p>
       <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote" data-quote-open>Get a Free Quote</a></div>
     </div>
@@ -253,7 +253,7 @@ function homePage() {
 
 <section class="section section-dark on-dark" id="about"><div class="container feature feature-sticky">
   <div class="media reveal">${img(h.about.img, h.about.alt, { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
-  <div class="stagger"><p class="eyebrow">About In The Mow Lawncare</p><h2>Locally Owned, Not a Franchise</h2><span class="rule"></span>${h.about.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('')}
+  <div class="stagger"><p class="eyebrow">About In The Mow Lawncare</p><h2>Locally Owned &amp; Operated in Byford</h2><span class="rule"></span>${h.about.paras.map(p => `<p class="lead">${esc(p)}</p>`).join('')}
     <ul class="checks">${h.about.points.map(([t, d]) => `<li>${icon('check')}<div><strong>${esc(t)}</strong><span>${esc(d)}</span></div></li>`).join('')}</ul>
     <div class="hero-cta">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline" href="/about">More About Us</a></div>
   </div>
@@ -364,7 +364,7 @@ function aboutPage() {
   <div>
     <ol class="crumbs"><li><a href="/">Home</a></li><li aria-current="page">About</li></ol>
     <p class="eyebrow">Locally owned · Byford WA 6122</p>
-    <h1>${esc(a.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
+    <h1>${esc(a.h1).replace(': ', ': <em>').replace(/$/, '</em>')}</h1>
     <p class="lead">${esc(a.lead)}</p>
     <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="/contact" data-quote-open>Get a Free Quote</a></div>
   </div>
@@ -430,7 +430,7 @@ function serviceAreasPage() {
   <div>
     <ol class="crumbs"><li><a href="/">Home</a></li><li aria-current="page">Service Areas</li></ol>
     <p class="eyebrow">6 regions · ${allSuburbs.length} suburbs</p>
-    <h1>${esc(p.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
+    <h1>${esc(p.h1).replace(': ', ': <em>').replace(/$/, '</em>')}</h1>
     <p class="lead">${esc(p.lead)}</p>
     <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="/contact" data-quote-open>Get a Free Quote</a></div>
   </div>
@@ -473,7 +473,7 @@ function contactPageHtml() {
   <div>
     <ol class="crumbs"><li><a href="/">Home</a></li><li aria-current="page">Contact</li></ol>
     <p class="eyebrow">Free quotes · ${site.hoursText}</p>
-    <h1>${esc(c.h1).replace(' — ', ' — <em>').replace(/$/, '</em>')}</h1>
+    <h1>${esc(c.h1).replace(': ', ': <em>').replace(/$/, '</em>')}</h1>
     <p class="lead">${esc(c.lead)}</p>
     <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="mailto:${site.email}">${iconSolid('mail', 'currentColor')}Email Us</a></div>
   </div>
@@ -487,7 +487,7 @@ function contactPageHtml() {
         <div class="row">${icon('phone')}<div><a href="tel:${site.phoneTel}">${site.phone}</a><span>Click to call. Fastest for urgent jobs.</span></div></div>
         <div class="row">${icon('mail')}<div><a href="mailto:${site.email}">${site.email}</a><span>Send photos of the job for a faster quote</span></div></div>
         <div class="row">${icon('pin')}<div><a href="${site.gbp}" target="_blank" rel="noopener">Byford WA 6122</a><span>Service-area business covering Perth's South-East corridor and Peel. Find us on Google.</span></div></div>
-        <div class="row">${icon('clock')}<div><dl class="hours"><dt>Mon – Fri</dt><dd>9:00am – 5:00pm</dd><dt>Sat – Sun</dt><dd>Closed (messages answered next business day)</dd></dl></div></div>
+        <div class="row">${icon('clock')}<div><dl class="hours"><dt>Mon to Fri</dt><dd>9:00am to 5:00pm</dd><dt>Sat and Sun</dt><dd>Closed (messages answered next business day)</dd></dl></div></div>
         <div class="row"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color:#8dc81b"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8z"/></svg><div><a href="${site.facebook}" target="_blank" rel="noopener">In The Mow Lawncare on Facebook</a><span>Recent jobs and seasonal updates</span></div></div>
       </div>
       <div class="gmap" style="margin-top:24px">${site.gbpEmbed}</div>
@@ -522,7 +522,7 @@ services.forEach(s => writeFileSync(path.join(out, `${s.slug}.html`), servicePag
 writeFileSync(path.join(out, 'about.html'), aboutPage());
 writeFileSync(path.join(out, 'service-areas.html'), serviceAreasPage());
 writeFileSync(path.join(out, 'contact.html'), contactPageHtml());
-writeFileSync(path.join(out, 'thank-you.html'), simplePage({ slug: 'thank-you', title: 'Thanks – We Have Your Quote Request | In The Mow', description: 'Your quote request has been sent to In The Mow Lawncare. Josh will be in touch shortly.', h1: 'Thanks, Your Quote Request Is In', robots: 'noindex, nofollow',
+writeFileSync(path.join(out, 'thank-you.html'), simplePage({ slug: 'thank-you', title: 'Thanks, We Have Your Quote Request | In The Mow', description: 'Your quote request has been sent to In The Mow Lawncare. Josh will be in touch shortly.', h1: 'Thanks, Your Quote Request Is In', robots: 'noindex, nofollow',
   html: `<div class="big-tick">${icon('check')}</div>{{H1}}<p class="lead" id="ty-name">Thanks!</p><p class="lead">Josh will look at the details and come back to you, usually the same business day. If the job is urgent, like a retic fault or a block that needs slashing before fire season, call now.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline-dark btn-lg" href="/">Back to home</a></div>` }));
 writeFileSync(path.join(out, '404.html'), simplePage({ slug: '404', title: 'Page Not Found | In The Mow', description: 'That page does not exist. Head back to In The Mow Lawncare.', h1: 'Page Not Found', robots: 'noindex, nofollow',
   html: `{{H1}}<p class="lead">That page has moved or never existed. Try one of our services or head back home.</p><div class="hero-cta" style="justify-content:center">${services.map(s => `<a class="btn btn-outline-dark" href="/${s.slug}">${esc(s.nav)}</a>`).join('')}</div>` }));

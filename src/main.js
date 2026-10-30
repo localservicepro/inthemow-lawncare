@@ -1,4 +1,4 @@
-/* In The Mow Lawncare — progressive enhancement. No dependencies. */
+/* In The Mow Lawncare: progressive enhancement. No dependencies. */
 (function () {
   'use strict';
   document.documentElement.classList.add('js');

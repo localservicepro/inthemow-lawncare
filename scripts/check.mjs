@@ -21,7 +21,7 @@ for (const f of files) {
   console.log(`${ok ? 'OK ' : 'BAD'} ${f.padEnd(24)} h1=${h1s} words=${words} title=${title?.length}ch desc=${desc?.length}ch tigereye=${tig}${dens}`);
 }
 const home = readFileSync(path.join(dir, 'index.html'), 'utf8');
-const want = { h1: "Lawn Mowing Byford & Perth's South-East — Reliable Mowing, Retic & Garden Care", title: 'Lawn Mowing Byford & Perth South-East | In The Mow', desc: "Lawn mowing Byford & Perth's South-East. Reliable mowing, acreage slashing, retic repairs & garden care from Canning Vale to Mandurah. Get a free quote today." };
+const want = { h1: "Lawn Mowing Byford & Perth's South-East: Reliable Mowing, Retic & Garden Care", title: 'Lawn Mowing Byford & Perth South-East | In The Mow', desc: "Lawn mowing Byford & Perth's South-East. Reliable mowing, acreage slashing, retic repairs & garden care from Canning Vale to Mandurah. Get a free quote today." };
 const h1txt = text((home.match(/<h1[\s\S]*?<\/h1>/) || [''])[0]);
 console.log('H1 verbatim:', h1txt === want.h1, '|', h1txt);
 console.log('Title verbatim:', (home.match(/<title>([^<]*)<\/title>/) || [])[1].replace(/&amp;/g, '&') === want.title);
