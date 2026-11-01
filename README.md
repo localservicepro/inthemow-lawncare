@@ -17,8 +17,8 @@ No framework: `src/` holds the copy, styles and JS; `scripts/build.mjs` generate
 ## Hosting
 
 Deploy `public/`. `vercel.json`, `netlify.toml` and `public/_redirects` carry the clean URLs and the 301s
-(`/home → /`, `/landscape-design → /turf-installation`). Pages keep the existing URLs: `/lawn-mowing`,
-`/garden-maintenance`, `/acreage-mowing`, `/blog`; new: `/reticulation`, `/turf-installation`, `/lawn-renovation`, `/thank-you`.
+(`/home → /`, `/landscape-design → /landscaping`, `/turf-installation → /landscaping`). Pages keep the existing URLs: `/lawn-mowing`,
+`/garden-maintenance`, `/acreage-mowing`, `/blog`; new: `/reticulation`, `/landscaping`, `/lawn-renovation`, `/earthworks`, `/commercial`, `/about`, `/service-areas`, `/contact`, `/thank-you`.
 
 ## Images
 

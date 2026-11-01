@@ -9,7 +9,13 @@
 
 [[redirects]]
   from = "/landscape-design"
-  to = "/turf-installation"
+  to = "/landscaping"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/turf-installation"
+  to = "/landscaping"
   status = 301
   force = true
 

@@ -65,3 +65,14 @@ appends to the srcset automatically whenever `<slug>-1600.webp` exists locally o
 lowest-resolution sources (gen-1, garden-maintenance, lawn-aeration-vertimowing) were upscaled with
 Higgsfield before re-encoding. Visible "Illustrative image" labels have been removed; AI-generated images are
 still flagged with `gen: true` in `src/content.mjs` and in the manifest for the record.
+
+## Client feedback round (Josh): services and wording
+
+- Services are now eight: Lawn Mowing, Reticulation, Acreage, Garden Maintenance, Landscaping & Turf (`/landscaping`,
+  replaces `/turf-installation`), Lawn Health, Mini Earthworks (`/earthworks`) and Commercial & Tenders (`/commercial`).
+- `/turf-installation` and `/landscape-design` both 301 to `/landscaping` (vercel.json, netlify.toml, `_redirects`, serve.mjs).
+- Homepage has a Commercial & Tenders callout between the services grid and the about section; services grid is 4 across from 1100px;
+  the icon strip uses each service's short `strip` label.
+- Wording no longer implies a one-person business: "multiple crews", "one team", "Josh quotes and oversees the work".
+- To confirm with Josh: the tender copy says we supply "the business documentation your panel or tender asks for"
+  (insurance, ABN, safety docs), and the earthworks FAQ says we check Before You Dig Australia before digging.

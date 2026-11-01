@@ -29,6 +29,8 @@ const jsonld = o => `<script type="application/ld+json">${JSON.stringify(o).repl
 /* ---------- icons (single-weight line art, gradient stroke) ---------- */
 const GRAD = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#04713b"/><stop offset=".5" stop-color="#4b9c2c"/><stop offset="1" stop-color="#8dc81b"/></linearGradient></defs></svg>`;
 const ICONS = {
+  loader: 'M6 36h22V24h-9l-4-7H9v19 M9 17h6 M10 40a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0 M20 40a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0 M28 28l8-10 M36 18l7 3-3 9-7-3 M19 24v-5',
+  building: 'M8 42V10h20v32 M28 20h12v22 M4 42h40 M13 16h4 M20 16h3 M13 23h4 M20 23h3 M13 30h4 M20 30h3 M32 26h4 M32 33h4 M15 42v-6h6v6',
   mower: 'M7 34h19l5-9H15z M11 34.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0 M24 36.5a3 3 0 1 0 6 0a3 3 0 1 0-6 0 M26 25l12-14h5 M17 25v-4h6',
   sprinkler: 'M24 41V24 M17 41h14 M24 24h-4v-5h8v5z M24 15c0-5-3-8-3-8 M24 15c0-5 3-8 3-8 M22 17c-5-1-8-6-8-6 M26 17c5-1 8-6 8-6 M24 12V5',
   rideon: 'M9 34a4 4 0 1 0 8 0a4 4 0 1 0-8 0 M29 33a5.5 5.5 0 1 0 11 0a5.5 5.5 0 1 0-11 0 M13 30h7l3-10h9l4 10 M23 20v-6h8 M21 30v-5h7 M26 14l3-5h4',
@@ -175,7 +177,7 @@ function quoteForm(id, compact = false) {
     <div class="field full"><label for="${id}-notes">Job Notes</label><textarea id="${id}-notes" name="job_notes" placeholder="Tell us about the job, access, timing…" data-ghl="{{contact.job_notes}}"></textarea></div>
     <div class="field full"><button class="btn btn-primary btn-lg" type="submit" style="width:100%">Send My Quote Request</button></div>
   </div>
-  <p class="form-note">No obligation. Josh replies personally, usually the same business day.</p>
+  <p class="form-note">No obligation. We usually reply the same business day.</p>
 </form>`;
 }
 
@@ -211,7 +213,7 @@ const localBusiness = () => ({
   '@context': 'https://schema.org', '@type': 'LocalBusiness', '@id': BIZ_ID,
   name: site.name, alternateName: 'In The Mow', url: site.url + '/', telephone: site.phoneTel, email: site.email,
   image: asset('logo-512.png', true), logo: asset('logo-512.png', true),
-  description: "Lawn mowing, acreage slashing, reticulation repairs and installation, turf installation, lawn health and garden maintenance across Perth's South-East corridor and the Peel region, from Canning Vale to Mandurah.",
+  description: "Lawn mowing, acreage slashing, reticulation repairs and installation, landscaping and turf, mini earthworks, lawn health, garden maintenance and commercial grounds maintenance across Perth's South-East corridor and the Peel region, from Canning Vale to Mandurah.",
   founder: { '@type': 'Person', name: site.owner }, slogan: site.tagline,
   address: { '@type': 'PostalAddress', addressLocality: site.locality, addressRegion: site.region, postalCode: site.postcode, addressCountry: site.country },
   geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng },
@@ -244,11 +246,20 @@ function homePage() {
     <ul class="trust hero-trust">${h.trust.map(t => `<li>${iconSolid('check', '#8dc81b')}${esc(t)}</li>`).join('')}</ul>
   </div>
 </section>
-<nav class="svc-strip" aria-label="Services"><div class="container">${services.map(s => `<a href="/${s.slug}">${icon(s.icon)}${esc(s.nav)}</a>`).join('')}</div></nav>
+<nav class="svc-strip" aria-label="Services"><div class="container">${services.map(s => `<a href="/${s.slug}" title="${attr(s.nav)}">${icon(s.icon)}${esc(s.strip || s.nav)}</a>`).join('')}</div></nav>
 
 <section class="section" id="services"><div class="container">
-  <div class="section-head center reveal"><p class="eyebrow">Our services</p><h2>Lawn, Retic, Turf &amp; Garden Services</h2><span class="rule center"></span><p class="lead">${esc(h.servicesLead)}</p></div>
-  <div class="grid grid-3">${services.map((s, i) => `<article class="card reveal" style="transition-delay:${i * 60}ms"><div class="ph">${img(s.hero.img, s.hero.alt)}</div><div class="ic">${icon(s.icon)}</div><div class="body"><h3><a href="/${s.slug}">${esc(s.nav)}</a></h3><p>${esc(s.short)}</p><span class="more">Learn more ${iconSolid('arrow', 'currentColor')}</span></div></article>`).join('')}</div>
+  <div class="section-head center reveal"><p class="eyebrow">Our services</p><h2>Lawn, Landscaping, Earthworks &amp; Commercial Services</h2><span class="rule center"></span><p class="lead">${esc(h.servicesLead)}</p></div>
+  <div class="grid grid-3 grid-4">${services.map((s, i) => `<article class="card reveal" style="transition-delay:${i * 60}ms"><div class="ph">${img(s.hero.img, s.hero.alt)}</div><div class="ic">${icon(s.icon)}</div><div class="body"><h3><a href="/${s.slug}">${esc(s.nav)}</a></h3><p>${esc(s.short)}</p><span class="more">Learn more ${iconSolid('arrow', 'currentColor')}</span></div></article>`).join('')}</div>
+</div></section>
+
+<section class="section section-grey" id="commercial"><div class="container feature">
+  <div class="media reveal">${img('commercial-strata-mowing', 'Maintained lawn and garden beds at a commercial property in Perth\'s South-East', { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
+  <div class="stagger"><p class="eyebrow">Commercial &amp; tenders</p><h2>Grounds Maintenance for Bigger Sites</h2><span class="rule"></span>
+    <p class="lead">Strata complexes, commercial properties, developers, schools and councils. Multiple crews, commercial mowers, our own loader and bobcat, and one point of contact for single sites, multi-site contracts and tenders.</p>
+    <ul class="checks">${['Scheduled programs with a written scope', 'Multi-site contracts with one invoice', 'Itemised pricing for tenders and schedules of rates', 'Fire-break slashing and site prep for large holdings'].map(t => `<li>${icon('check')}<div><strong>${esc(t)}</strong></div></li>`).join('')}</ul>
+    <div class="hero-cta"><a class="btn btn-primary" href="/commercial">Commercial &amp; Tenders ${iconSolid('arrow', 'currentColor')}</a><a class="btn btn-outline-dark" href="#quote" data-quote-open>Request a Quote</a></div>
+  </div>
 </div></section>
 
 <section class="section section-dark on-dark" id="about"><div class="container feature feature-sticky">
@@ -317,7 +328,7 @@ function servicePage(s) {
     <h1>${esc(s.h1)}</h1>
     <p class="lead">${esc(s.lead)}</p>
     <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote" data-quote-open>Get a Free Quote</a></div>
-    <ul class="trust"><li>${iconSolid('check', '#8dc81b')}Locally owned, Byford based</li><li>${iconSolid('check', '#8dc81b')}Free, no-obligation quotes</li><li>${iconSolid('check', '#8dc81b')}One crew for mowing, retic, turf &amp; gardens</li></ul>
+    <ul class="trust"><li>${iconSolid('check', '#8dc81b')}Locally owned, Byford based</li><li>${iconSolid('check', '#8dc81b')}Free, no-obligation quotes</li><li>${iconSolid('check', '#8dc81b')}Multiple crews for mowing, retic, landscaping &amp; earthworks</li></ul>
   </div>
   <div class="hero-media hero-media-tall">${img(s.hero.img, s.hero.alt, { eager: true, sizes: '(min-width: 900px) 48vw, 100vw' })}</div>
 </div></section>
@@ -368,12 +379,12 @@ function aboutPage() {
     <p class="lead">${esc(a.lead)}</p>
     <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="/contact" data-quote-open>Get a Free Quote</a></div>
   </div>
-  <div class="hero-media">${img(a.hero.img, a.hero.alt, { eager: true, sizes: '(min-width: 900px) 520px, 100vw' })}<div class="hero-badge">${iconSolid('pin', '#8dc81b')}Owner-operated by Joshua Patriarca</div></div>
+  <div class="hero-media">${img(a.hero.img, a.hero.alt, { eager: true, sizes: '(min-width: 900px) 520px, 100vw' })}<div class="hero-badge">${iconSolid('pin', '#8dc81b')}Owned and run by Joshua Patriarca</div></div>
 </div></section>
 
 <section class="section"><div class="container feature feature-sticky">
   <div class="stagger"><p class="eyebrow">Our story</p><h2>${esc(a.story.h2)}</h2><span class="rule"></span>${a.story.paras.map(p => `<p>${esc(p)}</p>`).join('')}
-    <div class="owner-card"><span class="av" aria-hidden="true">JP</span><div><strong>${esc(site.owner)}</strong><span>Owner &amp; operator, In The Mow Lawncare, Byford WA</span></div></div>
+    <div class="owner-card"><span class="av" aria-hidden="true">JP</span><div><strong>${esc(site.owner)}</strong><span>Owner, In The Mow Lawncare, Byford WA</span></div></div>
   </div>
   <div class="media reveal">${img(a.story.img, a.story.alt, { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
 </div></section>
@@ -411,7 +422,7 @@ function aboutPage() {
   ${faqHtml(a.faqs, 'reveal')}
 </div></section>
 
-<section class="cta-band"><div class="container"><div><h2>Want the owner on the job?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact" data-quote-open>Get a Free Quote</a></div></div></section>
+<section class="cta-band"><div class="container"><div><h2>Ready to get it sorted?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact" data-quote-open>Get a Free Quote</a></div></div></section>
 </main>
 ${footer(false)}
 ${stickyBar('/contact')}
@@ -523,7 +534,7 @@ writeFileSync(path.join(out, 'about.html'), aboutPage());
 writeFileSync(path.join(out, 'service-areas.html'), serviceAreasPage());
 writeFileSync(path.join(out, 'contact.html'), contactPageHtml());
 writeFileSync(path.join(out, 'thank-you.html'), simplePage({ slug: 'thank-you', title: 'Thanks, We Have Your Quote Request | In The Mow', description: 'Your quote request has been sent to In The Mow Lawncare. Josh will be in touch shortly.', h1: 'Thanks, Your Quote Request Is In', robots: 'noindex, nofollow',
-  html: `<div class="big-tick">${icon('check')}</div>{{H1}}<p class="lead" id="ty-name">Thanks!</p><p class="lead">Josh will look at the details and come back to you, usually the same business day. If the job is urgent, like a retic fault or a block that needs slashing before fire season, call now.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline-dark btn-lg" href="/">Back to home</a></div>` }));
+  html: `<div class="big-tick">${icon('check')}</div>{{H1}}<p class="lead" id="ty-name">Thanks!</p><p class="lead">We will look at the details and come back to you, usually the same business day. If the job is urgent, like a retic fault or a block that needs slashing before fire season, call now.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline-dark btn-lg" href="/">Back to home</a></div>` }));
 writeFileSync(path.join(out, '404.html'), simplePage({ slug: '404', title: 'Page Not Found | In The Mow', description: 'That page does not exist. Head back to In The Mow Lawncare.', h1: 'Page Not Found', robots: 'noindex, nofollow',
   html: `{{H1}}<p class="lead">That page has moved or never existed. Try one of our services or head back home.</p><div class="hero-cta" style="justify-content:center">${services.map(s => `<a class="btn btn-outline-dark" href="/${s.slug}">${esc(s.nav)}</a>`).join('')}</div>` }));
 writeFileSync(path.join(out, 'blog.html'), simplePage({ slug: 'blog', title: 'Lawn Care Tips for Perth | In The Mow Blog', description: "Seasonal lawn mowing, reticulation and lawn care advice for Perth's South-East from In The Mow Lawncare.", h1: 'Lawn Care Tips for Perth', robots: 'noindex, follow',

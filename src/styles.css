@@ -144,6 +144,7 @@ ul{padding-left:1.2em}
 .grid-2{grid-template-columns:1fr}
 .grid-3{grid-template-columns:1fr}
 @media(min-width:640px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:1fr 1fr}}
+
 @media(min-width:1000px){.grid-3{grid-template-columns:repeat(3,1fr)}}
 
 /* service cards */
@@ -348,13 +349,14 @@ ul{padding-left:1.2em}
 .hero-scroll i{display:block;width:1px;height:28px;background:linear-gradient(180deg,var(--lime),transparent)}
 /* services strip under the hero */
 .svc-strip{background:var(--base-2);color:#fff;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
-.svc-strip .container{display:grid;grid-template-columns:repeat(3,1fr)}
-@media(min-width:900px){.svc-strip .container{grid-template-columns:repeat(6,1fr)}}
+.svc-strip .container{display:grid;grid-template-columns:repeat(4,1fr)}
+@media(min-width:900px){.svc-strip .container{grid-template-columns:repeat(8,1fr)}}
+@media(max-width:599px){.svc-strip a{font-size:.68rem;padding:14px 4px 12px}.svc-strip a svg{width:28px;height:28px}}
 .svc-strip a{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 8px 16px;color:#fff;text-decoration:none;font-size:.78rem;font-weight:700;text-align:center;line-height:1.25;border-right:1px solid rgba(255,255,255,.06);transition:background .2s,color .2s}
 .svc-strip a:last-child{border-right:0}
 .svc-strip a svg{width:34px;height:34px}
 .svc-strip a:hover{background:rgba(141,200,27,.1);color:var(--lime)}
-@media(max-width:899px){.svc-strip a:nth-child(3n){border-right:0}.svc-strip a:nth-child(-n+3){border-bottom:1px solid rgba(255,255,255,.06)}}
+@media(max-width:899px){.svc-strip a:nth-child(4n){border-right:0}.svc-strip a:nth-child(-n+4){border-bottom:1px solid rgba(255,255,255,.06)}}
 
 /* about page */
 .values{display:grid;gap:16px}
@@ -443,3 +445,4 @@ body.modal-open{overflow:hidden}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .reveal{opacity:1;transform:none}
 }
+@media(min-width:1100px){.grid.grid-4{grid-template-columns:repeat(4,1fr)}}

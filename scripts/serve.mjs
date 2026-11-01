@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'public');
 const port = Number(process.env.PORT || 8080);
 const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.xml': 'application/xml', '.txt': 'text/plain', '.webmanifest': 'application/manifest+json', '.json': 'application/json' };
-const redirects = { '/home': '/', '/landscape-design': '/turf-installation' };
+const redirects = { '/home': '/', '/landscape-design': '/landscaping', '/turf-installation': '/landscaping' };
 
 http.createServer((req, res) => {
   let url = decodeURIComponent(req.url.split('?')[0]);

@@ -4,7 +4,8 @@
   "outputDirectory": "public",
   "redirects": [
     { "source": "/home", "destination": "/", "permanent": true },
-    { "source": "/landscape-design", "destination": "/turf-installation", "permanent": true },
+    { "source": "/landscape-design", "destination": "/landscaping", "permanent": true },
+    { "source": "/turf-installation", "destination": "/landscaping", "permanent": true },
     { "source": "/index.html", "destination": "/", "permanent": true }
   ],
   "headers": [
