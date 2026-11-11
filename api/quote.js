@@ -104,6 +104,11 @@ export async function POST(request) {
     }
     const data = await res.json().catch(() => ({}));
     contactId = data?.contact?.id;
+    // Delivery check in the Vercel logs: which custom fields the CRM stored, and whether the photo links landed in one.
+    const stored = Array.isArray(data?.contact?.customFields) ? data.contact.customFields : [];
+    console.log('quote: contact', data?.new ? 'created' : 'updated', contactId, '| custom fields sent:', (contact.customFields || []).map(c => c.key).join(',') || 'none (retried without)',
+      '| stored:', stored.length, '| photo links in a custom field:', photoUrls.length ? stored.some(c => String(c.value || '').includes(photoUrls[0])) : 'no photos attached',
+      '| stored field ids:', stored.map(c => c.id).join(','));
     if (!res.ok || !contactId) {
       console.error('quote: contact upsert failed', res.status, JSON.stringify(data).slice(0, 500));
       return json(502, { ok: false, error: 'crm_rejected' });
