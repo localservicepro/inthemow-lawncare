@@ -1,15 +1,19 @@
 // Quote form handler (Vercel Function, POST /api/quote).
 //
 // 1. Validates the enquiry: name, phone or email, suburb, service.
-// 2. Stores up to 5 job photos in Vercel Blob (when BLOB_READ_WRITE_TOKEN is set) and keeps their public URLs.
-// 3. Forwards everything as JSON to a LeadConnector (GoHighLevel) "Inbound Webhook" workflow trigger
-//    (GHL_WEBHOOK_URL). That workflow creates or updates the contact in the CRM and sends the
-//    notification email, so the CRM and the notification inbox both come from one place.
+// 2. Stores up to 5 job photos in Vercel Blob (BLOB_READ_WRITE_TOKEN) and keeps their public URLs.
+// 3. Sends it straight into the LeadConnector CRM with a Private Integration Token:
+//      a. upsert the contact (name, phone, email, suburb, street address, source, custom fields)
+//      b. add a note with every detail and the photo links
+//      c. add the tag "website quote" LAST, so a tag-triggered workflow (the notification email)
+//         fires once the contact and note are complete.
 //
-// Environment variables (set in Vercel, Project Settings, Environment Variables):
-//   GHL_WEBHOOK_URL        required. The Inbound Webhook URL from the LeadConnector workflow.
-//   BLOB_READ_WRITE_TOKEN  optional. Added automatically when a Vercel Blob store is connected to the project.
-//                          Without it, enquiries still go through, but photos are not stored.
+// Environment variables (Vercel, Project Settings, Environment Variables):
+//   GHL_PIT_TOKEN          required, secret. Sub-account Private Integration Token with the contacts.write scope.
+//   GHL_LOCATION_ID        required. The sub-account (location) ID.
+//   GHL_TAG                optional, default "website quote".
+//   GHL_API_VERSION        optional, default "v3" (the Version header the current API docs require).
+//   BLOB_READ_WRITE_TOKEN  set automatically by the connected Vercel Blob store.
 
 const MAX_PHOTOS = 5;
 const MAX_PHOTO_BYTES = 4 * 1024 * 1024;
@@ -44,9 +48,9 @@ export async function POST(request) {
   if (f.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) missing.push('email');
   if (missing.length) return json(422, { ok: false, error: 'invalid', fields: missing });
 
-  const webhook = process.env.GHL_WEBHOOK_URL;
-  if (!webhook) {
-    console.error('quote: GHL_WEBHOOK_URL is not set, enquiry not delivered', { service: f.service_needed, suburb: f.suburb });
+  const token = process.env.GHL_PIT_TOKEN, locationId = process.env.GHL_LOCATION_ID;
+  if (!token || !locationId) {
+    console.error('quote: GHL_PIT_TOKEN or GHL_LOCATION_ID is not set, enquiry not delivered', { service: f.service_needed, suburb: f.suburb });
     return json(503, { ok: false, error: 'not_configured' });
   }
 
@@ -73,29 +77,62 @@ export async function POST(request) {
     photoNote = `${files.length} photo(s) were attached but photo storage is not set up. Ask the customer to email them.`;
   }
 
-  const [first_name, ...rest] = f.full_name.split(/\s+/);
-  const payload = {
-    ...f,
-    first_name,
-    last_name: rest.join(' '),
-    city: f.suburb,
-    photo_urls: photoUrls.join('\n'),
-    photo_count: photoUrls.length,
-    ...Object.fromEntries(photoUrls.map((u, i) => [`photo_${i + 1}`, u])),
-    photo_note: photoNote,
-    source: 'Website quote form',
-    submitted_at: new Date().toISOString()
-  };
+  const [firstName, ...rest] = f.full_name.split(/\s+/);
+  const crm = (path, payload) => fetch('https://services.leadconnectorhq.com' + path, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, Version: process.env.GHL_API_VERSION || 'v3', 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(payload)
+  });
 
+  // a. Contact. Custom fields are matched by key; if the CRM rejects them (for example a key that does
+  //    not exist yet), retry without them. The note below always carries every detail.
+  const contact = {
+    locationId, firstName, lastName: rest.join(' '), name: f.full_name, source: 'Website quote form',
+    city: f.suburb, ...(f.phone && { phone: f.phone }), ...(f.email && { email: f.email }), ...(f.property_address && { address1: f.property_address }),
+    customFields: [
+      ['service_needed', f.service_needed], ['property_size', f.property_size], ['property_address', f.property_address],
+      ['job_notes', f.job_notes], ['job_photos', photoUrls.join('\n')]
+    ].filter(([, v]) => v).map(([key, fieldValue]) => ({ key, fieldValue }))
+  };
+  let contactId;
   try {
-    const res = await fetch(webhook, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
-    if (!res.ok) {
-      console.error('quote: webhook returned', res.status, await res.text().catch(() => ''));
+    let res = await crm('/contacts/upsert', contact);
+    if (!res.ok && res.status !== 401 && res.status !== 403 && contact.customFields.length) {
+      console.warn('quote: upsert with custom fields failed', res.status, await res.text().catch(() => ''));
+      delete contact.customFields;
+      res = await crm('/contacts/upsert', contact);
+    }
+    const data = await res.json().catch(() => ({}));
+    contactId = data?.contact?.id;
+    if (!res.ok || !contactId) {
+      console.error('quote: contact upsert failed', res.status, JSON.stringify(data).slice(0, 500));
       return json(502, { ok: false, error: 'crm_rejected' });
     }
   } catch (err) {
-    console.error('quote: webhook request failed', err);
+    console.error('quote: CRM unreachable', err);
     return json(502, { ok: false, error: 'crm_unreachable' });
+  }
+
+  // b. Note with the full enquiry. c. Tag last. The contact already exists, so a failure here is logged, not shown to the visitor.
+  const note = [
+    `Website quote request (${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })} Perth time)`,
+    `Service: ${f.service_needed}`,
+    `Name: ${f.full_name}`,
+    f.phone && `Phone: ${f.phone}`,
+    f.email && `Email: ${f.email}`,
+    `Suburb: ${f.suburb}`,
+    f.property_address && `Street address: ${f.property_address}`,
+    f.property_size && `Property size: ${f.property_size}`,
+    f.job_notes && `Job notes: ${f.job_notes}`,
+    photoUrls.length ? `Job photos:\n${photoUrls.join('\n')}` : '',
+    photoNote,
+    f.page_url && `Sent from: ${f.page_url}`
+  ].filter(Boolean).join('\n');
+  for (const [path, payload] of [[`/contacts/${contactId}/notes`, { body: note, title: `Website quote: ${f.service_needed}` }], [`/contacts/${contactId}/tags`, { tags: [process.env.GHL_TAG || 'website quote'] }]]) {
+    try {
+      const res = await crm(path, payload);
+      if (!res.ok) console.error('quote:', path, 'returned', res.status, await res.text().catch(() => ''));
+    } catch (err) { console.error('quote:', path, 'failed', err); }
   }
 
   return json(200, { ok: true, photos: photoUrls.length });

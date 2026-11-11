@@ -84,12 +84,15 @@ still flagged with `gen: true` in `src/content.mjs` and in the manifest for the 
   spam honeypot. The service is preselected from the page (`formService` on each service, or `data-service`
   on a button); the commercial page relabels the popup "Request a Site Walkthrough".
 - The form now POSTs to `api/quote.js` (Vercel Function). It stores photos in the Vercel Blob store
-  `inthemow-quote-photos` (BLOB_READ_WRITE_TOKEN, already connected) and forwards the enquiry as JSON to a
-  LeadConnector Inbound Webhook (GHL_WEBHOOK_URL, NOT SET YET). Until GHL_WEBHOOK_URL is set the endpoint
+  `inthemow-quote-photos` (BLOB_READ_WRITE_TOKEN, already connected), then calls the LeadConnector API directly
+  with a sub-account Private Integration Token: upsert contact, add a note with every detail and the photo links,
+  then add the tag "website quote" last (tags added via the tags endpoint so existing tags are kept).
+  Needs GHL_PIT_TOKEN (secret, scope contacts.write) and GHL_LOCATION_ID in Vercel. Until both are set the endpoint
   returns 503 and the visitor sees a "did not send, please call or email" message rather than a false thank-you.
-  Payload keys: full_name, first_name, last_name, phone, email, suburb, city, property_address, property_size,
-  service_needed, job_notes, page_url, photo_urls, photo_1..photo_5, photo_count, photo_note, source, submitted_at.
-- Local test: `GHL_WEBHOOK_URL=http://localhost:9999/hook npm run serve` with a mock webhook; serve.mjs runs the function.
+  Custom fields are sent by key (service_needed, property_size, property_address, job_notes, job_photos); if the CRM
+  rejects them the contact is saved without them. The notification email comes from a LeadConnector workflow
+  triggered by the tag "website quote".
+- Local test: `npm run serve` runs the function too; without GHL_PIT_TOKEN and GHL_LOCATION_ID it answers 503.
 - Homepage: shorter lead, headline second line in solid lime with a shadow, "Popular" quick links (lawn renovations,
   retic, turf and landscaping, commercial), and a before/after plus a Google review straight after the services strip.
   Service order: mowing, retic, lawn renovation, landscaping, commercial, acreage, gardens, earthworks.
