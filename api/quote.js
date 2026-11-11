@@ -22,6 +22,21 @@ const LIMITS = { full_name: 120, phone: 40, email: 160, suburb: 80, property_add
 const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 const clean = (v, max) => String(v == null ? '' : v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').trim().slice(0, max);
 
+let defsCache = null;
+async function customFieldDefs(token, locationId) {
+  if (defsCache) return defsCache;
+  for (const version of [process.env.GHL_API_VERSION || 'v3', '2021-07-28']) {
+    try {
+      const res = await fetch(`https://services.leadconnectorhq.com/locations/${locationId}/customFields?model=contact`, { headers: { Authorization: `Bearer ${token}`, Version: version, Accept: 'application/json' } });
+      if (!res.ok) { console.warn('quote: custom field list', version, 'returned', res.status, (await res.text().catch(() => '')).slice(0, 200)); continue; }
+      const data = await res.json();
+      const list = data.customFields || data.fields || [];
+      if (Array.isArray(list)) { defsCache = list.map(d => ({ id: d.id, name: d.name, fieldKey: d.fieldKey || d.key })); return defsCache; }
+    } catch (err) { console.warn('quote: custom field list failed', err?.message); }
+  }
+  return null;
+}
+
 export function GET() {
   return json(405, { ok: false, error: 'method_not_allowed' });
 }
@@ -84,6 +99,13 @@ export async function POST(request) {
     body: JSON.stringify(payload)
   });
 
+  // Custom fields: look up the sub-account's contact fields and match ours by key or name, so we can send IDs.
+  // Needs the locations/customFields.readonly scope; without it we fall back to sending keys.
+  const wanted = { service_needed: ['service needed', 'service'], property_size: ['property size'], property_address: ['property address'], job_notes: ['job notes', 'notes'], job_photos: ['job photos', 'photos', 'job photo'] };
+  const defs = await customFieldDefs(token, locationId);
+  const norm = v => String(v || '').toLowerCase().replace(/^contact\./, '').replace(/[^a-z0-9]+/g, ' ').trim();
+  const fieldFor = k => defs && defs.find(d => norm(d.fieldKey) === norm(k) || wanted[k].includes(norm(d.name)) || norm(d.name) === norm(k));
+
   // a. Contact. Custom fields are matched by key; if the CRM rejects them (for example a key that does
   //    not exist yet), retry without them. The note below always carries every detail.
   const contact = {
@@ -92,8 +114,10 @@ export async function POST(request) {
     customFields: [
       ['service_needed', f.service_needed], ['property_size', f.property_size], ['property_address', f.property_address],
       ['job_notes', f.job_notes], ['job_photos', photoUrls.join('\n')]
-    ].filter(([, v]) => v).map(([key, fieldValue]) => ({ key, fieldValue }))
+    ].filter(([, v]) => v).map(([key, fieldValue]) => { const d = fieldFor(key); return d ? { id: d.id, fieldValue } : { key, fieldValue }; })
   };
+  console.log('quote: custom field lookup', defs ? `found ${defs.length} contact fields` : 'unavailable (token may lack locations/customFields.readonly)', '| matched:',
+    Object.keys(wanted).map(k => { const d = fieldFor(k); return `${k}=${d ? `${d.name} [${d.fieldKey}] ${d.id}` : 'none'}`; }).join('; '));
   let contactId;
   try {
     let res = await crm('/contacts/upsert', contact);
@@ -106,7 +130,7 @@ export async function POST(request) {
     contactId = data?.contact?.id;
     // Delivery check in the Vercel logs: which custom fields the CRM stored, and whether the photo links landed in one.
     const stored = Array.isArray(data?.contact?.customFields) ? data.contact.customFields : [];
-    console.log('quote: contact', data?.new ? 'created' : 'updated', contactId, '| custom fields sent:', (contact.customFields || []).map(c => c.key).join(',') || 'none (retried without)',
+    console.log('quote: contact', data?.new ? 'created' : 'updated', contactId, '| custom fields sent:', (contact.customFields || []).map(c => c.key || c.id).join(',') || 'none (retried without)',
       '| stored:', stored.length, '| photo links in a custom field:', photoUrls.length ? stored.some(c => String(c.value || '').includes(photoUrls[0])) : 'no photos attached',
       '| stored field ids:', stored.map(c => c.id).join(','));
     if (!res.ok || !contactId) {
