@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { site, services, regions, allSuburbs, route, reviews, homeFaqs, beforeAfter, home, formServices, about, areasPage, contactPage } from '../src/content.mjs';
+import { site, services, regions, allSuburbs, route, reviews, homeFaqs, beforeAfter, home, formServices, serviceNotes, about, areasPage, contactPage } from '../src/content.mjs';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, 'public');
@@ -114,6 +114,8 @@ ${regionLabels}${labels}
 
 /* ---------- shared partials ---------- */
 const phoneLink = (cls = 'btn btn-call', label = site.phone) => `<a class="${cls}" href="tel:${site.phoneTel}">${iconSolid('phone', 'currentColor')}<span>${label}</span></a>`;
+// A quote button. data-service preselects the service in the popup; data-quote-title / data-quote-submit relabel it.
+const quoteBtn = (cls, label, o = {}) => `<a class="${cls}" href="${o.href || '#quote'}" data-quote-open${o.service ? ` data-service="${attr(o.service)}"` : ''}${o.title ? ` data-quote-title="${attr(o.title)}"` : ''}${o.submit ? ` data-quote-submit="${attr(o.submit)}"` : ''}>${label}</a>`;
 const servicesNav = () => services.map(s => `<a href="/${s.slug}">${icon(s.icon)}${esc(s.nav)}</a>`).join('');
 
 // Pages that carry their own quote form link to it in-page; everything else goes to /contact.
@@ -160,24 +162,34 @@ function footer(withMap) {
 </div>
 <div class="footer-bottom"><span>© ${new Date().getFullYear()} ${site.name}. All rights reserved. ABN available on request.</span><span><a href="/privacy">Privacy</a> · Website by <a href="https://www.localservicepro.com.au/" rel="noopener" target="_blank">Local Service Pro</a></span></div>
 </div></footer>
+<datalist id="suburb-list">${allSuburbs.map(n => `<option value="${attr(n)}">`).join('')}</datalist>
 <div class="modal" id="quote-modal" hidden><div class="modal-backdrop" data-quote-close></div><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-form-title"><button class="modal-close" type="button" aria-label="Close" data-quote-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>${quoteForm('modal-form', true)}</div></div>`;
 }
 
-function quoteForm(id, compact = false) {
-  return `<form id="${id}" class="form-card" data-quote-form data-redirect="/thank-you" novalidate="" autocomplete="on">
-  <h2 id="${id}-title">Get a Free Quote</h2>
+function quoteForm(id, compact = false, o = {}) {
+  const title = o.title || 'Get a Free Quote';
+  const submit = o.submit || 'Send My Quote Request';
+  const note = o.service && serviceNotes[o.service] ? serviceNotes[o.service] : '';
+  return `<form id="${id}" class="form-card" action="/api/quote" method="post" enctype="multipart/form-data" data-quote-form data-endpoint="/api/quote" data-redirect="/thank-you" novalidate="" autocomplete="on">
+  <h2 id="${id}-title" data-default="Get a Free Quote">${esc(title)}</h2>
   <p class="phone-line">${iconSolid('phone', '#1a8235')}<span>Prefer to talk? </span><a href="tel:${site.phoneTel}">${site.phone}</a></p>
   <div class="form-grid${compact ? ' compact' : ''}">
-    <div class="field"><label for="${id}-name">Name</label><input id="${id}-name" name="full_name" type="text" required autocomplete="name" data-ghl="{{contact.full_name}}"></div>
-    <div class="field"><label for="${id}-phone">Phone</label><input id="${id}-phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" data-ghl="{{contact.phone}}"></div>
-    <div class="field full"><label for="${id}-email">Email</label><input id="${id}-email" name="email" type="email" required autocomplete="email" data-ghl="{{contact.email}}"></div>
-    <div class="field full"><label for="${id}-address">Property Address</label><input id="${id}-address" name="property_address" type="text" autocomplete="street-address" placeholder="Suburb is fine to start" data-ghl="{{contact.property_address}}"></div>
-    <div class="field"><label for="${id}-size">Property Size</label><input id="${id}-size" name="property_size" type="text" placeholder="e.g. 600m², 2 acres" data-ghl="{{contact.property_size}}"></div>
-    <div class="field"><label for="${id}-service">Service Needed</label><select id="${id}-service" name="service_needed" required data-ghl="{{contact.service_needed}}"><option value="" selected disabled>Select a service</option>${formServices.map(s => `<option value="${attr(s)}">${esc(s)}</option>`).join('')}</select></div>
-    <div class="field full"><label for="${id}-notes">Job Notes</label><textarea id="${id}-notes" name="job_notes" placeholder="Tell us about the job, access, timing…" data-ghl="{{contact.job_notes}}"></textarea></div>
-    <div class="field full"><button class="btn btn-primary btn-lg" type="submit" style="width:100%">Send My Quote Request</button></div>
+    <div class="field full"><label for="${id}-name">Name</label><input id="${id}-name" name="full_name" type="text" required autocomplete="name" maxlength="120" data-ghl="{{contact.full_name}}"></div>
+    <p class="field full field-help" id="${id}-contact-help">Phone or email, whichever suits you. We just need one.</p>
+    <div class="field"><label for="${id}-phone">Phone</label><input id="${id}-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" aria-describedby="${id}-contact-help" data-contact data-ghl="{{contact.phone}}"></div>
+    <div class="field"><label for="${id}-email">Email</label><input id="${id}-email" name="email" type="email" autocomplete="email" maxlength="160" aria-describedby="${id}-contact-help" data-contact data-ghl="{{contact.email}}"></div>
+    <div class="field"><label for="${id}-suburb">Suburb</label><input id="${id}-suburb" name="suburb" type="text" required autocomplete="address-level2" maxlength="80" list="suburb-list" placeholder="e.g. Byford" data-ghl="{{contact.city}}"></div>
+    <div class="field"><label for="${id}-size">Property Size</label><input id="${id}-size" name="property_size" type="text" maxlength="80" placeholder="e.g. 600m², 2 acres" data-ghl="{{contact.property_size}}"></div>
+    <div class="field full"><label for="${id}-address">Street Address <span class="opt">(optional)</span></label><input id="${id}-address" name="property_address" type="text" autocomplete="street-address" maxlength="160" data-ghl="{{contact.property_address}}"></div>
+    <div class="field full"><label for="${id}-service">Service Needed</label><select id="${id}-service" name="service_needed" required aria-describedby="${id}-service-note" data-ghl="{{contact.service_needed}}"><option value=""${o.service ? '' : ' selected'} disabled>Select a service</option>${formServices.map(sv => `<option value="${attr(sv)}"${serviceNotes[sv] ? ` data-note="${attr(serviceNotes[sv])}"` : ''}${sv === o.service ? ' selected' : ''}>${esc(sv)}</option>`).join('')}</select><p class="field-note" id="${id}-service-note" aria-live="polite"${note ? '' : ' hidden'}>${esc(note)}</p></div>
+    <div class="field full"><label for="${id}-notes">Job Notes</label><textarea id="${id}-notes" name="job_notes" maxlength="2000" placeholder="Tell us about the job, access, timing…" data-ghl="{{contact.job_notes}}"></textarea></div>
+    <div class="field full field-photos"><label for="${id}-photos">Job Photos <span class="opt">(optional, up to 5)</span></label><input id="${id}-photos" name="photos" type="file" accept="image/*" multiple data-photos><p class="photo-list" aria-live="polite"></p></div>
+    <div class="hp" aria-hidden="true"><label for="${id}-website">Leave this empty</label><input id="${id}-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+    <input type="hidden" name="page_url" value="">
+    <p class="form-error field full" role="alert" hidden></p>
+    <div class="field full"><button class="btn btn-primary btn-lg" type="submit" style="width:100%" data-default="Send My Quote Request">${esc(submit)}</button></div>
   </div>
-  <p class="form-note">No obligation. We usually reply the same business day.</p>
+  <p class="form-note">No obligation. We'll get back to you as soon as we can.</p>
 </form>`;
 }
 
@@ -232,6 +244,8 @@ const faqHtml = (faqs, cls = '') => `<div class="faq ${cls}">${faqs.map((f, i) =
 
 function homePage() {
   const h = home;
+  const featuredBA = beforeAfter.find(b => b.before === h.featured.before) || beforeAfter[0];
+  const featuredReview = reviews.find(r => r.name === h.featured.review) || reviews[0];
   const body = `${header('/')}
 <main id="main">
 <section class="hero hero-home">
@@ -241,12 +255,21 @@ function homePage() {
       <p class="hero-pill">${iconSolid('pin', 'currentColor')}Byford WA · Canning Vale to Mandurah</p>
       <h1>${esc(h.h1).replace(': ', ': <em>').replace(/$/, '</em>')}</h1>
       <p class="lead">${esc(h.lead)}</p>
-      <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote" data-quote-open>Get a Free Quote</a></div>
+      <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}${quoteBtn('btn btn-outline btn-lg', 'Get a Free Quote')}</div>
+      <nav class="hero-popular" aria-label="Popular services"><span>Popular:</span>${h.popular.map(([slug, label]) => { const sv = services.find(x => x.slug === slug); return `<a href="/${slug}">${icon(sv.icon)}${esc(label)}</a>`; }).join('')}</nav>
     </div>
     <ul class="trust hero-trust">${h.trust.map(t => `<li>${iconSolid('check', '#8dc81b')}${esc(t)}</li>`).join('')}</ul>
   </div>
 </section>
 <nav class="svc-strip" aria-label="Services"><div class="container">${services.map(s => `<a href="/${s.slug}" title="${attr(s.nav)}">${icon(s.icon)}${esc(s.strip || s.nav)}</a>`).join('')}</div></nav>
+
+<section class="section section-grey proof" id="proof"><div class="container proof-grid">
+  <div class="reveal"><div class="ba">${img(featuredBA.before, featuredBA.altB, { cls: 'before', sizes: '(min-width: 1000px) 560px, 100vw' })}${img(featuredBA.after, featuredBA.altA, { cls: 'after', sizes: '(min-width: 1000px) 560px, 100vw' })}<span class="lbl lbl-b">Before</span><span class="lbl lbl-a">After</span><div class="handle"></div><input type="range" min="0" max="100" value="50" aria-label="Compare before and after: ${attr(featuredBA.cap)}"></div><p class="ba-cap">${esc(featuredBA.cap)}. Drag the slider.</p></div>
+  <div class="reveal proof-copy"><p class="eyebrow">Real jobs, real reviews</p><h2>See the Difference</h2><span class="rule"></span>
+    <article class="review review-feature"><div class="stars" aria-label="5 out of 5 stars">${star}${star}${star}${star}${star}</div><p>“${esc(featuredReview.text)}”</p><footer><span class="av" aria-hidden="true">${featuredReview.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</span><span><strong>${esc(featuredReview.name)}</strong><br><time datetime="${featuredReview.date}">${featuredReview.dateText}</time> · Google review</span></footer></article>
+    <p class="proof-links"><a href="#reviews">More customer reviews</a><a href="#results">More before &amp; afters</a></p>
+  </div>
+</div></section>
 
 <section class="section" id="services"><div class="container">
   <div class="section-head center reveal"><p class="eyebrow">Our services</p><h2>Lawn, Landscaping, Earthworks &amp; Commercial Services</h2><span class="rule center"></span><p class="lead">${esc(h.servicesLead)}</p></div>
@@ -255,10 +278,10 @@ function homePage() {
 
 <section class="section section-grey" id="commercial"><div class="container feature">
   <div class="media reveal">${img('commercial-strata-mowing', 'Maintained lawn and garden beds at a commercial property in Perth\'s South-East', { sizes: '(min-width: 900px) 560px, 100vw' })}</div>
-  <div class="stagger"><p class="eyebrow">Commercial &amp; tenders</p><h2>Grounds Maintenance for Bigger Sites</h2><span class="rule"></span>
-    <p class="lead">Strata complexes, commercial properties, developers, schools and councils. Multiple crews, commercial mowers, our own loader and bobcat, and one point of contact for single sites, multi-site contracts and tenders.</p>
-    <ul class="checks">${['Scheduled programs with a written scope', 'Multi-site contracts with one invoice', 'Itemised pricing for tenders and schedules of rates', 'Fire-break slashing and site prep for large holdings'].map(t => `<li>${icon('check')}<div><strong>${esc(t)}</strong></div></li>`).join('')}</ul>
-    <div class="hero-cta"><a class="btn btn-primary" href="/commercial">Commercial &amp; Tenders ${iconSolid('arrow', 'currentColor')}</a><a class="btn btn-outline-dark" href="#quote" data-quote-open>Request a Quote</a></div>
+  <div class="stagger"><p class="eyebrow">Commercial grounds maintenance</p><h2>Grounds Maintenance for Businesses, Strata &amp; Government</h2><span class="rule"></span>
+    <p class="lead">For businesses, strata complexes, property managers, local governments and other government agencies. Multiple crews, commercial mowers, our own loader and bobcat, and one point of contact for single sites, multi-site contracts and tenders.</p>
+    <ul class="checks">${['Scheduled programs with a written scope', 'Multi-site contracts with one invoice', 'Itemised pricing for tenders and schedules of rates', 'Block slashing and site prep for large holdings'].map(t => `<li>${icon('check')}<div><strong>${esc(t)}</strong></div></li>`).join('')}</ul>
+    <div class="hero-cta">${quoteBtn('btn btn-primary', 'Request a Site Walkthrough', { service: 'Commercial Grounds Maintenance', title: 'Request a Site Walkthrough', submit: 'Request My Site Walkthrough' })}<a class="btn btn-outline-dark" href="/commercial">Commercial Grounds Maintenance ${iconSolid('arrow', 'currentColor')}</a></div>
   </div>
 </div></section>
 
@@ -272,12 +295,12 @@ function homePage() {
 
 <section class="section section-grey" id="results"><div class="container">
   <div class="section-head reveal"><p class="eyebrow">Before &amp; after</p><h2>Real Jobs, Real Results</h2><span class="rule"></span><p class="lead">Drag the slider. Every pair below is a real job, from lawn mowing Byford verges to full garden makeovers across Perth's South-East.</p></div>
-  <div class="grid grid-3">${beforeAfter.map((b, i) => `<div class="reveal" style="transition-delay:${i * 60}ms"><div class="ba">${img(b.before, b.altB, { cls: 'before', sizes: '(min-width: 1000px) 370px, (min-width: 640px) 50vw, 100vw' })}${img(b.after, b.altA, { cls: 'after', sizes: '(min-width: 1000px) 370px, (min-width: 640px) 50vw, 100vw' })}<span class="lbl lbl-b">Before</span><span class="lbl lbl-a">After</span><div class="handle"></div><input type="range" min="0" max="100" value="50" aria-label="Compare before and after: ${attr(b.cap)}"></div><p class="ba-cap">${esc(b.cap)}</p></div>`).join('')}</div>
+  <div class="grid grid-2">${beforeAfter.filter(b => b !== featuredBA).map((b, i) => `<div class="reveal" style="transition-delay:${i * 60}ms"><div class="ba">${img(b.before, b.altB, { cls: 'before', sizes: '(min-width: 1000px) 370px, (min-width: 640px) 50vw, 100vw' })}${img(b.after, b.altA, { cls: 'after', sizes: '(min-width: 1000px) 370px, (min-width: 640px) 50vw, 100vw' })}<span class="lbl lbl-b">Before</span><span class="lbl lbl-a">After</span><div class="handle"></div><input type="range" min="0" max="100" value="50" aria-label="Compare before and after: ${attr(b.cap)}"></div><p class="ba-cap">${esc(b.cap)}</p></div>`).join('')}</div>
 </div></section>
 
 <section class="section" id="reviews"><div class="container">
   <div class="section-head center reveal"><p class="eyebrow">Google reviews</p><h2>What Customers Say</h2><span class="rule center"></span><p class="lead">Real reviews from In The Mow Lawncare's Google Business Profile, quoted as written.</p></div>
-  <div class="grid grid-3">${reviews.map((r, i) => `<article class="review reveal" style="transition-delay:${i * 50}ms"><div class="stars" aria-label="5 out of 5 stars">${star}${star}${star}${star}${star}</div><p>“${esc(r.text)}”</p><footer><span class="av" aria-hidden="true">${r.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</span><span><strong>${esc(r.name)}</strong><br><time datetime="${r.date}">${r.dateText}</time> · Google</span></footer></article>`).join('')}</div>
+  <div class="grid grid-2 grid-4">${reviews.filter(r => r !== featuredReview).map((r, i) => `<article class="review reveal" style="transition-delay:${i * 50}ms"><div class="stars" aria-label="5 out of 5 stars">${star}${star}${star}${star}${star}</div><p>“${esc(r.text)}”</p><footer><span class="av" aria-hidden="true">${r.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</span><span><strong>${esc(r.name)}</strong><br><time datetime="${r.date}">${r.dateText}</time> · Google</span></footer></article>`).join('')}</div>
   <div style="text-align:center"><a class="g-link" href="${site.gbp}" target="_blank" rel="noopener">Read more reviews on Google ${iconSolid('arrow', 'currentColor').replace('<svg', '<svg style="width:18px;height:18px"')}</a></div>
 </div></section>
 
@@ -303,7 +326,7 @@ function homePage() {
         <div class="row">${icon('phone')}<div><a href="tel:${site.phoneTel}">${site.phone}</a><span>Click to call. ${site.hoursText}</span></div></div>
         <div class="row">${icon('mail')}<div><a href="mailto:${site.email}">${site.email}</a><span>Send photos of the job for a faster quote</span></div></div>
         <div class="row">${icon('pin')}<div><a href="${site.gbp}" target="_blank" rel="noopener">Byford WA 6122</a><span>Service-area business covering Perth's South-East corridor and Peel. Find us on Google.</span></div></div>
-        <div class="row">${icon('clock')}<div><strong style="color:#fff">${site.hoursText}</strong><span>Messages and form enquiries outside these hours are answered the next business day.</span></div></div>
+        <div class="row">${icon('clock')}<div><strong style="color:#fff">${site.hoursText}</strong><span>Messages outside these hours: we'll get back to you as soon as we can.</span></div></div>
       </div>
       <div class="gmap" style="margin-top:24px">${site.gbpEmbed}</div>
     </div>
@@ -320,15 +343,23 @@ ${GRAD}
 
 function servicePage(s) {
   const rel = s.related.map(r => services.find(x => x.slug === r));
+  const pc = s.primaryCta;
+  const svc = s.formService || s.nav;
+  const ctaLabel = s.ctaLabel || 'Get a Free Quote';
+  const heroButtons = pc
+    ? `${quoteBtn('btn btn-primary btn-lg', esc(pc.label), { service: svc, title: pc.title, submit: pc.submit })}${phoneLink('btn btn-outline btn-lg', 'Call ' + site.phone)}`
+    : `${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}${quoteBtn('btn btn-outline btn-lg', ctaLabel, { service: svc })}`;
+  const pricing = s.pricing ? `<div class="price-grid reveal">${s.pricing.map(c => `<div class="price-card"><h3>${esc(c.title)}</h3><p class="price">${esc(c.price)}</p><p>${esc(c.text)}</p>${quoteBtn('btn btn-primary', esc(c.cta), { service: c.service })}</div>`).join('')}</div>` : '';
+  const audience = s.audience ? `<div class="reveal" style="margin-top:8px"><h2>Who We Work With</h2><span class="rule"></span><div class="aud-grid">${s.audience.map(([ic, t, d]) => `<div class="aud">${icon(ic)}<h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}</div></div>` : '';
   const body = `${header('/' + s.slug)}
-<main id="main">
+<main id="main" data-page-service="${attr(svc)}"${pc ? ` data-page-title="${attr(pc.title)}" data-page-submit="${attr(pc.submit)}"` : s.ctaLabel ? ` data-page-title="${attr(s.ctaLabel)}"` : ''}>
 <section class="hero hero-inner"><div class="container">
   <div>
     <ol class="crumbs" aria-label="Breadcrumb"><li><a href="/">Home</a></li><li><a href="/#services">Services</a></li><li aria-current="page">${esc(s.nav)}</li></ol>
     <h1>${esc(s.h1)}</h1>
     <p class="lead">${esc(s.lead)}</p>
-    <div class="hero-cta">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline btn-lg" href="#quote" data-quote-open>Get a Free Quote</a></div>
-    <ul class="trust"><li>${iconSolid('check', '#8dc81b')}Locally owned, Byford based</li><li>${iconSolid('check', '#8dc81b')}Free, no-obligation quotes</li><li>${iconSolid('check', '#8dc81b')}Multiple crews for mowing, retic, landscaping &amp; earthworks</li></ul>
+    <div class="hero-cta">${heroButtons}</div>
+    <ul class="trust"><li>${iconSolid('check', '#8dc81b')}Locally owned, Byford based</li><li>${iconSolid('check', '#8dc81b')}${esc(s.trustQuote || 'Free, no-obligation quotes')}</li><li>${iconSolid('check', '#8dc81b')}Multiple crews for mowing, retic, landscaping &amp; earthworks</li></ul>
   </div>
   <div class="hero-media hero-media-tall">${img(s.hero.img, s.hero.alt, { eager: true, sizes: '(min-width: 900px) 48vw, 100vw' })}</div>
 </div></section>
@@ -336,15 +367,20 @@ function servicePage(s) {
 <section class="section"><div class="container two-col">
   <div class="prose">
     ${s.intro.map(p => `<p class="lead">${esc(p)}</p>`).join('')}
+    ${pricing}${audience}
     ${s.sections.map((sec, i) => `<div class="reveal" style="margin-top:40px"><h2>${esc(sec.h2)}</h2><span class="rule"></span>${sec.img ? `<figure style="margin:0 0 20px">${img(sec.img, sec.alt, { sizes: '(min-width: 960px) 720px, 100vw', cls: 'feature-img' })}${sec.gen ? genNote : ''}</figure>` : ''}${sec.paras.map(p => `<p>${esc(p)}</p>`).join('')}${sec.bullets.length ? `<ul class="checks">${sec.bullets.map(b => `<li>${icon('check')}<span style="color:var(--text)">${esc(b)}</span></li>`).join('')}</ul>` : ''}</div>`).join('')}
     <div class="reveal" style="margin-top:40px"><h2>Where We Offer ${esc(s.nav)}</h2><span class="rule"></span><p>${esc(s.nav)} is available across ${s.suburbs.slice(0, -1).join(', ')} and ${s.suburbs.slice(-1)}, and throughout the rest of Perth's South-East corridor and the Peel region. See the <a href="/#areas">full service-area list</a> or <a href="/">return to the home page</a>.</p></div>
   </div>
   <aside class="aside">
-    <div id="quote">${quoteForm('quote-' + s.slug, true)}</div>
+    <div id="quote">${quoteForm('quote-' + s.slug, true, { service: svc, title: pc ? pc.title : (s.ctaLabel || ''), submit: pc ? pc.submit : '' })}</div>
     <div class="related"><h3>Related services</h3>${rel.map(r => `<a href="/${r.slug}">${icon(r.icon)}${esc(r.nav)}</a>`).join('')}<a href="/">${icon('pin')}All services &amp; service areas</a></div>
   </aside>
 </div></section>
 
+${s.sites ? `<section class="section section-grey"><div class="container">
+  <div class="section-head reveal"><p class="eyebrow">Our work</p><h2>Examples of Sites We Maintain</h2><span class="rule"></span><p class="lead">A sample of the commercial, government and large sites our crews look after on a regular program.</p></div>
+  <div class="sites-grid reveal">${s.sites.map(g => `<figure>${img(g.img, g.alt, { sizes: '(min-width: 1000px) 280px, (min-width: 640px) 50vw, 100vw' })}<figcaption>${esc(g.cap)}</figcaption></figure>`).join('')}</div>
+</div></section>` : ''}
 <section class="section section-grey"><div class="container">
   <div class="section-head reveal"><p class="eyebrow">Recent work</p><h2>${esc(s.nav)} Photos</h2><span class="rule"></span></div>
   <div class="gallery reveal">${s.gallery.map(g => `<figure>${img(g.img, g.alt)}<figcaption>${esc(g.alt)}</figcaption></figure>`).join('')}</div>
@@ -355,7 +391,7 @@ function servicePage(s) {
   ${faqHtml(s.faqs, 'reveal')}
 </div></section>
 
-<section class="cta-band"><div class="container"><div><h2>Need ${esc(s.nav.toLowerCase())} sorted?</h2><p>Call Josh now or send the form and we will come back to you with a price.</p></div><div class="hero-cta" style="margin:0">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="#quote" data-quote-open>Get a Free Quote</a></div></div></section>
+<section class="cta-band"><div class="container"><div><h2>Need ${esc(s.nav.toLowerCase())} sorted?</h2><p>${pc ? 'Book a site walkthrough and we will scope the site with you, then send a written price.' : 'Call Josh now or send the form and we will come back to you with a price.'}</p></div><div class="hero-cta" style="margin:0">${pc ? `${quoteBtn('btn btn-primary', esc(pc.label), { service: svc, title: pc.title, submit: pc.submit })}${phoneLink('btn btn-outline-dark', 'Call ' + site.phone)}` : `${phoneLink('btn btn-primary', 'Call ' + site.phone)}${quoteBtn('btn btn-outline-dark', ctaLabel, { service: svc })}`}</div></div></section>
 </main>
 ${footer(true)}
 ${stickyBar('#quote')}
@@ -498,7 +534,7 @@ function contactPageHtml() {
         <div class="row">${icon('phone')}<div><a href="tel:${site.phoneTel}">${site.phone}</a><span>Click to call. Fastest for urgent jobs.</span></div></div>
         <div class="row">${icon('mail')}<div><a href="mailto:${site.email}">${site.email}</a><span>Send photos of the job for a faster quote</span></div></div>
         <div class="row">${icon('pin')}<div><a href="${site.gbp}" target="_blank" rel="noopener">Byford WA 6122</a><span>Service-area business covering Perth's South-East corridor and Peel. Find us on Google.</span></div></div>
-        <div class="row">${icon('clock')}<div><dl class="hours"><dt>Mon to Fri</dt><dd>9:00am to 5:00pm</dd><dt>Sat and Sun</dt><dd>Closed (messages answered next business day)</dd></dl></div></div>
+        <div class="row">${icon('clock')}<div><dl class="hours"><dt>Mon to Fri</dt><dd>9:00am to 5:00pm</dd><dt>Sat and Sun</dt><dd>Closed. We'll get back to you as soon as we can.</dd></dl></div></div>
         <div class="row"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color:#8dc81b"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8z"/></svg><div><a href="${site.facebook}" target="_blank" rel="noopener">In The Mow Lawncare on Facebook</a><span>Recent jobs and seasonal updates</span></div></div>
       </div>
       <div class="gmap" style="margin-top:24px">${site.gbpEmbed}</div>
@@ -534,7 +570,7 @@ writeFileSync(path.join(out, 'about.html'), aboutPage());
 writeFileSync(path.join(out, 'service-areas.html'), serviceAreasPage());
 writeFileSync(path.join(out, 'contact.html'), contactPageHtml());
 writeFileSync(path.join(out, 'thank-you.html'), simplePage({ slug: 'thank-you', title: 'Thanks, We Have Your Quote Request | In The Mow', description: 'Your quote request has been sent to In The Mow Lawncare. Josh will be in touch shortly.', h1: 'Thanks, Your Quote Request Is In', robots: 'noindex, nofollow',
-  html: `<div class="big-tick">${icon('check')}</div>{{H1}}<p class="lead" id="ty-name">Thanks!</p><p class="lead">We will look at the details and come back to you, usually the same business day. If the job is urgent, like a retic fault or a block that needs slashing before fire season, call now.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline-dark btn-lg" href="/">Back to home</a></div>` }));
+  html: `<div class="big-tick">${icon('check')}</div>{{H1}}<p class="lead" id="ty-name">Thanks!</p><p class="lead">We'll get back to you as soon as we can. If the job is urgent, like a retic fault, call now.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary btn-lg', 'Call ' + site.phone)}<a class="btn btn-outline-dark btn-lg" href="/">Back to home</a></div>` }));
 writeFileSync(path.join(out, '404.html'), simplePage({ slug: '404', title: 'Page Not Found | In The Mow', description: 'That page does not exist. Head back to In The Mow Lawncare.', h1: 'Page Not Found', robots: 'noindex, nofollow',
   html: `{{H1}}<p class="lead">That page has moved or never existed. Try one of our services or head back home.</p><div class="hero-cta" style="justify-content:center">${services.map(s => `<a class="btn btn-outline-dark" href="/${s.slug}">${esc(s.nav)}</a>`).join('')}</div>` }));
 writeFileSync(path.join(out, 'blog.html'), simplePage({ slug: 'blog', title: 'Lawn Care Tips for Perth | In The Mow Blog', description: "Seasonal lawn mowing, reticulation and lawn care advice for Perth's South-East from In The Mow Lawncare.", h1: 'Lawn Care Tips for Perth', robots: 'noindex, follow',

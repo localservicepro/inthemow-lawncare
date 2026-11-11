@@ -2,7 +2,7 @@
   "name": "inthemow-lawncare",
   "version": "1.0.0",
   "private": true,
-  "description": "In The Mow Lawncare - static website (lawn mowing, reticulation, turf & garden maintenance, Byford WA)",
+  "description": "In The Mow Lawncare - static website with a quote-form function (Byford WA)",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
@@ -10,5 +10,8 @@
     "serve": "node scripts/serve.mjs",
     "check": "node scripts/check.mjs"
   },
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@vercel/blob": "^2.9.0"
+  }
 }

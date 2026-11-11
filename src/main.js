@@ -70,21 +70,81 @@
     r.addEventListener('input', set); set();
   });
 
-  /* ---------- Quote form: tracking script captures the submit, then redirect ---------- */
+  /* ---------- Quote form: phone or email, suburb, photos; posts to /api/quote, then the thank-you page ---------- */
+  var MAX_PHOTOS = 5;
+  // Phone photos are 3 to 6 MB each. Shrink them to 1600px JPEGs in the browser so five fit in one request.
+  var shrink = function (file) {
+    return new Promise(function (resolve) {
+      if (!/^image\//.test(file.type) || !window.createImageBitmap) { resolve(file); return; }
+      createImageBitmap(file).then(function (bmp) {
+        var sc = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+        var c = document.createElement('canvas'); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+        c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { resolve(b ? new File([b], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' }) : file); }, 'image/jpeg', 0.8);
+      }).catch(function () { resolve(file); });
+    });
+  };
+  var setNote = function (form) {
+    var sel = form.querySelector('select[name=service_needed]'), note = form.querySelector('.field-note');
+    if (!sel || !note) return;
+    var opt = sel.options[sel.selectedIndex], txt = opt ? opt.getAttribute('data-note') : '';
+    note.textContent = txt || ''; note.hidden = !txt;
+  };
+  var validate = function (form) {
+    var el = form.elements, errs = [];
+    var phone = el.phone.value.trim(), email = el.email.value.trim();
+    if (!el.full_name.value.trim()) errs.push([el.full_name, 'Please enter your name.']);
+    if (!phone && !email) errs.push([el.phone, 'Please give us a phone number or an email address.']);
+    if (phone && phone.replace(/\D/g, '').length < 8) errs.push([el.phone, 'Please check the phone number.']);
+    if (email && !el.email.checkValidity()) errs.push([el.email, 'Please check the email address.']);
+    if (!el.suburb.value.trim()) errs.push([el.suburb, 'Please enter your suburb.']);
+    if (!el.service_needed.value) errs.push([el.service_needed, 'Please choose a service.']);
+    return errs;
+  };
   document.querySelectorAll('form[data-quote-form]').forEach(function (form) {
+    var box = form.querySelector('.form-error');
+    var btn = form.querySelector('button[type=submit]');
+    var photos = form.querySelector('[data-photos]');
+    var list = form.querySelector('.photo-list');
+    setNote(form);
+    form.addEventListener('change', function (e) { if (e.target.name === 'service_needed') setNote(form); });
+    form.addEventListener('input', function (e) { var f = e.target.closest('.field'); if (f) f.classList.remove('invalid'); if (e.target.hasAttribute('data-contact')) form.querySelectorAll('[data-contact]').forEach(function (i) { i.closest('.field').classList.remove('invalid'); }); });
+    if (photos && list) photos.addEventListener('change', function () {
+      var n = photos.files.length;
+      list.textContent = n ? (n > MAX_PHOTOS ? n + ' photos chosen. The first ' + MAX_PHOTOS + ' will be sent.' : n + (n === 1 ? ' photo' : ' photos') + ' ready to send.') : '';
+    });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      if (!form.checkValidity()) { form.reportValidity(); return; }
-      var btn = form.querySelector('button[type=submit]');
-      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
-      try {
-        var data = {};
-        new FormData(form).forEach(function (v, k) { data[k] = v; });
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({ event: 'quote_form_submit', form_id: form.id || 'quote', service_needed: data.service_needed || '' });
-        sessionStorage.setItem('itm_quote', JSON.stringify({ name: data.full_name || '', service: data.service_needed || '' }));
-      } catch (err) { /* non-fatal */ }
-      setTimeout(function () { window.location.href = form.getAttribute('data-redirect') || '/thank-you'; }, 450);
+      form.querySelectorAll('.field.invalid').forEach(function (f) { f.classList.remove('invalid'); });
+      var errs = validate(form);
+      if (errs.length) {
+        errs.forEach(function (x) { var f = x[0].closest('.field'); if (f) f.classList.add('invalid'); });
+        box.textContent = errs.map(function (x) { return x[1]; }).join(' '); box.hidden = false; errs[0][0].focus(); return;
+      }
+      box.hidden = true;
+      var label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending…';
+      var fd = new FormData(form); fd.set('page_url', location.href); fd.delete('photos');
+      var files = photos ? Array.prototype.slice.call(photos.files).filter(function (f) { return /^image\//.test(f.type); }).slice(0, MAX_PHOTOS) : [];
+      if (files.length) btn.textContent = 'Preparing photos…';
+      Promise.all(files.map(shrink)).then(function (small) {
+        small.forEach(function (f) { fd.append('photos', f, f.name); });
+        btn.textContent = 'Sending…';
+        return fetch(form.getAttribute('data-endpoint') || '/api/quote', { method: 'POST', body: fd, headers: { Accept: 'application/json' } });
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.ok === false) throw new Error(j.error || 'HTTP ' + r.status); return j; });
+      }).then(function () {
+        try {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({ event: 'quote_form_submit', form_id: form.id || 'quote', service_needed: fd.get('service_needed') || '' });
+          sessionStorage.setItem('itm_quote', JSON.stringify({ name: fd.get('full_name') || '', service: fd.get('service_needed') || '' }));
+        } catch (err) { /* non-fatal */ }
+        window.location.href = form.getAttribute('data-redirect') || '/thank-you';
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = label;
+        var tel = form.querySelector('.phone-line a');
+        box.innerHTML = 'Sorry, your request did not send. Please call <a href="' + (tel ? tel.getAttribute('href') : 'tel:+61424058261') + '">' + (tel ? tel.textContent : '0424 058 261') + '</a> or email <a href="mailto:enquiries@inthemowlawncare.com.au">enquiries@inthemowlawncare.com.au</a>.';
+        box.hidden = false;
+      });
     });
   });
 
@@ -134,16 +194,26 @@
   }
 })();
 
-/* ---------- Quote modal: any [data-quote-open] opens the compact form; href stays as the no-JS fallback ---------- */
+/* ---------- Quote modal: any [data-quote-open] opens the compact form; href stays as the no-JS fallback ----------
+   The button (or the page's <main data-page-service>) decides which service is preselected and how the form is titled. */
 (function () {
   var modal = document.getElementById('quote-modal'); if (!modal) return;
+  var form = modal.querySelector('form'), title = form.querySelector('h2'), submit = form.querySelector('button[type=submit]'), sel = form.querySelector('select[name=service_needed]');
+  var page = document.querySelector('main[data-page-service]');
   var lastFocus = null;
   var open = function (e) {
     e.preventDefault(); lastFocus = document.activeElement;
+    var t = e.currentTarget;
+    var svc = t.getAttribute('data-service') || (page && page.getAttribute('data-page-service')) || '';
+    title.textContent = t.getAttribute('data-quote-title') || (page && page.getAttribute('data-page-title')) || title.getAttribute('data-default');
+    submit.textContent = t.getAttribute('data-quote-submit') || (page && page.getAttribute('data-page-submit')) || submit.getAttribute('data-default');
+    if (svc && Array.prototype.some.call(sel.options, function (o) { return o.value === svc; })) { sel.value = svc; }
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+    var err = form.querySelector('.form-error'); if (err) err.hidden = true;
     modal.hidden = false; document.body.classList.add('modal-open');
     document.querySelectorAll('.mobile-menu[data-open]').forEach(function (m) { m.removeAttribute('data-open'); });
     var first = modal.querySelector('input'); if (first) setTimeout(function () { first.focus(); }, 50);
-    if (window.dataLayer) window.dataLayer.push({ event: 'quote_modal_open' });
+    if (window.dataLayer) window.dataLayer.push({ event: 'quote_modal_open', service_needed: svc });
   };
   var close = function () { modal.hidden = true; document.body.classList.remove('modal-open'); if (lastFocus && lastFocus.focus) lastFocus.focus(); };
   document.querySelectorAll('[data-quote-open]').forEach(function (a) { a.addEventListener('click', open); });

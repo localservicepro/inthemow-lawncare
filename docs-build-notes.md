@@ -76,3 +76,24 @@ still flagged with `gen: true` in `src/content.mjs` and in the manifest for the 
 - Wording no longer implies a one-person business: "multiple crews", "one team", "Josh quotes and oversees the work".
 - To confirm with Josh: the tender copy says we supply "the business documentation your panel or tender asks for"
   (insurance, ABN, safety docs), and the earthworks FAQ says we check Before You Dig Australia before digging.
+
+## Client feedback round 3 (Josh): form, homepage, retic pricing, commercial
+
+- Quote form: phone OR email (one required), Suburb (required, with suburb suggestions), optional street address,
+  up to 5 job photos (shrunk to 1600px JPEG in the browser so a request stays under Vercel's 4.5 MB limit),
+  spam honeypot. The service is preselected from the page (`formService` on each service, or `data-service`
+  on a button); the commercial page relabels the popup "Request a Site Walkthrough".
+- The form now POSTs to `api/quote.js` (Vercel Function). It stores photos in the Vercel Blob store
+  `inthemow-quote-photos` (BLOB_READ_WRITE_TOKEN, already connected) and forwards the enquiry as JSON to a
+  LeadConnector Inbound Webhook (GHL_WEBHOOK_URL, NOT SET YET). Until GHL_WEBHOOK_URL is set the endpoint
+  returns 503 and the visitor sees a "did not send, please call or email" message rather than a false thank-you.
+  Payload keys: full_name, first_name, last_name, phone, email, suburb, city, property_address, property_size,
+  service_needed, job_notes, page_url, photo_urls, photo_1..photo_5, photo_count, photo_note, source, submitted_at.
+- Local test: `GHL_WEBHOOK_URL=http://localhost:9999/hook npm run serve` with a mock webhook; serve.mjs runs the function.
+- Homepage: shorter lead, headline second line in solid lime with a shadow, "Popular" quick links (lawn renovations,
+  retic, turf and landscaping, commercial), and a before/after plus a Google review straight after the services strip.
+  Service order: mowing, retic, lawn renovation, landscaping, commercial, acreage, gardens, earthworks.
+- Retic: $175 fault-finding visit credited toward the repair, free quotes for new installs (pricing cards, FAQ, form note).
+- Firebreak wording removed site-wide; block slashing kept. Reply wording is "We'll get back to you as soon as we can".
+- Commercial page leads with Commercial Grounds Maintenance: who we work with (businesses, strata, property managers,
+  local governments, government agencies), examples of sites, Request a Site Walkthrough as the main button.

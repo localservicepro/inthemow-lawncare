@@ -18,7 +18,9 @@ export const site = {
   gbpEmbed: '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d114132.82700240743!2d115.9135828!3d-32.1626134!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e33d9b3d8d0a54f%3A0xff3e40563a8aefad!2sIn%20The%20Mow%20Lawncare!5e1!3m2!1sen!2sph!4v1793107124209!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>'
 };
 
-export const formServices = ['Lawn Mowing', 'Reticulation Repairs & Installation', 'Acreage Mowing & Slashing', 'Garden Maintenance & Hedging', 'Landscaping & Turf', 'Lawn Health & Renovation', 'Mini Earthworks', 'Commercial & Tenders', 'Other'];
+export const formServices = ['Lawn Mowing', 'Reticulation Repairs & Fault Finding', 'Reticulation Installation', 'Lawn Health & Renovation', 'Landscaping & Turf', 'Commercial Grounds Maintenance', 'Acreage Mowing & Slashing', 'Garden Maintenance & Hedging', 'Mini Earthworks', 'Other'];
+// Short helper text shown under the service dropdown for services with special pricing.
+export const serviceNotes = { 'Reticulation Repairs & Fault Finding': '$175 fault-finding visit, credited toward the repair if you go ahead.', 'Reticulation Installation': 'Free, no-obligation quote for new retic installations.' };
 
 export const regions = [
   { name: 'South-East Perth', suburbs: [
@@ -49,9 +51,9 @@ export const reviews = [
 
 export const homeFaqs = [
   { q: 'How much does lawn mowing cost in Byford?', a: 'It depends on the size of the lawn, access, how overgrown it is and whether you want a one-off cut or a regular program. Regular fortnightly mowing works out cheaper per visit than a once-off tidy-up, and we quote before any work starts. Call 0424 058 261 or send the form below for a free, no-obligation lawn mowing Byford quote.' },
-  { q: 'Do you mow acreage and slash blocks near Serpentine and Jarrahdale?', a: 'Yes. We run commercial-grade ride-on and zero-turn mowers and slash overgrown paddocks, lifestyle blocks and fire-breaks across Byford, Oakford, Cardup, Mundijong, Serpentine, Jarrahdale and Bedfordale. Fire-season slashing books out quickly, so get in early before the restricted burning period.' },
-  { q: 'Can you repair reticulation in Mandurah and Rockingham, not just Byford?', a: "Yes. Reticulation repairs, fault finding, solenoid and valve replacement, controller programming and full new installs are available across the whole corridor, including Mandurah, Halls Head, Lakelands, Rockingham, Baldivis and Secret Harbour. The same team handles the retic and the lawn, so your watering and mowing are set up to work together." },
-  { q: "How often should I get my lawn mowed in Perth's South-East?", a: 'Most couch, kikuyu and buffalo lawns in the South-East need mowing every two weeks through spring and summer and every three to four weeks over winter. Acreage and rural blocks are usually cut seasonally, with an extra slash before fire season. We set a schedule that suits your grass type and adjust it as growth changes.' },
+  { q: 'Do you mow acreage and slash blocks near Serpentine and Jarrahdale?', a: 'Yes. We run commercial-grade ride-on and zero-turn mowers and slash overgrown paddocks, lifestyle blocks and vacant land across Byford, Oakford, Cardup, Mundijong, Serpentine, Jarrahdale and Bedfordale. Spring and early summer book out quickly, so get in early.' },
+  { q: 'Can you repair reticulation in Mandurah and Rockingham, not just Byford?', a: "Yes. Reticulation repairs, fault finding, solenoid and valve replacement, controller programming and full new installs are available across the whole corridor, including Mandurah, Halls Head, Lakelands, Rockingham, Baldivis and Secret Harbour. The same team handles the retic and the lawn, so your watering and mowing are set up to work together. Retic fault finding is a $175 visit, credited toward the repair if you go ahead, and quotes for new installs are free." },
+  { q: "How often should I get my lawn mowed in Perth's South-East?", a: 'Most couch, kikuyu and buffalo lawns in the South-East need mowing every two weeks through spring and summer and every three to four weeks over winter. Acreage and rural blocks are usually cut seasonally, with an extra slash when the grass takes off in spring. We set a schedule that suits your grass type and adjust it as growth changes.' },
   { q: 'Do you offer commercial and strata lawn maintenance in Canning Vale?', a: 'Yes. We maintain strata complexes, offices, rental properties and shared outdoor areas on a scheduled program in Canning Vale, Thornlie, Southern River, Jandakot and across the Cockburn and Armadale areas. Every visit includes mowing, edging, whipper snipping and a full blow-down so the site always presents well.' },
   { q: 'Do you do landscaping and new turf in Baldivis and the Byford growth corridor?', a: 'Yes. We handle full landscapes as well as new lawns: earthworks and levelling with our own mini loader and bobcat, soil preparation, garden beds, planting and mulch, turf supply and laying, and reticulation so everything establishes properly. New builds and renovations in Baldivis, Byford, Hilbert, Haynes, Wandi and Treeby are a big part of what we do.' }
 ];
@@ -66,11 +68,15 @@ export const home = {
   title: 'Lawn Mowing Byford & Perth South-East | In The Mow',
   description: "Lawn mowing Byford & Perth's South-East. Reliable mowing, acreage slashing, retic repairs & garden care from Canning Vale to Mandurah. Get a free quote today.",
   h1: "Lawn Mowing Byford & Perth's South-East: Reliable Mowing, Retic & Garden Care",
-  lead: "In The Mow Lawncare is a locally owned business based in Byford WA, delivering the lawn mowing Byford homes and businesses rely on, plus acreage slashing, reticulation, landscaping, mini earthworks and commercial grounds maintenance across Perth's South-East corridor and the Peel region, from Canning Vale to Mandurah.",
+  lead: "Locally owned in Byford with multiple crews. The lawn mowing Byford homes rely on, plus retic, landscaping and commercial grounds care from Canning Vale to Mandurah.",
   servicesLead: 'From the regular lawn mowing Byford families book fortnightly to full landscapes in Baldivis and commercial contracts in Canning Vale, our crews handle the whole property. Pick a service to see what is included, where we work and what it costs.',
   hero: { img: 'regular-lawn-mowing', alt: 'Freshly mowed and striped front lawn after a regular lawn mowing visit in Byford WA' },
   // Hero video (Higgsfield, generated from Josh's photo + a real job-site photo). Poster is the LCP image; the clip loads after page load.
   video: { poster: 'hero-video-poster', mp4: 'hero-video.mp4', webm: 'hero-video.webm', alt: 'Joshua Patriarca from In The Mow Lawncare on a zero-turn mower slashing a rural block near Byford WA' },
+  // Quick links under the hero buttons (client: make these four easier to find).
+  popular: [['lawn-renovation', 'Lawn Renovations'], ['reticulation', 'Retic Repairs & Installs'], ['landscaping', 'Turf & Landscaping'], ['commercial', 'Commercial Grounds Maintenance']],
+  // Before-and-after pair and Google review shown near the top of the homepage.
+  featured: { before: 'before-1b', review: 'Jodie Cant' },
   trust: ['Locally owned and operated by Joshua Patriarca', 'Multiple crews, one team for the whole property', 'Commercial-grade mowers, mini loader and bobcat'],
   about: {
     img: 'acreage-large-scale', alt: 'Joshua Patriarca from In The Mow Lawncare with the zero-turn mower and trailer on a rural block near Byford WA',
@@ -80,20 +86,20 @@ export const home = {
     ],
     points: [
       ['One team, every service', 'Mowing, retic, landscaping, earthworks and gardens from the same business, so nothing gets missed between contractors.'],
-      ['Built for acreage and fire season', 'Commercial-grade ride-on and zero-turn mowers for rural blocks and fire-break slashing in Byford, Serpentine and Jarrahdale.'],
+      ['Built for acreage and big blocks', 'Commercial-grade ride-on and zero-turn mowers for rural blocks and block slashing in Byford, Serpentine and Jarrahdale.'],
       ['Reliable, finished properly', 'Scheduled visits you can count on, and a clean, edged, blown-down finish every time. The before-and-after photos on this site are our real jobs.']
     ]
   },
   areasIntro: "Based in Byford WA 6122, we cover Perth's South-East corridor and the Peel region. Watch the mower do the rounds, or find your suburb in the list below. If you are close to one of these areas and not listed, call us and we will let you know.",
   areasPara: "Lawn mowing Byford is where we started, and Byford, Mundijong, Serpentine and Jarrahdale are still home turf. From there our crews run north through Armadale, Gosnells and Canning Vale, west through Cockburn and Kwinana, and south along the coast through Baldivis, Rockingham and Secret Harbour to Mandurah.",
-  contactIntro: 'Tell us about the property and what you need. We will come back to you with a clear price, or call now if the job is urgent, like a retic fault or a block that needs slashing before fire season.'
+  contactIntro: 'Tell us about the property and what you need. We will come back to you with a clear price, or call now if the job is urgent, like a retic fault or an overgrown block that needs slashing.'
 };
 
 const callCta = 'Call 0424 058 261';
 
 export const services = [
   {
-    slug: 'lawn-mowing', strip: 'Mowing', nav: 'Lawn Mowing', icon: 'mower',
+    slug: 'lawn-mowing', strip: 'Mowing', nav: 'Lawn Mowing', icon: 'mower', formService: 'Lawn Mowing',
     short: 'Residential, commercial and strata mowing with edging, whipper snipping and a full blow-down, on a schedule you can rely on.',
     title: 'Lawn Mowing Rockingham & Baldivis | In The Mow',
     h1: 'Lawn Mowing Rockingham, Baldivis & Coastal Suburbs: Residential & Commercial',
@@ -131,6 +137,11 @@ export const services = [
     h1: 'Reticulation Mandurah, Rockingham & Byford: Retic Repairs, Installs & Controllers',
     description: 'Reticulation Mandurah, Rockingham & Byford: retic repairs, fault finding, solenoid & valve replacement, Wi-Fi controllers and new installs. Fast local service.',
     keyword: 'Reticulation Mandurah', schemaType: 'Reticulation repair and installation service',
+    formService: 'Reticulation Repairs & Fault Finding', ctaLabel: 'Get a Quote', trustQuote: 'Free install quotes, $175 fault finding',
+    pricing: [
+      { title: 'Retic repairs & fault finding', price: '$175 visit', text: 'We come out, find the fault and tell you what the repair costs before we start: valves, solenoids, wiring, leaks, heads or the controller. If you go ahead with the repair, the $175 is credited toward it.', cta: 'Book a Fault-Finding Visit', service: 'Reticulation Repairs & Fault Finding' },
+      { title: 'New retic installations', price: 'Free quote', text: 'Complete systems for new lawns, gardens and verges, plus extensions and Wi-Fi controller upgrades. We look at the site and give you a fixed price, free and with no obligation.', cta: 'Get a Free Install Quote', service: 'Reticulation Installation' }
+    ],
     hero: { img: 'gen-1', gen: true, alt: 'Pop-up sprinklers running across a green front lawn in Mandurah WA' },
     lead: 'Retic that stops working in a Perth summer costs you a lawn in a fortnight. We find the fault, fix it properly and set the controller up for your watering days, from Mandurah and Rockingham up to Byford.',
     intro: [
@@ -148,41 +159,41 @@ export const services = [
       { img: 'after-2', alt: 'Thick green lawn in Perth\'s South-East after retic repairs and a lawn renovation' }
     ],
     faqs: [
-      { q: 'How much does it cost to fix reticulation in Mandurah?', a: 'Simple repairs such as a solenoid, a cracked fitting or a few pop-ups are usually a single short visit. Larger faults, re-wiring or new controllers are quoted after we have looked at the system. We tell you the price before we start.' },
+      { q: 'How much does it cost to fix reticulation in Mandurah?', a: 'Retic repairs start with a $175 fault-finding visit. We find the problem and tell you what the repair costs before we start. If you go ahead, the $175 is credited toward the repair. Quotes for new reticulation installations are free.' },
       { q: 'Can you fix my retic today?', a: 'Often yes for urgent faults in Mandurah, Rockingham, Baldivis and Byford, depending on where our crews are that day. Call 0424 058 261 and we will give you an honest time.' },
       { q: 'Do you install Wi-Fi reticulation controllers?', a: 'Yes. We supply, install and program Wi-Fi controllers and set up the app on your phone, including your allocated watering days and seasonal run times.' },
-      { q: 'Do you install new reticulation with new turf?', a: 'Yes. Turf and reticulation are usually done as one job so the pipework, head spacing and run times suit the new lawn from day one. See our Turf & Lawn Installation page.' },
+      { q: 'Do you install new reticulation with new turf?', a: 'Yes. Turf and reticulation are usually done as one job so the pipework, head spacing and run times suit the new lawn from day one. See our Landscaping & Turf page.' },
       { q: 'Do you work on bore and pump systems?', a: 'Yes. We repair and install bore, pump and tank-fed irrigation on residential and acreage properties, including filters and pressure problems that clog nozzles on bore water.' }
     ],
     related: ['landscaping', 'lawn-renovation', 'lawn-mowing'],
     suburbs: ['Mandurah', 'Halls Head', 'Lakelands', 'Meadow Springs', 'Rockingham', 'Baldivis', 'Secret Harbour', 'Byford', 'Oakford', 'Canning Vale']
   },
   {
-    slug: 'acreage-mowing', strip: 'Acreage & Slashing', nav: 'Acreage Mowing & Slashing', icon: 'rideon',
-    short: 'Ride-on and zero-turn mowing, block slashing and fire-break prep for rural and lifestyle blocks in the hills and corridor.',
+    slug: 'acreage-mowing', strip: 'Acreage & Slashing', nav: 'Acreage Mowing & Slashing', icon: 'rideon', formService: 'Acreage Mowing & Slashing',
+    short: 'Ride-on and zero-turn mowing and block slashing for rural and lifestyle blocks in the hills and corridor.',
     title: 'Acreage Mowing Byford & Serpentine | In The Mow',
     h1: 'Acreage Mowing & Block Slashing: Byford, Serpentine, Jarrahdale & Oakford',
-    description: 'Acreage mowing Byford, Serpentine, Jarrahdale & Oakford. Ride-on and zero-turn mowing, block slashing and fire-break prep for rural blocks. Free quote.',
+    description: 'Acreage mowing Byford, Serpentine, Jarrahdale & Oakford. Ride-on and zero-turn mowing and block slashing for rural and lifestyle blocks. Free quote.',
     keyword: 'Acreage Mowing Byford', schemaType: 'Acreage mowing and slashing service',
     hero: { img: 'acreage-mowing', alt: 'View from the ride-on mower across a large rural block being mowed in Serpentine WA' },
-    lead: 'Big blocks need the right gear. Our commercial-grade ride-on and zero-turn mowers cover paddocks, lifestyle blocks, verges and fire-breaks fast, from Byford and Oakford up through Serpentine, Jarrahdale and the hills.',
+    lead: 'Big blocks need the right gear. Our commercial-grade ride-on and zero-turn mowers cover paddocks, lifestyle blocks, verges and vacant land fast, from Byford and Oakford up through Serpentine, Jarrahdale and the hills.',
     intro: [
       'Acreage mowing Byford, Serpentine and Jarrahdale property owners book with us because a domestic mower does not cut it on a one-acre lifestyle block, let alone five. In The Mow Lawncare runs commercial zero-turn and ride-on mowers plus slashing equipment for long grass, so a job that would take you a weekend is done in an afternoon.',
       'We are based in Byford and work the whole Serpentine-Jarrahdale area: Byford, Cardup, Mundijong, Whitby, Oakford, Serpentine, Jarrahdale, Bedfordale, Karragullen and Roleystone, plus rural land around Wandi, Anketell and Casuarina.'
     ],
     sections: [
       { h2: 'Ride-On & Zero-Turn Acreage Mowing', img: 'pro-mowing-residential-acreage', alt: 'Zero-turn mower cutting a large lawn beside a shed on a lifestyle block in Oakford WA', paras: ['For lifestyle blocks, hobby farms and large residential lots we mow with zero-turn mowers that leave an even, clean finish around trees, sheds, dams and fence lines, then whipper snip the edges and blow down the hard surfaces around the house.'], bullets: ['Lifestyle blocks, hobby farms and large residential lots', 'Fence line, tree and shed surrounds trimmed', 'House yard mowed and edged to a residential standard', 'Seasonal or regular programs through the growing months'] },
-      { h2: 'Block Slashing & Fire-Break Preparation', img: 'block-slashing-fire-prep', alt: 'Zero-turn mower slashing long dry grass on an overgrown block in Byford WA', paras: ['Overgrown paddocks, vacant blocks and dry summer grass are a fire risk and a compliance headache. We slash long grass, cut fire-breaks to boundaries and get rural blocks across the Shire of Serpentine Jarrahdale and City of Armadale ready before fire season. Book early, as the weeks before the restricted burning period fill quickly.'], bullets: ['Slashing of overgrown and neglected blocks', 'Fire-break mowing along boundaries and access tracks', 'Vacant land, developer lots and commercial land', 'One-off tidy-ups before sale or settlement'] },
+      { h2: 'Block Slashing for Overgrown Land', img: 'block-slashing-fire-prep', alt: 'Zero-turn mower slashing long dry grass on an overgrown block in Byford WA', paras: ['Overgrown paddocks, vacant blocks and long summer grass get out of hand fast. We slash long grass, clear overgrown blocks and keep rural properties across the Shire of Serpentine Jarrahdale and the City of Armadale tidy and under control. Book early in spring, as the weeks when the grass takes off fill quickly.'], bullets: ['Slashing of overgrown and neglected blocks', 'Mowing along boundaries, driveways and access tracks', 'Vacant land, developer lots and commercial land', 'One-off tidy-ups before sale or settlement'] },
       { h2: 'Rural Property Care from One Team', img: 'rural-commercial-land', alt: 'Zero-turn mower slashing an overgrown rural block near sheds in Jarrahdale WA', paras: ['Acreage owners often need more than a mow. We also handle pump and tank reticulation, fertilising and weed control for house lawns, hedging, mulching and mini loader earthworks, so one call covers the lot.'], bullets: [] }
     ],
     gallery: [
       { img: 'large-property-mowing', alt: 'Large mowed lawn on a tree-lined rural property in the Serpentine Jarrahdale hills WA' },
       { img: 'why-choose-us', alt: 'Zero-turn mower working across a large lawn on a lifestyle block in Mundijong WA' },
-      { img: 'acreage-problems', alt: 'Overgrown dry grass being slashed on a rural block in Cardup WA before fire season' }
+      { img: 'acreage-problems', alt: 'Overgrown dry grass being slashed on a rural block in Cardup WA' }
     ],
     faqs: [
       { q: 'How much does acreage mowing cost in Byford?', a: 'It depends on the area, how long the grass is, obstacles and access. A regular program on a maintained block costs less per visit than a once-a-year slash of long grass. We quote after seeing the block or from an address and a few photos.' },
-      { q: 'Can you slash my block before fire season?', a: 'Yes. Fire-break and block slashing is a big part of our spring and early summer work in Serpentine, Jarrahdale, Byford and Oakford. Book early as this period fills quickly.' },
+      { q: 'Can you slash my overgrown block?', a: 'Yes. Block slashing is a big part of our spring and early summer work in Serpentine, Jarrahdale, Byford and Oakford. Book early as this period fills quickly.' },
       { q: 'What size blocks do you mow?', a: 'Anything from a large residential lot to multi-acre lifestyle properties and vacant land. Our zero-turn and ride-on mowers and slashing gear handle long grass, slopes and tight spots around trees and sheds.' },
       { q: 'Do you do the house yard as well as the paddock?', a: 'Yes. Most clients have us do the paddocks with the ride-on and the house lawn, edges and blow-down in the same visit so the whole property is finished at once.' }
     ],
@@ -190,7 +201,7 @@ export const services = [
     suburbs: ['Byford', 'Serpentine', 'Jarrahdale', 'Oakford', 'Mundijong', 'Cardup', 'Whitby', 'Bedfordale', 'Karragullen', 'Wandi']
   },
   {
-    slug: 'garden-maintenance', strip: 'Gardens & Hedging', nav: 'Garden Maintenance & Hedging', icon: 'shears',
+    slug: 'garden-maintenance', strip: 'Gardens & Hedging', nav: 'Garden Maintenance & Hedging', icon: 'shears', formService: 'Garden Maintenance & Hedging',
     short: 'Hedge trimming, pruning, weeding, mulching, garden bed clean-ups, green waste removal and end-of-lease tidy-ups.',
     title: 'Garden Maintenance Perth South-East | In The Mow',
     h1: 'Garden Maintenance Perth South-East: Hedging, Pruning, Mulching & Clean-Ups',
@@ -200,7 +211,7 @@ export const services = [
     lead: 'Hedges shaped, beds weeded and mulched, shrubs and small trees pruned and the green waste gone. One visit, or a program that keeps the garden looking after itself.',
     intro: [
       "Garden maintenance Perth South-East homeowners ask for is usually about catching up: hedges that have got away, beds full of weeds, mulch that disappeared two summers ago. In The Mow Lawncare brings the garden back under control and then keeps it there with a regular program across Canning Vale, Thornlie, Gosnells, Kelmscott, Armadale, Byford, Cockburn, Rockingham and down to Mandurah.",
-      "We work on residential gardens, strata common areas, rental properties and small commercial sites. Because we also mow and look after reticulation, your lawn, beds and watering are handled by the same crew on the same day."
+      "We work on residential gardens, strata common areas, rental properties and small commercial sites. Because we also mow and look after reticulation, your lawn, beds and watering are handled by the same team on the same visit."
     ],
     sections: [
       { h2: 'Hedge Trimming & Pruning', img: 'landscaping-installation-wa', alt: 'Clipped box hedges and tidy garden beds beside a timber deck at a home in Canning Vale WA', paras: ['Lilly pillies, viburnum, murraya, box and conifer hedges all respond to regular shaping. We trim to a clean line, prune shrubs and small trees for shape and health, and tidy palms so fronds and seed pods are not dropping on the lawn.'], bullets: ['Privacy and boundary hedge trimming', 'Formal shaping of box and topiary', 'Shrub, rose and small tree pruning', 'Palm trimming and frond removal', 'All trimmings removed from site'] },
@@ -223,7 +234,7 @@ export const services = [
     suburbs: ['Canning Vale', 'Thornlie', 'Southern River', 'Huntingdale', 'Gosnells', 'Kelmscott', 'Armadale', 'Seville Grove', 'Byford', 'Baldivis']
   },
   {
-    slug: 'landscaping', strip: 'Landscaping & Turf', nav: 'Landscaping & Turf', icon: 'turf',
+    slug: 'landscaping', strip: 'Landscaping & Turf', nav: 'Landscaping & Turf', icon: 'turf', formService: 'Landscaping & Turf',
     short: 'Full front and backyard landscapes: site prep, garden beds, planting, mulch, edging, paths, new turf and reticulation from one team.',
     title: 'Landscaping Byford & Perth South-East | In The Mow',
     h1: 'Landscaping Byford & Perth South-East: Full Landscapes, Turf & Garden Builds',
@@ -256,7 +267,7 @@ export const services = [
     suburbs: ['Byford', 'Hilbert', 'Haynes', 'Wandi', 'Baldivis', 'Secret Harbour', 'Treeby', 'Hammond Park', 'Wellard', 'Canning Vale']
   },
   {
-    slug: 'lawn-renovation', strip: 'Lawn Health', nav: 'Lawn Health & Renovation', icon: 'aerator',
+    slug: 'lawn-renovation', strip: 'Lawn Health', nav: 'Lawn Health & Renovation', icon: 'aerator', formService: 'Lawn Health & Renovation',
     short: 'Vertimowing, coring and aeration, fertilising, weed and grub control, wetting agents and full renovation programs.',
     title: 'Vertimowing & Lawn Renovation Perth | In The Mow',
     h1: 'Vertimowing, Coring & Lawn Renovation Perth: Fertilising & Weed Control',
@@ -289,7 +300,7 @@ export const services = [
     suburbs: ['Canning Vale', 'Southern River', 'Armadale', 'Byford', 'Jandakot', 'Baldivis', 'Secret Harbour', 'Mandurah', 'Halls Head', 'Lakelands']
   },
   {
-    slug: 'earthworks', strip: 'Mini Earthworks', nav: 'Mini Earthworks', icon: 'loader',
+    slug: 'earthworks', strip: 'Mini Earthworks', nav: 'Mini Earthworks', icon: 'loader', formService: 'Mini Earthworks',
     short: 'Mini loader and bobcat work: site clearing, levelling, trenching, soil and mulch spreading and landscape prep, including tight-access yards.',
     title: 'Mini Earthworks & Bobcat Services Byford | In The Mow',
     h1: 'Mini Earthworks Byford & Perth South-East: Bobcat, Site Prep & Levelling',
@@ -304,12 +315,12 @@ export const services = [
     sections: [
       { h2: 'Site Clearing, Levelling & Grading', img: null, alt: '', paras: ['A level, well-drained base is the difference between a lawn or garden that thrives and one that pools water and dies off in patches. We strip old lawn, weeds and topsoil, remove rubble left behind by builders, cut and fill to the right levels and grade the site so water runs away from the house.'], bullets: ['Site clearing and stripping of old lawn, weeds and builder rubble', 'Cut and fill, levelling and grading for drainage', 'Preparation for turf, garden beds, paving and sheds', 'Clean up and removal of excess spoil and green waste'] },
       { h2: 'Trenching, Soil & Material Spreading', img: 'gen-5', gen: true, alt: 'Mini loader spreading and levelling sand ahead of a new lawn in a backyard in Perth\'s South-East', paras: ['The loader and bobcat make light work of moving material around a site. We trench for reticulation, drainage and conduit, and we spread and level soil, sand, mulch, gravel and road base where you need it, far faster and more evenly than by hand.'], bullets: ['Trenching for retic, drainage and conduit', 'Soil, sand, mulch, gravel and road base spreading', 'Backfilling and compaction', 'Driveway and pathway base preparation'] },
-      { h2: 'Tight Access & Rural Properties', img: 'rural-commercial-land', alt: 'Machinery on a large rural block being prepared and maintained near Jarrahdale WA', paras: ['Many suburban backyards can only be reached through a side gate. The mini loader is built for exactly that, so we can work in yards a full-size machine cannot reach without pulling down fences. On larger rural blocks we combine earthworks with slashing and fire-break preparation so the whole property is sorted in one visit.'], bullets: [] }
+      { h2: 'Tight Access & Rural Properties', img: 'rural-commercial-land', alt: 'Machinery on a large rural block being prepared and maintained near Jarrahdale WA', paras: ['Many suburban backyards can only be reached through a side gate. The mini loader is built for exactly that, so we can work in yards a full-size machine cannot reach without pulling down fences. On larger rural blocks we combine earthworks with block slashing so the whole property is sorted in one visit.'], bullets: [] }
     ],
     gallery: [
       { img: 'landscape-installation', alt: 'Levelled front yard with new turf being laid after earthworks in the Byford growth corridor' },
       { img: 'after-1b', alt: 'Finished front garden after site prep, beds and paths in Byford WA' },
-      { img: 'block-slashing-fire-prep', alt: 'Rural block cleared and slashed for fire season near Serpentine WA' }
+      { img: 'block-slashing-fire-prep', alt: 'Rural block cleared and slashed near Serpentine WA' }
     ],
     faqs: [
       { q: 'What counts as mini earthworks?', a: 'Jobs that need a machine but not a large earthmoving contractor: clearing a yard, levelling for turf or paving, trenching for retic, spreading soil or mulch, removing rubble and preparing sites for landscaping, sheds or driveways.' },
@@ -322,22 +333,37 @@ export const services = [
     suburbs: ['Byford', 'Hilbert', 'Haynes', 'Cardup', 'Mundijong', 'Serpentine', 'Jarrahdale', 'Armadale', 'Kelmscott', 'Baldivis', 'Wellard', 'Treeby']
   },
   {
-    slug: 'commercial', strip: 'Commercial', nav: 'Commercial & Tenders', icon: 'building',
-    short: 'Scheduled grounds maintenance for strata, businesses, developers, schools and councils, plus larger contracts and tenders.',
+    slug: 'commercial', strip: 'Commercial', nav: 'Commercial Grounds Maintenance', icon: 'building',
+    short: 'Scheduled grounds maintenance for businesses, strata complexes, property managers, local governments and government agencies.',
     title: 'Commercial Grounds Maintenance Perth | In The Mow',
-    h1: 'Commercial Grounds Maintenance Perth: Strata, Contracts & Tenders',
-    description: 'Commercial grounds maintenance Perth for strata, businesses, developers and tendered contracts. Scheduled mowing, retic, landscaping and slashing.',
+    h1: 'Commercial Grounds Maintenance Perth: Businesses, Strata, Property Managers & Government',
+    description: 'Commercial grounds maintenance Perth for businesses, strata, property managers, local governments and government agencies. Request a site walkthrough.',
     keyword: 'Commercial Grounds Maintenance Perth', schemaType: 'Commercial grounds maintenance service',
+    formService: 'Commercial Grounds Maintenance',
+    primaryCta: { label: 'Request a Site Walkthrough', title: 'Request a Site Walkthrough', submit: 'Request My Site Walkthrough' },
+    audience: [
+      ['building', 'Businesses', 'Offices, retail, industrial and commercial sites kept presentable for customers and staff.'],
+      ['shears', 'Strata complexes', 'Shared lawns, gardens and common areas maintained on a set schedule for body corporates.'],
+      ['check', 'Property managers', 'Rental portfolios and managed properties, with one point of contact and one invoice.'],
+      ['pin', 'Local governments', 'Parks, reserves, verges and council facilities across Perth\'s South-East and Peel.'],
+      ['clock', 'Government agencies', 'Schools, depots, housing and other government sites, including contracts and tenders.']
+    ],
+    sites: [
+      { img: 'commercial-strata-mowing', alt: 'Commercial property frontage with maintained lawn and garden beds in Perth\'s South-East', cap: 'Commercial property: lawn, garden beds and hedging' },
+      { img: 'rural-commercial-land', alt: 'Large commercial and rural block being mowed with a zero-turn mower near Jarrahdale WA', cap: 'Large commercial and rural land: scheduled mowing and slashing' },
+      { img: 'large-property-mowing', alt: 'Large property lawn mowed on a scheduled program in Perth\'s South-East', cap: 'Large grounds: regular mowing program' },
+      { img: 'acreage-mowing', alt: 'Ride-on mower maintaining a large site in Serpentine WA', cap: 'Open land and verges: ride-on mowing' }
+    ],
     hero: { img: 'commercial-strata-mowing', alt: 'Maintained lawn and garden beds at a commercial property in Perth\'s South-East looked after by In The Mow Lawncare' },
-    lead: 'Scheduled grounds maintenance for strata complexes, commercial sites, developers, schools and councils, from a single property to multi-site contracts and tenders. Multiple crews, commercial equipment and one point of contact.',
+    lead: 'Scheduled grounds maintenance for businesses, strata complexes, property managers, local governments and other government agencies across Perth\'s South-East and Peel. Multiple crews, commercial equipment and one point of contact.',
     intro: [
       "Commercial grounds maintenance Perth property managers and businesses book with In The Mow Lawncare is built around a schedule you can rely on. Our crews mow, edge, whipper snip, blow down, prune, weed and mulch on a set program, keep the reticulation working, and report anything that needs your attention, so the site always presents well for tenants, customers and staff.",
-      "We already look after commercial, strata and rural properties across Perth's South-East and Peel, and we are actively taking on larger contracts and tenders. With multiple crews and our own mowers, loader and bobcat, we can handle grounds maintenance, landscaping works, fire-break slashing and site prep under one contract."
+      "We already look after commercial, strata and rural properties across Perth's South-East and Peel, and we are actively taking on larger contracts and tenders. With multiple crews and our own mowers, loader and bobcat, we can handle grounds maintenance, landscaping works, block slashing and site prep under one contract."
     ],
     sections: [
       { h2: 'Scheduled Maintenance for Strata & Commercial Sites', img: null, alt: '', paras: ['Every site gets a written scope and a fixed schedule, weekly, fortnightly or monthly, adjusted for the seasons. The same team looks after your site each visit, so they know the property, the access and the problem areas.'], bullets: ['Strata complexes, body corporates and shared outdoor areas', 'Offices, retail, industrial and commercial properties', 'Rental portfolios and real estate managed properties', 'Mowing, edging, hedging, pruning, weeding and mulching', 'Reticulation checks, repairs and controller programming', 'Photo reporting after visits on request'] },
       { h2: 'Contracts, Panels & Tenders', img: 'acreage-mowing', alt: 'Large property being mowed on a ride-on under a maintenance program in Perth\'s South-East', paras: ['We are set up to price larger and longer-term work. Send us the specification, schedule of rates or scope of works and we will come back with a clear, itemised price and the business documentation your panel or tender asks for. We are happy to do a site walk before pricing.', 'Multi-site and ongoing contracts get a single point of contact, one invoice and a set schedule across every property.'], bullets: ['Council, government and education grounds', 'Developers, estates, public open space and verges', 'Multi-site contracts with one invoice', 'Itemised pricing for tenders and schedules of rates'] },
-      { h2: 'Developers, Builders & Large Land Holdings', img: 'block-slashing-fire-prep', alt: 'Overgrown block slashed and cleared for fire-break compliance near Byford WA', paras: ['Vacant lots, subdivisions and large holdings need regular slashing and fire-break work to stay compliant and presentable. We maintain lots and estate verges, prepare fire-breaks ahead of the restricted burning period, clean up sites for handover and use our mini earthworks gear for site prep and landscaping works.'], bullets: [] }
+      { h2: 'Developers, Builders & Large Land Holdings', img: 'block-slashing-fire-prep', alt: 'Overgrown block slashed and cleared near Byford WA', paras: ['Vacant lots, subdivisions and large holdings need regular slashing to stay tidy and presentable. We maintain lots and estate verges, slash overgrown land, clean up sites for handover and use our mini earthworks gear for site prep and landscaping works.'], bullets: [] }
     ],
     gallery: [
       { img: 'rural-commercial-land', alt: 'Zero-turn mower slashing a large commercial and rural block near Jarrahdale WA' },
@@ -345,10 +371,11 @@ export const services = [
       { img: 'landscape-installation', alt: 'Turf and landscaping works at a new estate in the Byford growth corridor' }
     ],
     faqs: [
-      { q: 'Do you quote on tenders and council or government work?', a: 'Yes. We are actively taking on larger contracts and tenders. Send the specification or scope of works and we will provide an itemised price and the documentation the tender asks for.' },
+      { q: 'Do you work with local governments and government agencies?', a: 'Yes. We are actively taking on larger contracts and tenders. Send the specification or scope of works and we will provide an itemised price and the documentation the tender asks for.' },
       { q: 'Can you look after multiple sites under one contract?', a: 'Yes. Multi-site clients get one point of contact, one invoice and a set schedule across every property, with our crews allocated by area.' },
       { q: 'How is commercial maintenance priced?', a: 'Usually as a fixed price per visit or a monthly or annual program based on a written scope, with any extra works quoted separately before they start.' },
-      { q: 'Do you handle fire-break compliance for large land holdings?', a: 'Yes. We slash and maintain fire-breaks on vacant lots, subdivisions and rural holdings across Byford, Serpentine, Jarrahdale and the wider Shire areas ahead of the restricted burning period.' }
+      { q: 'Do you slash vacant lots and large land holdings?', a: 'Yes. We slash and maintain vacant lots, subdivisions and rural holdings across Byford, Serpentine, Jarrahdale and the wider South-East, on a schedule or as one-off jobs.' },
+      { q: 'Can you walk the site with us before quoting?', a: 'Yes. For commercial and government sites we prefer to walk the site with you first, agree the scope and schedule, then send a written, itemised price. Use the Request a Site Walkthrough button or call 0424 058 261.' }
     ],
     related: ['acreage-mowing', 'earthworks', 'landscaping'],
     suburbs: ['Canning Vale', 'Armadale', 'Gosnells', 'Jandakot', 'Cockburn Central', 'Byford', 'Baldivis', 'Rockingham', 'Mandurah', 'Serpentine']
@@ -367,7 +394,7 @@ export const about = {
     h2: 'Who We Are',
     paras: [
       "Josh started In The Mow Lawncare in Byford to do one thing well: look after lawns and gardens properly, on a schedule people could actually rely on. Byford, Mundijong, Serpentine and Jarrahdale are still home turf, and from there our crews now cover the whole South-East corridor and the Peel region, from Canning Vale and Armadale through Cockburn and Kwinana to Rockingham and Mandurah.",
-      "Most mowing contractors do one or two things. We look after the whole property. Regular lawn mowing for homes, rentals, strata and commercial sites, acreage mowing and fire-break slashing, reticulation repairs and new installs, full landscaping and turf, mini earthworks, lawn health and renovation programs, hedging and garden maintenance, and commercial grounds contracts. Because one business does all of it, your retic and your mowing are set up to work together and nothing gets lost between contractors."
+      "Most mowing contractors do one or two things. We look after the whole property. Regular lawn mowing for homes, rentals, strata and commercial sites, acreage mowing and block slashing, reticulation repairs and new installs, full landscaping and turf, mini earthworks, lawn health and renovation programs, hedging and garden maintenance, and commercial grounds contracts. Because one business does all of it, your retic and your mowing are set up to work together and nothing gets lost between contractors."
     ],
     img: 'about', alt: 'In The Mow Lawncare team maintaining a residential lawn and garden beds in Byford WA'
   },
@@ -382,7 +409,7 @@ export const about = {
   equipment: {
     h2: 'Equipment Built for Perth\'s South-East',
     paras: [
-      "Lawns around Byford range from compact new-build blocks to multi-acre lifestyle properties on the Serpentine and Jarrahdale side of the hills. Our crews carry commercial ride-on and zero-turn mowers for open paddocks and fire-break slashing, walk-behind mowers and edgers for suburban lawns, hedge trimmers and blowers for garden maintenance, and a mini loader and bobcat for turf preparation, levelling, soil and mulch spreading and tight-access earthworks.",
+      "Lawns around Byford range from compact new-build blocks to multi-acre lifestyle properties on the Serpentine and Jarrahdale side of the hills. Our crews carry commercial ride-on and zero-turn mowers for open paddocks and block slashing, walk-behind mowers and edgers for suburban lawns, hedge trimmers and blowers for garden maintenance, and a mini loader and bobcat for turf preparation, levelling, soil and mulch spreading and tight-access earthworks.",
       "That combination is why we can take on a full front-yard makeover, strip out the old lawn, level, lay new turf and set up the reticulation, without bringing in three different contractors."
     ],
     img: 'rural-commercial-land', alt: 'Commercial zero-turn mower slashing a large rural block near Serpentine WA'
@@ -391,7 +418,7 @@ export const about = {
     h2: 'How It Works',
     steps: [
       ['Call or send the form', 'Tell us the suburb, the size of the property and what you need. Photos help us quote faster.'],
-      ['Clear quote, no obligation', 'We come back with a price for a one-off job or a regular program, usually the same business day.'],
+      ['Clear quote, no obligation', 'We come back with a price for a one-off job or a regular program. We\'ll get back to you as soon as we can.'],
       ['We turn up and do it properly', 'On the agreed day, with the right gear, and we leave the place clean and blown down.'],
       ['Scheduled, so you can forget about it', 'Regular customers get a set schedule that we adjust as the seasons change.']
     ]
@@ -404,7 +431,7 @@ export const about = {
   ],
   faqs: [
     { q: 'Where is In The Mow Lawncare based and how far do you travel?', a: "We are based in Byford and work across Perth's South-East corridor and the Peel region: Canning Vale, Armadale and Gosnells to the north, Serpentine and Jarrahdale in the hills, Cockburn, Kwinana and Rockingham to the west, and the coast down to Mandurah. See the full list on our service areas page." },
-    { q: 'Do you do one-off jobs or only regular maintenance?', a: 'Both. One-off tidy-ups, pre-sale clean-ups, fire-season slashing and turf installs are all welcome, and regular fortnightly or monthly programs work out cheaper per visit if you want the lawn kept on top of year-round.' }
+    { q: 'Do you do one-off jobs or only regular maintenance?', a: 'Both. One-off tidy-ups, pre-sale clean-ups, block slashing and turf installs are all welcome, and regular fortnightly or monthly programs work out cheaper per visit if you want the lawn kept on top of year-round.' }
   ]
 };
 
@@ -425,7 +452,7 @@ export const areasPage = {
       services: ['landscaping', 'earthworks', 'reticulation']
     },
     'Serpentine / Hills': {
-      blurb: 'Lifestyle blocks, hobby farms and bush properties on the scarp. Acreage mowing, paddock slashing and fire-break preparation ahead of the restricted burning period are the big jobs, along with keeping house lawns and gardens tidy around the homestead.',
+      blurb: 'Lifestyle blocks, hobby farms and bush properties on the scarp. Acreage mowing and paddock slashing are the big jobs, along with keeping house lawns and gardens tidy around the homestead.',
       services: ['acreage-mowing', 'lawn-mowing', 'garden-maintenance']
     },
     'Cockburn / Kwinana': {
@@ -453,7 +480,7 @@ export const contactPage = {
   title: "Contact In The Mow | Free Quote Byford & Perth South-East",
   description: "Call 0424 058 261 or send the form for a free lawn mowing, retic, turf or garden quote. Byford-based, servicing Perth's South-East and Peel. Mon to Fri, 9am to 5pm.",
   h1: 'Contact In The Mow Lawncare: Free Lawn Mowing & Garden Quotes',
-  lead: "Call Josh directly or send the form with a few details about the property. Quotes are free and there is no obligation. If it is urgent, like a retic fault or a block that needs slashing before fire season, phone is fastest.",
+  lead: "Call Josh directly or send the form with a few details about the property. Quotes are free for most jobs. Retic faults are diagnosed with a $175 fault-finding visit, credited toward the repair if you go ahead. If it is urgent, phone is fastest.",
   tips: {
     h2: 'What to Include for a Faster Quote',
     items: [
@@ -465,8 +492,13 @@ export const contactPage = {
     ]
   },
   faqs: [
-    { q: 'How quickly will I hear back?', a: 'Phone calls during business hours are answered straight away where possible. Form and email enquiries are usually answered the same business day, and by the next business day at the latest.' },
+    { q: 'How quickly will I hear back?', a: 'We\'ll get back to you as soon as we can. Phone calls during business hours are the quickest way to reach us.' },
     { q: 'Do I need to be home for the quote?', a: 'Not usually. For most residential mowing and garden jobs we can quote from your details and photos, or look at the property from the front. For turf installs, retic installs and acreage work we will arrange a time to walk the site with you.' },
     { q: 'Do you have a shopfront I can visit?', a: 'No. In The Mow Lawncare is a service-area business based in Byford WA 6122. We come to you across Perth\'s South-East corridor and the Peel region.' }
   ]
 };
+
+// Service order (client feedback): lawn renovation, retic, landscaping and commercial grounds maintenance
+// sit straight after lawn mowing in the nav, homepage strip, service cards and footer.
+const ORDER = ['lawn-mowing', 'reticulation', 'lawn-renovation', 'landscaping', 'commercial', 'acreage-mowing', 'garden-maintenance', 'earthworks'];
+services.sort((a, b) => ORDER.indexOf(a.slug) - ORDER.indexOf(b.slug));
