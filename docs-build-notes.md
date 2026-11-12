@@ -107,5 +107,5 @@ still flagged with `gen: true` in `src/content.mjs` and in the manifest for the 
 - The LeadConnector external tracking script (link.msgsndr.com) is removed from every page, along with the
   `data-ghl` attributes on the form fields. Enquiries reach the CRM only through `api/quote.js`, so there is one
   contact per enquiry and no second capture. `npm run check` fails if the script is added back.
-- Neither the website nor the recommended workflow creates opportunities. The form handler only upserts the
-  contact, uploads photos to "Attach a photo", adds a note and adds the "website quote" tag.
+- The website never creates opportunities (the form handler only upserts the contact, uploads photos to "Job Photos",
+  adds a note and adds the "website quote" tag). Opportunities are created by the LeadConnector workflow, step 3.
