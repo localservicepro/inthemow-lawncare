@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<!--
+  In The Mow Lawncare: customer confirmation email for website quote requests.
+  Use in the same LeadConnector workflow as the internal notification (trigger: Contact Tag added = "website quote"),
+  as a "Send Email" action to the contact. Add an "If/Else: contact has email" branch so phone-only enquiries skip it
+  (or send an SMS instead).
+  Subject line: Thanks {{contact.first_name}}, we've got your quote request
+  Preview text is set in the hidden preheader below.
+  Merge fields: first_name, service_needed, city (suburb), property_size, job_notes. Empty fields show blank.
+  Links point to https://inthemowlawncare.com.au; they work once the domain is connected to the new site.
+-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>We've got your quote request</title>
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <![endif]-->
+  <style>
+    body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; }
+    img { -ms-interpolation-mode:bicubic; border:0; height:auto; line-height:100%; outline:none; text-decoration:none; }
+    body { margin:0; padding:0; width:100% !important; height:100% !important; background-color:#e9edf1; }
+    a { color:#1a8235; }
+    @media screen and (max-width:600px) {
+      .container { width:100% !important; }
+      .px { padding-left:22px !important; padding-right:22px !important; }
+      .stack { display:block !important; width:100% !important; }
+      .stack-label { padding-bottom:2px !important; }
+      .stack-value { padding-bottom:12px !important; }
+      .btn { display:block !important; width:100% !important; }
+      .gap { display:none !important; }
+      .btn-row td.btn { margin-bottom:10px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#e9edf1;">
+
+  <!-- Preheader (hidden) -->
+  <div style="display:none; font-size:1px; color:#e9edf1; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">
+    Thanks {{contact.first_name}}. Your {{contact.service_needed}} quote request is in, and we'll get back to you as soon as we can.
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#e9edf1;">
+    <tr>
+      <td align="center" style="padding:28px 14px;">
+
+        <!-- Card -->
+        <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background-color:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 4px 18px rgba(33,40,50,0.14);">
+
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background-color:#212832; padding:26px 24px 24px 24px;">
+              <a href="https://inthemowlawncare.com.au" style="text-decoration:none;"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3EWpoiN6nlg900Jz4gzZzRlxgtK/7ff1e896-dc62-4a5a-ac4b-92aba3d65628.png" width="72" height="72" alt="In The Mow Lawncare" style="display:block; width:72px; height:72px; border-radius:36px; margin:0 auto 12px auto;"></a>
+              <p style="margin:0 0 4px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:20px; line-height:1.3; color:#ffffff; font-weight:700; letter-spacing:0.4px; text-transform:uppercase;">In The Mow Lawncare</p>
+              <p style="margin:0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:13px; color:#8dc81b; font-weight:700; letter-spacing:0.4px;">Your Lawncare Solution</p>
+            </td>
+          </tr>
+
+          <!-- Accent bar (brand gradient, solid green fallback for Outlook) -->
+          <tr>
+            <td style="height:4px; background-color:#4b9c2c; background-image:linear-gradient(90deg,#04713b 0%,#4b9c2c 50%,#8dc81b 100%); font-size:0; line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- Headline -->
+          <tr>
+            <td class="px" style="padding:32px 40px 6px 40px; background-color:#ffffff;">
+              <h1 style="margin:0 0 12px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:26px; line-height:1.25; color:#212832; font-weight:700;">Thanks {{contact.first_name}}, we've got your quote request</h1>
+              <p style="margin:0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:16px; line-height:1.6; color:#3a4452;">Your request for <strong style="color:#212832;">{{contact.service_needed}}</strong> has come through to our team. We'll get back to you as soon as we can.</p>
+            </td>
+          </tr>
+
+          <!-- Summary -->
+          <tr>
+            <td class="px" style="padding:24px 40px 0 40px; background-color:#ffffff;">
+              <p style="margin:0 0 10px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:12px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:#212832;">What you sent us</p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f5f8; border:1px solid #e4e8ee; border-radius:10px;">
+                <tr>
+                  <td style="padding:16px 22px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="stack stack-label" width="36%" style="padding:7px 8px 7px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:12px; color:#1a8235; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; vertical-align:top;">Service</td>
+                        <td class="stack stack-value" style="padding:7px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; line-height:1.5; color:#212832; vertical-align:top; font-weight:700;">{{contact.service_needed}}</td>
+                      </tr>
+                      <tr><td colspan="2" style="border-top:1px solid #e4e8ee; font-size:0; line-height:0;">&nbsp;</td></tr>
+                      <tr>
+                        <td class="stack stack-label" width="36%" style="padding:7px 8px 7px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:12px; color:#1a8235; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; vertical-align:top;">Suburb</td>
+                        <td class="stack stack-value" style="padding:7px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; line-height:1.5; color:#212832; vertical-align:top;">{{contact.city}}</td>
+                      </tr>
+                      <tr><td colspan="2" style="border-top:1px solid #e4e8ee; font-size:0; line-height:0;">&nbsp;</td></tr>
+                      <tr>
+                        <td class="stack stack-label" width="36%" style="padding:7px 8px 7px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:12px; color:#1a8235; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; vertical-align:top;">Property Size</td>
+                        <td class="stack stack-value" style="padding:7px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; line-height:1.5; color:#212832; vertical-align:top;">{{contact.property_size}}</td>
+                      </tr>
+                      <tr><td colspan="2" style="border-top:1px solid #e4e8ee; font-size:0; line-height:0;">&nbsp;</td></tr>
+                      <tr>
+                        <td class="stack stack-label" width="36%" style="padding:7px 8px 7px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:12px; color:#1a8235; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; vertical-align:top;">Your Notes</td>
+                        <td class="stack stack-value" style="padding:7px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; line-height:1.5; color:#212832; vertical-align:top;">{{contact.job_notes}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:10px 2px 0 2px; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:13px; line-height:1.5; color:#5a6575;">Got more photos or details? Just reply to this email and add them.</p>
+            </td>
+          </tr>
+
+          <!-- What happens next -->
+          <tr>
+            <td class="px" style="padding:26px 40px 0 40px; background-color:#ffffff;">
+              <p style="margin:0 0 14px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:12px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:#212832;">What happens next</p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="40" style="vertical-align:top; padding:0 12px 14px 0;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" width="30" height="30" style="width:30px; height:30px; border-radius:15px; background-color:#8dc81b; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:14px; font-weight:700; color:#212832;">1</td></tr></table>
+                  </td>
+                  <td style="vertical-align:top; padding:4px 0 14px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; line-height:1.55; color:#212832;"><strong>We look over your request</strong><br><span style="color:#5a6575;">We check the details and any photos you sent through.</span></td>
+                </tr>
+                <tr>
+                  <td width="40" style="vertical-align:top; padding:0 12px 14px 0;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" width="30" height="30" style="width:30px; height:30px; border-radius:15px; background-color:#8dc81b; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:14px; font-weight:700; color:#212832;">2</td></tr></table>
+                  </td>
+                  <td style="vertical-align:top; padding:4px 0 14px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; line-height:1.55; color:#212832;"><strong>We get in touch</strong><br><span style="color:#5a6575;">We'll get back to you as soon as we can by phone or email, whichever you gave us.</span></td>
+                </tr>
+                <tr>
+                  <td width="40" style="vertical-align:top; padding:0 12px 14px 0;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" width="30" height="30" style="width:30px; height:30px; border-radius:15px; background-color:#8dc81b; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:14px; font-weight:700; color:#212832;">3</td></tr></table>
+                  </td>
+                  <td style="vertical-align:top; padding:4px 0 14px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; line-height:1.55; color:#212832;"><strong>You get a clear price</strong><br><span style="color:#5a6575;">A fixed quote before any work starts. For bigger jobs we may arrange a quick site visit first.</span></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Good to know -->
+          <tr>
+            <td class="px" style="padding:10px 40px 0 40px; background-color:#ffffff;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f5f8; border-left:4px solid #8dc81b; border-radius:8px;">
+                <tr>
+                  <td style="padding:16px 20px; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:14px; line-height:1.6; color:#212832;">
+                    <strong style="color:#1a8235;">Good to know</strong><br>
+                    Quotes are free and there's no obligation. For reticulation repairs we book a $175 fault-finding visit, which is credited toward the repair if you go ahead. Quotes for new retic installs are free.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Urgent / CTA -->
+          <tr>
+            <td class="px" align="center" style="padding:28px 40px 8px 40px; background-color:#ffffff;">
+              <p style="margin:0 0 14px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; line-height:1.5; color:#212832;"><strong>Urgent job, like a retic fault or an overgrown block?</strong><br><span style="color:#5a6575;">Give us a call and we'll do our best to fit you in.</span></p>
+              <table role="presentation" class="btn-row" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="btn" align="center" style="background-color:#64b024; border-radius:26px;">
+                    <a href="tel:+61424058261" style="display:inline-block; padding:14px 28px; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; font-weight:700; color:#212832; text-decoration:none;">Call 0424 058 261</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Sign-off -->
+          <tr>
+            <td class="px" style="padding:20px 40px 30px 40px; background-color:#ffffff;">
+              <p style="margin:0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:15px; line-height:1.6; color:#212832;">Cheers,<br><strong>Josh and the In The Mow Lawncare team</strong></p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="background-color:#212832; padding:24px 32px;">
+              <p style="margin:0 0 10px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:13px; line-height:1.7; color:#ffffff;">
+                <a href="tel:+61424058261" style="color:#ffffff; text-decoration:none; font-weight:700;">0424 058 261</a>
+                &nbsp;·&nbsp;
+                <a href="mailto:enquiries@inthemowlawncare.com.au" style="color:#ffffff; text-decoration:none;">enquiries@inthemowlawncare.com.au</a>
+              </p>
+              <p style="margin:0 0 12px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:12px; line-height:1.7; color:#a9b3c0;">Byford WA 6122 &nbsp;·&nbsp; Mon to Fri, 9:00am to 5:00pm<br>Servicing Perth's South-East and Peel, from Canning Vale to Mandurah</p>
+              <p style="margin:0 0 12px 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:12px; line-height:1.7; color:#a9b3c0;"><a href="https://inthemowlawncare.com.au/lawn-mowing" style="color:#8dc81b; text-decoration:underline;">Lawn Mowing</a> &nbsp;·&nbsp; <a href="https://inthemowlawncare.com.au/reticulation" style="color:#8dc81b; text-decoration:underline;">Retic</a> &nbsp;·&nbsp; <a href="https://inthemowlawncare.com.au/lawn-renovation" style="color:#8dc81b; text-decoration:underline;">Lawn Renovation</a> &nbsp;·&nbsp; <a href="https://inthemowlawncare.com.au/landscaping" style="color:#8dc81b; text-decoration:underline;">Landscaping</a> &nbsp;·&nbsp; <a href="https://inthemowlawncare.com.au/commercial" style="color:#8dc81b; text-decoration:underline;">Commercial</a></p>
+              <p style="margin:0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:12px; line-height:1.7;">
+                <a href="https://maps.app.goo.gl/UH7WvxZPVw6LzZTU6" style="color:#8dc81b; text-decoration:underline;">Read our Google reviews</a>
+                &nbsp;·&nbsp;
+                <a href="https://www.facebook.com/profile.php?id=61553258399355" style="color:#8dc81b; text-decoration:underline;">Find us on Facebook</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /Card -->
+
+        <p style="margin:14px 0 0 0; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:11px; line-height:1.6; color:#7a8594; text-align:center;">You're receiving this because you requested a quote on our website.</p>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
