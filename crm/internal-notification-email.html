@@ -4,6 +4,7 @@
   In The Mow Lawncare: internal notification for new website quote requests.
   Use in a LeadConnector workflow: Trigger "Contact Tag" added = "website quote" > action "Send Internal Notification" (Email).
   Subject line: New quote request: {{contact.name}} ({{contact.service_needed}}, {{contact.city}})
+  One template for every branch: phone only, email only or both, retic or not. Empty rows show blank.
   Merge fields used are the ones the website form fills: name, first_name, phone, email, city (suburb), address1,
   service_needed, property_size, job_notes, attach_a_photo (File Upload) and source. Empty fields simply show blank.
   The "Open contact in CRM" button uses app.leadconnectorhq.com; swap the domain if the account uses a white-label app URL.
@@ -29,7 +30,6 @@
       .stack { display:block !important; width:100% !important; }
       .stack-label { padding-bottom:2px !important; }
       .stack-value { padding-bottom:12px !important; }
-      .btn { display:block !important; width:100% !important; margin:0 0 10px 0 !important; }
     }
   </style>
 </head>
@@ -73,20 +73,38 @@
             </td>
           </tr>
 
-          <!-- Quick actions -->
+          <!-- Quick actions: inline-block buttons wrap onto new lines on narrow screens; Outlook keeps them in one row -->
           <tr>
-            <td class="px" style="padding:18px 40px 0 40px; background-color:#ffffff;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+            <td class="px" style="padding:18px 40px 0 40px; background-color:#ffffff; font-size:0; line-height:0;">
+              <!--[if mso]><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><![endif]-->
+              <!--[if mso]><td style="padding:0 10px 10px 0;"><![endif]-->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-block; vertical-align:top; margin:0 8px 10px 0;">
                 <tr>
-                  <td class="btn" style="background-color:#64b024; border-radius:24px; margin-right:10px;">
-                    <a href="tel:{{contact.phone}}" style="display:inline-block; padding:12px 22px; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:14px; font-weight:700; color:#212832; text-decoration:none;">Call {{contact.first_name}}</a>
-                  </td>
-                  <td style="width:10px; font-size:0; line-height:0;">&nbsp;</td>
-                  <td class="btn" style="background-color:#212832; border-radius:24px;">
-                    <a href="https://app.leadconnectorhq.com/v2/location/{{location.id}}/contacts/detail/{{contact.id}}" style="display:inline-block; padding:12px 22px; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:14px; font-weight:700; color:#ffffff; text-decoration:none;">Open contact in CRM</a>
+                  <td style="background-color:#64b024; border:2px solid #64b024; border-radius:24px;">
+                    <a href="tel:{{contact.phone}}" style="display:inline-block; padding:10px 20px; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:14px; line-height:20px; font-weight:700; color:#212832; text-decoration:none; white-space:nowrap;">Call {{contact.first_name}}</a>
                   </td>
                 </tr>
               </table>
+              <!--[if mso]></td><![endif]-->
+              <!--[if mso]><td style="padding:0 10px 10px 0;"><![endif]-->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-block; vertical-align:top; margin:0 8px 10px 0;">
+                <tr>
+                  <td style="background-color:#ffffff; border:2px solid #64b024; border-radius:24px;">
+                    <a href="mailto:{{contact.email}}?subject=Your%20In%20The%20Mow%20quote" style="display:inline-block; padding:10px 20px; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:14px; line-height:20px; font-weight:700; color:#1a8235; text-decoration:none; white-space:nowrap;">Email {{contact.first_name}}</a>
+                  </td>
+                </tr>
+              </table>
+              <!--[if mso]></td><![endif]-->
+              <!--[if mso]><td style="padding:0 10px 10px 0;"><![endif]-->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-block; vertical-align:top; margin:0 8px 10px 0;">
+                <tr>
+                  <td style="background-color:#212832; border:2px solid #212832; border-radius:24px;">
+                    <a href="https://app.leadconnectorhq.com/v2/location/{{location.id}}/contacts/detail/{{contact.id}}" style="display:inline-block; padding:10px 20px; font-family:Arial, 'Segoe UI', Helvetica, sans-serif; font-size:14px; line-height:20px; font-weight:700; color:#ffffff; text-decoration:none; white-space:nowrap;">Open contact in CRM</a>
+                  </td>
+                </tr>
+              </table>
+              <!--[if mso]></td><![endif]-->
+              <!--[if mso]></tr></table><![endif]-->
             </td>
           </tr>
 
