@@ -174,15 +174,15 @@ function quoteForm(id, compact = false, o = {}) {
   <h2 id="${id}-title" data-default="Get a Free Quote">${esc(title)}</h2>
   <p class="phone-line">${iconSolid('phone', '#1a8235')}<span>Prefer to talk? </span><a href="tel:${site.phoneTel}">${site.phone}</a></p>
   <div class="form-grid${compact ? ' compact' : ''}">
-    <div class="field full"><label for="${id}-name">Name</label><input id="${id}-name" name="full_name" type="text" required autocomplete="name" maxlength="120" data-ghl="{{contact.full_name}}"></div>
+    <div class="field full"><label for="${id}-name">Name</label><input id="${id}-name" name="full_name" type="text" required autocomplete="name" maxlength="120"></div>
     <p class="field full field-help" id="${id}-contact-help">Phone or email, whichever suits you. We just need one.</p>
-    <div class="field"><label for="${id}-phone">Phone</label><input id="${id}-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" aria-describedby="${id}-contact-help" data-contact data-ghl="{{contact.phone}}"></div>
-    <div class="field"><label for="${id}-email">Email</label><input id="${id}-email" name="email" type="email" autocomplete="email" maxlength="160" aria-describedby="${id}-contact-help" data-contact data-ghl="{{contact.email}}"></div>
-    <div class="field"><label for="${id}-suburb">Suburb</label><input id="${id}-suburb" name="suburb" type="text" required autocomplete="address-level2" maxlength="80" list="suburb-list" placeholder="e.g. Byford" data-ghl="{{contact.city}}"></div>
-    <div class="field"><label for="${id}-size">Property Size</label><input id="${id}-size" name="property_size" type="text" maxlength="80" placeholder="e.g. 600m², 2 acres" data-ghl="{{contact.property_size}}"></div>
-    <div class="field full"><label for="${id}-address">Street Address <span class="opt">(optional)</span></label><input id="${id}-address" name="property_address" type="text" autocomplete="street-address" maxlength="160" data-ghl="{{contact.property_address}}"></div>
-    <div class="field full"><label for="${id}-service">Service Needed</label><select id="${id}-service" name="service_needed" required aria-describedby="${id}-service-note" data-ghl="{{contact.service_needed}}"><option value=""${o.service ? '' : ' selected'} disabled>Select a service</option>${formServices.map(sv => `<option value="${attr(sv)}"${serviceNotes[sv] ? ` data-note="${attr(serviceNotes[sv])}"` : ''}${sv === o.service ? ' selected' : ''}>${esc(sv)}</option>`).join('')}</select><p class="field-note" id="${id}-service-note" aria-live="polite"${note ? '' : ' hidden'}>${esc(note)}</p></div>
-    <div class="field full"><label for="${id}-notes">Job Notes</label><textarea id="${id}-notes" name="job_notes" maxlength="2000" placeholder="Tell us about the job, access, timing…" data-ghl="{{contact.job_notes}}"></textarea></div>
+    <div class="field"><label for="${id}-phone">Phone</label><input id="${id}-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" aria-describedby="${id}-contact-help" data-contact></div>
+    <div class="field"><label for="${id}-email">Email</label><input id="${id}-email" name="email" type="email" autocomplete="email" maxlength="160" aria-describedby="${id}-contact-help" data-contact></div>
+    <div class="field"><label for="${id}-suburb">Suburb</label><input id="${id}-suburb" name="suburb" type="text" required autocomplete="address-level2" maxlength="80" list="suburb-list" placeholder="e.g. Byford"></div>
+    <div class="field"><label for="${id}-size">Property Size</label><input id="${id}-size" name="property_size" type="text" maxlength="80" placeholder="e.g. 600m², 2 acres"></div>
+    <div class="field full"><label for="${id}-address">Street Address <span class="opt">(optional)</span></label><input id="${id}-address" name="property_address" type="text" autocomplete="street-address" maxlength="160"></div>
+    <div class="field full"><label for="${id}-service">Service Needed</label><select id="${id}-service" name="service_needed" required aria-describedby="${id}-service-note"><option value=""${o.service ? '' : ' selected'} disabled>Select a service</option>${formServices.map(sv => `<option value="${attr(sv)}"${serviceNotes[sv] ? ` data-note="${attr(serviceNotes[sv])}"` : ''}${sv === o.service ? ' selected' : ''}>${esc(sv)}</option>`).join('')}</select><p class="field-note" id="${id}-service-note" aria-live="polite"${note ? '' : ' hidden'}>${esc(note)}</p></div>
+    <div class="field full"><label for="${id}-notes">Job Notes</label><textarea id="${id}-notes" name="job_notes" maxlength="2000" placeholder="Tell us about the job, access, timing…"></textarea></div>
     <div class="field full field-photos"><label for="${id}-photos">Job Photos <span class="opt">(optional, up to 5)</span></label><input id="${id}-photos" name="photos" type="file" accept="image/*" multiple data-photos><p class="photo-list" aria-live="polite"></p></div>
     <div class="hp" aria-hidden="true"><label for="${id}-website">Leave this empty</label><input id="${id}-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
     <input type="hidden" name="page_url" value="">
@@ -211,10 +211,6 @@ ${robots ? `<meta name="robots" content="${robots}">` : ''}
 ${preload ? `<link rel="preload" as="image" href="${asset(preload + '.webp')}" fetchpriority="high">` : ''}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;600;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;600;700&display=swap"></noscript>
 <style>${css}</style>
-<script
-  src="https://link.msgsndr.com/js/external-tracking.js"
-  data-tracking-id="${site.trackingId}">
-</script>
 ${schema.map(jsonld).join('\n')}
 </head>`;
 }

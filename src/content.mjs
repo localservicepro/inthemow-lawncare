@@ -14,7 +14,6 @@ export const site = {
   geo: { lat: -32.2055692, lng: 115.9594586 },
   hoursText: 'Mon to Fri, 9:00am to 5:00pm',
   openingHours: 'Mo-Fr 09:00-17:00',
-  trackingId: 'tk_9c8c4108f54d4ef2bf2af5dfac9d0c15',
   gbpEmbed: '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d114132.82700240743!2d115.9135828!3d-32.1626134!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e33d9b3d8d0a54f%3A0xff3e40563a8aefad!2sIn%20The%20Mow%20Lawncare!5e1!3m2!1sen!2sph!4v1793107124209!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>'
 };
 

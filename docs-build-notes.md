@@ -101,3 +101,11 @@ still flagged with `gen: true` in `src/content.mjs` and in the manifest for the 
 - Firebreak wording removed site-wide; block slashing kept. Reply wording is "We'll get back to you as soon as we can".
 - Commercial page leads with Commercial Grounds Maintenance: who we work with (businesses, strata, property managers,
   local governments, government agencies), examples of sites, Request a Site Walkthrough as the main button.
+
+## CRM: contacts only, no tracking script
+
+- The LeadConnector external tracking script (link.msgsndr.com) is removed from every page, along with the
+  `data-ghl` attributes on the form fields. Enquiries reach the CRM only through `api/quote.js`, so there is one
+  contact per enquiry and no second capture. `npm run check` fails if the script is added back.
+- Neither the website nor the recommended workflow creates opportunities. The form handler only upserts the
+  contact, uploads photos to "Attach a photo", adds a note and adds the "website quote" tag.
