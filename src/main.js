@@ -136,7 +136,7 @@
         try {
           window.dataLayer = window.dataLayer || [];
           window.dataLayer.push({ event: 'quote_form_submit', form_id: form.id || 'quote', service_needed: fd.get('service_needed') || '' });
-          sessionStorage.setItem('itm_quote', JSON.stringify({ name: fd.get('full_name') || '', service: fd.get('service_needed') || '' }));
+          var ttl = form.querySelector('h2'); sessionStorage.setItem('itm_quote', JSON.stringify({ name: fd.get('full_name') || '', service: fd.get('service_needed') || '', walkthrough: !!(ttl && /walkthrough/i.test(ttl.textContent)) }));
         } catch (err) { /* non-fatal */ }
         window.location.href = form.getAttribute('data-redirect') || '/thank-you';
       }).catch(function () {
@@ -149,8 +149,19 @@
   });
 
   /* ---------- Thank-you page personalisation ---------- */
-  var ty = document.getElementById('ty-name');
-  if (ty) { try { var q = JSON.parse(sessionStorage.getItem('itm_quote') || '{}'); if (q.name) { ty.textContent = 'Thanks, ' + q.name.split(' ')[0] + '!'; } } catch (err) {} }
+  // Thank-you page: put the customer's first name in the headline and repeat back the service they asked for.
+  var tyH = document.querySelector('.center-page h1'), tyS = document.getElementById('ty-service'), tyR = document.getElementById('ty-retic');
+  if (tyH && tyS) {
+    try {
+      var q = JSON.parse(sessionStorage.getItem('itm_quote') || '{}');
+      var first = String(q.name || '').trim().split(/\s+/)[0].slice(0, 30);
+      if (first) first = first.charAt(0).toUpperCase() + first.slice(1);
+      var what = q.walkthrough ? 'site walkthrough request' : 'quote request';
+      if (first) { tyH.textContent = 'Thanks ' + first + ', your ' + what + ' is in'; document.title = 'Thanks ' + first + ' | In The Mow'; }
+      if (q.service) { tyS.textContent = "We've got your request for " + q.service + '.'; tyS.hidden = false; }
+      if (tyR && q.service === 'Reticulation Repairs & Fault Finding') tyR.hidden = false;
+    } catch (err) { /* no stored enquiry: keep the generic thank-you */ }
+  }
 
   /* ---------- Animated service-area map ---------- */
   var map = document.querySelector('.map');

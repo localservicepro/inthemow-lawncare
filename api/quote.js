@@ -4,7 +4,7 @@
 // 2. Stores up to 5 job photos in Vercel Blob (BLOB_READ_WRITE_TOKEN) and keeps their public URLs.
 // 3. Sends it straight into the LeadConnector CRM with a Private Integration Token:
 //      a. upsert the contact (name, phone, email, suburb, street address, source, custom fields)
-//      b. upload the job photos into the contact's File Upload field ("Attach a photo", {{contact.attach_a_photo}})
+//      b. upload the job photos into the contact's File Upload field ("Job Photos", {{contact.job_photos}})
 //      c. add a note with every detail and the photo links
 //      d. add the tag "website quote" LAST, so a tag-triggered workflow (the notification email)
 //         fires once the contact and note are complete.
@@ -103,10 +103,12 @@ export async function POST(request) {
 
   // Custom fields: look up the sub-account's contact fields and match ours by key or name, so we can send IDs.
   // Needs the locations/customFields.readonly scope; without it we fall back to sending keys.
-  const wanted = { service_needed: ['service needed', 'service'], property_size: ['property size'], property_address: ['property address'], job_notes: ['job notes', 'notes'], job_photos: ['job photos', 'photos', 'job photo'] };
+  const wanted = { suburb: ['suburb'], service_needed: ['service needed', 'service'], property_size: ['property size'], property_address: ['property address'], job_notes: ['job notes', 'notes'], job_photos: ['job photos', 'photos', 'job photo'] };
   const defs = await customFieldDefs(token, locationId);
   const norm = v => String(v || '').toLowerCase().replace(/^contact\./, '').replace(/[^a-z0-9]+/g, ' ').trim();
-  const fileField = defs && (defs.find(d => d.type === 'FILE_UPLOAD' && (norm(d.fieldKey) === 'attach a photo' || norm(d.name) === 'attach a photo')) || defs.find(d => d.type === 'FILE_UPLOAD' && /photo/.test(norm(d.name))));
+  // Photos go to the File Upload field "Job Photos" ({{contact.job_photos}}); "Attach a photo" is the fallback.
+  const fileByName = n => defs && defs.find(d => d.type === 'FILE_UPLOAD' && (norm(d.fieldKey) === n || norm(d.name) === n));
+  const fileField = fileByName('job photos') || fileByName('attach a photo') || (defs && defs.find(d => d.type === 'FILE_UPLOAD' && /photo/.test(norm(d.name))));
   const fieldFor = k => defs && defs.find(d => d.type !== 'FILE_UPLOAD' && (norm(d.fieldKey) === norm(k) || wanted[k].includes(norm(d.name)) || norm(d.name) === norm(k)));
 
   // a. Contact. Custom fields are matched by key; if the CRM rejects them (for example a key that does
@@ -115,7 +117,7 @@ export async function POST(request) {
     locationId, firstName, lastName: rest.join(' '), name: f.full_name, source: 'Website quote form',
     city: f.suburb, ...(f.phone && { phone: f.phone }), ...(f.email && { email: f.email }), ...(f.property_address && { address1: f.property_address }),
     customFields: [
-      ['service_needed', f.service_needed], ['property_size', f.property_size], ['property_address', f.property_address],
+      ['suburb', f.suburb], ['service_needed', f.service_needed], ['property_size', f.property_size], ['property_address', f.property_address],
       ['job_notes', f.job_notes]
     ].filter(([, v]) => v).map(([key, fieldValue]) => { const d = fieldFor(key); return d ? { id: d.id, fieldValue } : { key, fieldValue }; })
   };
