@@ -116,7 +116,7 @@ export async function POST(request) {
     city: f.suburb, ...(f.phone && { phone: f.phone }), ...(f.email && { email: f.email }), ...(f.property_address && { address1: f.property_address }),
     customFields: [
       ['service_needed', f.service_needed], ['property_size', f.property_size], ['property_address', f.property_address],
-      ['job_notes', f.job_notes], ['job_photos', photoUrls.join('\n')]
+      ['job_notes', f.job_notes]
     ].filter(([, v]) => v).map(([key, fieldValue]) => { const d = fieldFor(key); return d ? { id: d.id, fieldValue } : { key, fieldValue }; })
   };
   console.log('quote: custom field lookup', defs ? `found ${defs.length} contact fields` : 'unavailable (token may lack locations/customFields.readonly)', '| matched:',
