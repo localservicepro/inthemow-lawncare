@@ -31,7 +31,7 @@ async function customFieldDefs(token, locationId) {
       if (!res.ok) { console.warn('quote: custom field list', version, 'returned', res.status, (await res.text().catch(() => '')).slice(0, 200)); continue; }
       const data = await res.json();
       const list = data.customFields || data.fields || [];
-      if (Array.isArray(list)) { defsCache = list.map(d => ({ id: d.id, name: d.name, fieldKey: d.fieldKey || d.key })); return defsCache; }
+      if (Array.isArray(list)) { defsCache = list.map(d => ({ id: d.id, name: d.name, fieldKey: d.fieldKey || d.key, type: d.dataType })); console.log('quote: CRM contact fields:', defsCache.map(d => `${d.name} [${d.fieldKey}, ${d.type}]`).join('; ')); return defsCache; }
     } catch (err) { console.warn('quote: custom field list failed', err?.message); }
   }
   return null;
