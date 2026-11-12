@@ -4,12 +4,14 @@
 // 2. Stores up to 5 job photos in Vercel Blob (BLOB_READ_WRITE_TOKEN) and keeps their public URLs.
 // 3. Sends it straight into the LeadConnector CRM with a Private Integration Token:
 //      a. upsert the contact (name, phone, email, suburb, street address, source, custom fields)
-//      b. add a note with every detail and the photo links
-//      c. add the tag "website quote" LAST, so a tag-triggered workflow (the notification email)
+//      b. upload the job photos into the contact's File Upload field ("Attach a photo", {{contact.attach_a_photo}})
+//      c. add a note with every detail and the photo links
+//      d. add the tag "website quote" LAST, so a tag-triggered workflow (the notification email)
 //         fires once the contact and note are complete.
 //
 // Environment variables (Vercel, Project Settings, Environment Variables):
-//   GHL_PIT_TOKEN          required, secret. Sub-account Private Integration Token with the contacts.write scope.
+//   GHL_PIT_TOKEN          required, secret. Sub-account Private Integration Token with the scopes
+//                          contacts.write, locations/customFields.readonly and forms.write (photo upload).
 //   GHL_LOCATION_ID        required. The sub-account (location) ID.
 //   GHL_TAG                optional, default "website quote".
 //   GHL_API_VERSION        optional, default "v3" (the Version header the current API docs require).
@@ -104,7 +106,8 @@ export async function POST(request) {
   const wanted = { service_needed: ['service needed', 'service'], property_size: ['property size'], property_address: ['property address'], job_notes: ['job notes', 'notes'], job_photos: ['job photos', 'photos', 'job photo'] };
   const defs = await customFieldDefs(token, locationId);
   const norm = v => String(v || '').toLowerCase().replace(/^contact\./, '').replace(/[^a-z0-9]+/g, ' ').trim();
-  const fieldFor = k => defs && defs.find(d => norm(d.fieldKey) === norm(k) || wanted[k].includes(norm(d.name)) || norm(d.name) === norm(k));
+  const fileField = defs && (defs.find(d => d.type === 'FILE_UPLOAD' && (norm(d.fieldKey) === 'attach a photo' || norm(d.name) === 'attach a photo')) || defs.find(d => d.type === 'FILE_UPLOAD' && /photo/.test(norm(d.name))));
+  const fieldFor = k => defs && defs.find(d => d.type !== 'FILE_UPLOAD' && (norm(d.fieldKey) === norm(k) || wanted[k].includes(norm(d.name)) || norm(d.name) === norm(k)));
 
   // a. Contact. Custom fields are matched by key; if the CRM rejects them (for example a key that does
   //    not exist yet), retry without them. The note below always carries every detail.
@@ -117,7 +120,7 @@ export async function POST(request) {
     ].filter(([, v]) => v).map(([key, fieldValue]) => { const d = fieldFor(key); return d ? { id: d.id, fieldValue } : { key, fieldValue }; })
   };
   console.log('quote: custom field lookup', defs ? `found ${defs.length} contact fields` : 'unavailable (token may lack locations/customFields.readonly)', '| matched:',
-    Object.keys(wanted).map(k => { const d = fieldFor(k); return `${k}=${d ? `${d.name} [${d.fieldKey}] ${d.id}` : 'none'}`; }).join('; '));
+    Object.keys(wanted).map(k => { const d = fieldFor(k); return `${k}=${d ? `${d.name} [${d.fieldKey}] ${d.id}` : 'none'}`; }).join('; '), '| photo file field:', fileField ? `${fileField.name} [${fileField.fieldKey}] ${fileField.id}` : 'none');
   let contactId;
   try {
     let res = await crm('/contacts/upsert', contact);
@@ -142,7 +145,25 @@ export async function POST(request) {
     return json(502, { ok: false, error: 'crm_unreachable' });
   }
 
-  // b. Note with the full enquiry. c. Tag last. The contact already exists, so a failure here is logged, not shown to the visitor.
+  // b. Photos into the File Upload custom field (multipart, key "<customFieldId>_<uuid>"). Needs the forms.write scope.
+  const imageFiles = files.filter(f => /^image\/(jpe?g|png|gif)$/.test(f.type)).slice(0, MAX_PHOTOS);
+  if (fileField && imageFiles.length) {
+    try {
+      const up = new FormData();
+      for (const f of imageFiles) up.append(`${fileField.id}_${crypto.randomUUID()}`, f, f.name || 'job-photo.jpg');
+      const res = await fetch(`https://services.leadconnectorhq.com/forms/upload-custom-files?contactId=${encodeURIComponent(contactId)}&locationId=${encodeURIComponent(locationId)}`, {
+        method: 'POST', headers: { Authorization: `Bearer ${token}`, Version: process.env.GHL_API_VERSION || 'v3', Accept: 'application/json' }, body: up
+      });
+      const text = await res.text().catch(() => '');
+      let inField = 'unknown';
+      try { const j = JSON.parse(text); const cf = (j.contact || j).customFields || []; inField = cf.some(c => c.id === fileField.id); } catch {}
+      console.log('quote: photo upload to', fileField.name, '->', res.status, '| files:', imageFiles.length, '| field filled on contact:', inField, res.ok ? '' : text.slice(0, 300));
+    } catch (err) { console.error('quote: photo upload to file field failed', err); }
+  } else if (imageFiles.length) {
+    console.warn('quote: no File Upload field found for photos; links are in the note only');
+  }
+
+  // c. Note with the full enquiry. d. Tag last. The contact already exists, so a failure here is logged, not shown to the visitor.
   const note = [
     `Website quote request (${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })} Perth time)`,
     `Service: ${f.service_needed}`,

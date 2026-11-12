@@ -87,7 +87,8 @@ still flagged with `gen: true` in `src/content.mjs` and in the manifest for the 
   `inthemow-quote-photos` (BLOB_READ_WRITE_TOKEN, already connected), then calls the LeadConnector API directly
   with a sub-account Private Integration Token: upsert contact, add a note with every detail and the photo links,
   then add the tag "website quote" last (tags added via the tags endpoint so existing tags are kept).
-  Needs GHL_PIT_TOKEN (secret, scope contacts.write) and GHL_LOCATION_ID in Vercel. Until both are set the endpoint
+  Needs GHL_PIT_TOKEN (secret; scopes contacts.write, locations/customFields.readonly, forms.write) and GHL_LOCATION_ID in Vercel.
+  Job photos are uploaded into the File Upload field "Attach a photo" ({{contact.attach_a_photo}}) via forms/upload-custom-files. Until both are set the endpoint
   returns 503 and the visitor sees a "did not send, please call or email" message rather than a false thank-you.
   Custom fields are sent by key (service_needed, property_size, property_address, job_notes, job_photos); if the CRM
   rejects them the contact is saved without them. The notification email comes from a LeadConnector workflow
