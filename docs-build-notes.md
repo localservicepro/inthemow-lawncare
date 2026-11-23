@@ -105,7 +105,9 @@ still flagged with `gen: true` in `src/content.mjs` and in the manifest for the 
 ## CRM: contacts only, no tracking script
 
 - The LeadConnector external tracking script (link.msgsndr.com) is removed from every page, along with the
-  `data-ghl` attributes on the form fields. Enquiries reach the CRM only through `api/quote.js`, so there is one
-  contact per enquiry and no second capture. `npm run check` fails if the script is added back.
+  `data-ghl` attributes on the form fields. Every quote form now posts (multipart/form-data) to the Sales Brain lead
+  endpoint (`https://app.salesbrain.com.au/api/lead/d742c703-0bb8-427a-87cc-5d793fa526ab`) with hidden `source_page`,
+  `redirect` (the /thank-you page) and the `_hp_url` honeypot; Sales Brain puts the lead into the CRM. Fields, labels and
+  choices are unchanged. `api/quote.js` is no longer used by the forms. `npm run check` fails if the script is added back.
 - The website never creates opportunities (the form handler only upserts the contact, uploads photos to "Job Photos",
   adds a note and adds the "website quote" tag). Opportunities are created by the LeadConnector workflow, step 3.

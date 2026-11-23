@@ -29,6 +29,21 @@ console.log('Desc verbatim:', (home.match(/<meta name="description" content="([^
 const tracked = files.filter(f => /msgsndr|external-tracking/.test(readFileSync(path.join(dir, f), 'utf8')));
 console.log('LeadConnector tracking script removed from every page:', tracked.length === 0, tracked.join(' '));
 if (tracked.length) fail++;
+// Every quote form posts to the Sales Brain lead endpoint with the hidden fields it needs; no CRM form embed.
+const ACTION = 'https://app.salesbrain.com.au/api/lead/d742c703-0bb8-427a-87cc-5d793fa526ab';
+const formBad = [];
+for (const f of files) {
+  const html = readFileSync(path.join(dir, f), 'utf8');
+  if (/data-tracking-id|leadconnectorhq\.com\/widget|form_embed|\/widget\/form\//.test(html)) formBad.push(f + ' (CRM embed)');
+  for (const form of html.match(/<form[\s\S]*?<\/form>/g) || []) {
+    const ok = form.includes(`action="${ACTION}"`) && /method="post"/i.test(form) && form.includes('enctype="multipart/form-data"')
+      && form.includes('name="source_page" value="/') && /name="redirect" value="https?:\/\/[^"]+\/thank-you"/.test(form) && form.includes('name="_hp_url"')
+      && /<input[^>]*name="photos"[^>]*multiple/.test(form) && !form.includes('name="website"');
+    if (!ok) formBad.push(f + ' (' + ((form.match(/id="([^"]+)"/) || [])[1]) + ')');
+  }
+}
+console.log('Quote forms post to Sales Brain with source_page, redirect, _hp_url:', formBad.length === 0, formBad.join(' '));
+if (formBad.length) fail++;
 console.log('GBP iframe exact:', home.includes('<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d114132.82700240743!2d115.9135828!3d-32.1626134!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e33d9b3d8d0a54f%3A0xff3e40563a8aefad!2sIn%20The%20Mow%20Lawncare!5e1!3m2!1sen!2sph!4v1793107124209!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>'));
 // schema sanity
 for (const f of files) { const html = readFileSync(path.join(dir, f), 'utf8'); const blocks = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g) || []; blocks.forEach(b => { const j = JSON.parse(b.replace(/<script[^>]*>|<\/script>/g, '')); if (JSON.stringify(j).toLowerCase().includes('tigereye') || JSON.stringify(j).includes('streetAddress')) { console.log('BAD schema', f); fail++; } }); }

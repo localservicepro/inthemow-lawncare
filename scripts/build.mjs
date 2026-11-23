@@ -166,11 +166,14 @@ function footer(withMap) {
 <div class="modal" id="quote-modal" hidden><div class="modal-backdrop" data-quote-close></div><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-form-title"><button class="modal-close" type="button" aria-label="Close" data-quote-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>${quoteForm('modal-form', true)}</div></div>`;
 }
 
+// Quote forms post to Sales Brain's lead endpoint (inputs/lead-form.json), which puts the lead into the CRM.
+const LEAD_ACTION = 'https://app.salesbrain.com.au/api/lead/d742c703-0bb8-427a-87cc-5d793fa526ab';
+
 function quoteForm(id, compact = false, o = {}) {
   const title = o.title || 'Get a Free Quote';
   const submit = o.submit || 'Send My Quote Request';
   const note = o.service && serviceNotes[o.service] ? serviceNotes[o.service] : '';
-  return `<form id="${id}" class="form-card" action="/api/quote" method="post" enctype="multipart/form-data" data-quote-form data-endpoint="/api/quote" data-redirect="/thank-you" novalidate="" autocomplete="on">
+  return `<form id="${id}" class="form-card" action="${LEAD_ACTION}" method="post" enctype="multipart/form-data" data-quote-form data-endpoint="${LEAD_ACTION}" data-redirect="/thank-you" novalidate="" autocomplete="on">
   <h2 id="${id}-title" data-default="Get a Free Quote">${esc(title)}</h2>
   <p class="phone-line">${iconSolid('phone', '#1a8235')}<span>Prefer to talk? </span><a href="tel:${site.phoneTel}">${site.phone}</a></p>
   <div class="form-grid${compact ? ' compact' : ''}">
@@ -184,8 +187,10 @@ function quoteForm(id, compact = false, o = {}) {
     <div class="field full"><label for="${id}-service">Service Needed</label><select id="${id}-service" name="service_needed" required aria-describedby="${id}-service-note"><option value=""${o.service ? '' : ' selected'} disabled>Select a service</option>${formServices.map(sv => `<option value="${attr(sv)}"${serviceNotes[sv] ? ` data-note="${attr(serviceNotes[sv])}"` : ''}${sv === o.service ? ' selected' : ''}>${esc(sv)}</option>`).join('')}</select><p class="field-note" id="${id}-service-note" aria-live="polite"${note ? '' : ' hidden'}>${esc(note)}</p></div>
     <div class="field full"><label for="${id}-notes">Job Notes</label><textarea id="${id}-notes" name="job_notes" maxlength="2000" placeholder="Tell us about the job, access, timing…"></textarea></div>
     <div class="field full field-photos"><label for="${id}-photos">Job Photos <span class="opt">(optional, up to 5)</span></label><input id="${id}-photos" name="photos" type="file" accept="image/*" multiple data-photos><p class="photo-list" aria-live="polite"></p></div>
-    <div class="hp" aria-hidden="true"><label for="${id}-website">Leave this empty</label><input id="${id}-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+    <div class="hp" aria-hidden="true"><label for="${id}-hp">Leave this empty</label><input id="${id}-hp" name="_hp_url" type="text" tabindex="-1" autocomplete="off"></div>
     <input type="hidden" name="page_url" value="">
+    <input type="hidden" name="source_page" value="${attr(o.sourcePage || '')}" data-source-page>
+    <input type="hidden" name="redirect" value="${site.url}/thank-you">
     <p class="form-error field full" role="alert" hidden></p>
     <div class="field full"><button class="btn btn-primary btn-lg" type="submit" style="width:100%" data-default="Send My Quote Request">${esc(submit)}</button></div>
   </div>
@@ -573,6 +578,13 @@ writeFileSync(path.join(out, 'blog.html'), simplePage({ slug: 'blog', title: 'La
   html: `{{H1}}<p class="lead">Practical, WA-specific advice from the crew is on its way. First up: what lawn mowing costs in Perth, how often to mow through the year, what it costs to fix reticulation, and what your retic controller should be set to for your watering days.</p><p>In the meantime, the <a href="/#faq">FAQ on the home page</a> answers the questions we get asked most.</p><div class="hero-cta" style="justify-content:center">${phoneLink('btn btn-primary', 'Call ' + site.phone)}<a class="btn btn-outline-dark" href="/contact" data-quote-open>Get a Free Quote</a></div>` }));
 writeFileSync(path.join(out, 'privacy.html'), simplePage({ slug: 'privacy', title: 'Privacy Policy | In The Mow', description: 'How In The Mow Lawncare handles enquiry details.', h1: 'Privacy Policy', robots: 'noindex, follow',
   html: `{{H1}}<div style="text-align:left"><p>In The Mow Lawncare collects the details you enter in the quote form (name, phone, email, property address, property size, service needed and job notes) and standard website analytics in order to respond to your enquiry and run the business. Details are stored in our customer management system and are not sold or shared with third parties except the service providers that host that system. You can ask us to update or delete your details at any time by emailing <a href="mailto:${site.email}">${site.email}</a>.</p></div>` }));
+
+// Stamp each page's path into its quote forms' hidden source_page field (works without JS too).
+for (const f of (await import('node:fs')).readdirSync(out).filter(f => f.endsWith('.html'))) {
+  const page = f === 'index.html' ? '/' : '/' + f.replace(/\.html$/, '');
+  const p = path.join(out, f);
+  writeFileSync(p, readFileSync(p, 'utf8').replaceAll('name="source_page" value="" data-source-page', `name="source_page" value="${page}" data-source-page`));
+}
 
 // sitemap + robots
 const urls = ['/', ...services.map(s => '/' + s.slug), '/about', '/service-areas', '/contact'];

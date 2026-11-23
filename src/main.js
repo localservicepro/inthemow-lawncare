@@ -70,7 +70,7 @@
     r.addEventListener('input', set); set();
   });
 
-  /* ---------- Quote form: phone or email, suburb, photos; posts to /api/quote, then the thank-you page ---------- */
+  /* ---------- Quote form: phone or email, suburb, photos; posts to the Sales Brain lead endpoint (form action), then the thank-you page ---------- */
   var MAX_PHOTOS = 5;
   // Phone photos are 3 to 6 MB each. Shrink them to 1600px JPEGs in the browser so five fit in one request.
   var shrink = function (file) {
@@ -123,13 +123,13 @@
       }
       box.hidden = true;
       var label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending…';
-      var fd = new FormData(form); fd.set('page_url', location.href); fd.delete('photos');
+      var fd = new FormData(form); fd.set('page_url', location.href); fd.set('source_page', location.pathname); fd.delete('photos');
       var files = photos ? Array.prototype.slice.call(photos.files).filter(function (f) { return /^image\//.test(f.type); }).slice(0, MAX_PHOTOS) : [];
       if (files.length) btn.textContent = 'Preparing photos…';
       Promise.all(files.map(shrink)).then(function (small) {
         small.forEach(function (f) { fd.append('photos', f, f.name); });
         btn.textContent = 'Sending…';
-        return fetch(form.getAttribute('data-endpoint') || '/api/quote', { method: 'POST', body: fd, headers: { Accept: 'application/json' } });
+        return fetch(form.getAttribute('data-endpoint') || form.action, { method: 'POST', body: fd, headers: { Accept: 'application/json' } });
       }).then(function (r) {
         return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.ok === false) throw new Error(j.error || 'HTTP ' + r.status); return j; });
       }).then(function () {
@@ -138,8 +138,11 @@
           window.dataLayer.push({ event: 'quote_form_submit', form_id: form.id || 'quote', service_needed: fd.get('service_needed') || '' });
           var ttl = form.querySelector('h2'); sessionStorage.setItem('itm_quote', JSON.stringify({ name: fd.get('full_name') || '', service: fd.get('service_needed') || '', walkthrough: !!(ttl && /walkthrough/i.test(ttl.textContent)) }));
         } catch (err) { /* non-fatal */ }
-        window.location.href = form.getAttribute('data-redirect') || '/thank-you';
-      }).catch(function () {
+        var first = String(fd.get('full_name') || '').trim().split(/\s+/)[0];
+        window.location.href = (form.getAttribute('data-redirect') || '/thank-you') + (first ? '?name=' + encodeURIComponent(first) : '');
+      }).catch(function (err) {
+        // Network failure (no response at all): fall back to a normal post, which lands on the thank-you page.
+        if (err instanceof TypeError) { HTMLFormElement.prototype.submit.call(form); return; }
         btn.disabled = false; btn.textContent = label;
         var tel = form.querySelector('.phone-line a');
         box.innerHTML = 'Sorry, your request did not send. Please call <a href="' + (tel ? tel.getAttribute('href') : 'tel:+61424058261') + '">' + (tel ? tel.textContent : '0424 058 261') + '</a> or email <a href="mailto:enquiries@inthemowlawncare.com.au">enquiries@inthemowlawncare.com.au</a>.';
@@ -154,7 +157,7 @@
   if (tyH && tyS) {
     try {
       var q = JSON.parse(sessionStorage.getItem('itm_quote') || '{}');
-      var first = String(q.name || '').trim().split(/\s+/)[0].slice(0, 30);
+      var first = String(q.name || new URLSearchParams(location.search).get('name') || '').trim().split(/\s+/)[0].slice(0, 30);
       if (first) first = first.charAt(0).toUpperCase() + first.slice(1);
       var what = q.walkthrough ? 'site walkthrough request' : 'quote request';
       if (first) { tyH.textContent = 'Thanks ' + first + ', your ' + what + ' is in'; document.title = 'Thanks ' + first + ' | In The Mow'; }
